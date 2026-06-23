@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
-import { Listing } from '../../../features/listings/models/listing.model';
+import { Listing } from '../../models/listing.model';
 
 @Component({
   selector: 'app-listing-card',

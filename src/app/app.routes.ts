@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { NotFoundPageComponent } from './features/errors/pages/not-found-page/not-found-page';
-import { SignUpPage } from './features/auth/pages/sign-up/steps/upload-documents-step/sign-up';
 
 export const routes: Routes = [
   {
@@ -24,10 +23,10 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/auth/pages/login-page/login-page').then(m => m.LoginPage),
   },
-  { 
-    path: 'auth/sign-up', 
-    component: SignUpPage 
-  },
+  // { 
+  //   path: 'auth/sign-up', 
+  //   component: SignUpPage 
+  // },
   { path: '**', component: NotFoundPageComponent }
 ,
 ];

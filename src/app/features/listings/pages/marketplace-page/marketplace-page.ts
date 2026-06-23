@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { ListingCardComponent } from '../../../../shared/components/listing-card/listing-card';
+import { ListingCardComponent } from '../../components/listing-card/listing-card';
 import { ListingFiltersComponent } from '../../components/listing-filters/listing-filters';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination';
 import { SmartSearchBarComponent } from '../../../../shared/components/smart-search-bar/smart-search-bar';

@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RegisterLayout } from './register-layout';
+import { AccountDetailsStep } from './account-details-step';
 
-describe('RegisterLayout', () => {
-  let component: RegisterLayout;
-  let fixture: ComponentFixture<RegisterLayout>;
+describe('AccountDetailsStep', () => {
+  let component: AccountDetailsStep;
+  let fixture: ComponentFixture<AccountDetailsStep>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegisterLayout],
+      imports: [AccountDetailsStep],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(RegisterLayout);
+    fixture = TestBed.createComponent(AccountDetailsStep);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
