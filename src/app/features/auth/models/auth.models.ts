@@ -20,3 +20,11 @@ export interface LoginUser {
   companyName: string;
   kybStatus: 'pending' | 'verified' | 'rejected';
 }
+
+//sgin up
+export interface RegisterStepOneRequestDto {
+  email: string;
+  phoneNumber: string;
+  passwordHash: string;
+}
+

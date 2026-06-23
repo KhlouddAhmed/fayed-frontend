@@ -1,0 +1,111 @@
+/* =============================================
+   MAIN LAYOUT & PANELS
+   ============================================= */
+.sign-up-page {
+  background-color: var(--bg);
+  min-height: calc(100vh - 72px);
+  padding-block: 20px;
+}
+
+.sign-up-page .form-panel {
+  background-color: var(--white);
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
+  max-width: 700px;
+  min-height: 750px;
+  margin: 0 auto;
+}
+
+.sign-up-page .promo-panel {
+  background: linear-gradient(135deg, var(--white) 0%, var(--primary-light) 100%);
+  border-radius: 16px;
+  padding: 40px;
+  padding-top: 80px;
+  border: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 750px;
+  overflow: hidden;
+}
+
+/* =============================================
+   PROMO PANEL CONTENT
+   ============================================= */
+.promo-content { text-align: center; margin-block-end: 32px; }
+.promo-title { font-family: "Cairo", sans-serif; font-size: 24px; font-weight: 700; color: var(--navy-mid); line-height: 40px; margin-block-end: 12px; }
+.promo-desc { font-family: "Cairo", sans-serif; font-size: 16px; font-weight: 400; color: var(--text-muted); line-height: 28px; max-width: 340px; margin-inline: auto; }
+.promo-img-wrapper { flex: 1; display: flex; align-items: center; justify-content: center; width: 100%; }
+.promo-img { width: 100%; max-width: 456px; height: auto; object-fit: contain; }
+.promo-help { display: flex; align-items: center; gap: 6px; margin-block-start: 32px; font-family: "Cairo", sans-serif; font-size: 14px; color: var(--text-muted); }
+.help-link { color: var(--primary); text-decoration: none; font-weight: 600; }
+.help-link:hover { text-decoration: underline; }
+
+/* =============================================
+   FORM TITLES & TEXTS
+   ============================================= */
+.form-title { font-family: "Cairo", sans-serif; font-size: 28px; font-weight: 700; color: var(--navy); margin-block-end: 8px; text-align: center; }
+.form-subtitle { font-family: "Cairo", sans-serif; font-size: 16px; color: var(--text-muted); margin-block-end: 32px; text-align: center; }
+
+/* =============================================
+   FORM CONTROLS & INPUTS
+   ============================================= */
+.field-group { margin-block-end: 20px; }
+.field-label { display: block; font-family: "Cairo", sans-serif; font-size: 14px; font-weight: 600; color: var(--navy-mid); margin-block-end: 8px; text-align: right; }
+
+.sign-up-page .input-wrapper { position: relative; width: 100%; }
+.sign-up-page .input-wrapper .field-input {
+  width: 100%;
+  padding-block: 14px;
+  padding-right: 16px;
+  padding-left: 16px;
+  border: 1px solid var(--border-input);
+  border-radius: 8px;
+  font-family: "Cairo", sans-serif;
+  font-size: 15px;
+  color: var(--navy-mid);
+  background-color: var(--white);
+  text-align: right;
+}
+
+.sign-up-page .field-input::placeholder { text-align: right; color: var(--text-muted); opacity: 0.7; }
+.sign-up-page .input-wrapper .field-input:focus { border-color: var(--primary); box-shadow: var(--shadow-focus); outline: none; }
+
+/* Phone prefix specific styling */
+.phone-wrapper { display: flex; align-items: center; }
+.phone-wrapper .field-input { border-top-left-radius: 0; border-bottom-left-radius: 0; border-left: none; }
+.phone-prefix {
+  display: flex; align-items: center; justify-content: center;
+  background-color: var(--bg-soft, #f8f9fa);
+  border: 1px solid var(--border-input); border-right: none;
+  border-top-left-radius: 8px; border-bottom-left-radius: 8px;
+  padding-inline: 16px; height: 50px; font-family: "Cairo", sans-serif;
+  color: var(--navy-mid); font-weight: 600;
+}
+
+/* =============================================
+   SUBMIT BUTTON
+   ============================================= */
+.sign-up-page .btn-primary {
+  background-color: var(--primary); color: var(--white); border: none; border-radius: 16px;
+  padding-block: 16px; padding-inline: 24px; font-family: "Cairo", sans-serif;
+  font-size: 18px; font-weight: 700; line-height: 1; text-align: center;
+  transition: background-color 0.2s ease, transform 0.1s ease; cursor: pointer; margin-top: 30px;
+}
+.sign-up-page .btn-primary:hover:not(:disabled) { background-color: var(--primary-dark); }
+.sign-up-page .btn-primary:active:not(:disabled) { transform: translateY(1px); }
+.sign-up-page .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* =============================================
+   BACK BUTTON
+   ============================================= */
+.sign-up-page .back-btn {
+  display: flex; align-items: center; gap: 8px; background: transparent; border: none; padding: 0;
+  color: var(--text-muted); font-family: "Cairo", sans-serif; font-size: 16px; font-weight: 500;
+  cursor: pointer; transition: color 0.2s ease; margin-block-end: 24px; margin-inline-start: auto; margin-inline-end: 0;
+}
+.sign-up-page .back-btn:hover { color: var(--primary); }
+
+.field-error { display: block; font-family: "Cairo", sans-serif; font-size: 13px; color: var(--danger); margin-block-start: 6px; text-align: right; }
