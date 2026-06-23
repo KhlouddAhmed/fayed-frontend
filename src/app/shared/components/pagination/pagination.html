@@ -1,0 +1,42 @@
+<nav class="pagination-nav" aria-label="الصفحات">
+
+  <!-- Note: in RTL, "previous" visually points right (›) and "next" points left (‹) -->
+  <button
+  type="button"
+  class="page-btn arrow-btn"
+  [disabled]="isFirstPage()"
+  (click)="onPrevious()"
+  aria-label="الصفحة السابقة">
+  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
+    <rect x="0.5" y="0.5" width="39" height="39" rx="5.5" style="stroke: var(--border-light);"/>
+    <path d="M17 14L23 20L17 26" stroke="currentColor" stroke-width="2"/>
+  </svg>
+  </button>
+
+  @for (token of pageTokens(); track $index) {
+    @if (token === 'ellipsis') {
+      <span class="ellipsis">...</span>
+    } @else {
+      <button
+        type="button"
+        class="page-btn"
+        [class.active]="token === currentPage()"
+        (click)="onPageClick(token)">
+        {{ token }}
+      </button>
+    }
+  }
+
+  <button
+  type="button"
+  class="page-btn arrow-btn"
+  [disabled]="isLastPage()"
+  (click)="onNext()"
+  aria-label="الصفحة التالية">
+  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
+    <rect x="-0.5" y="0.5" width="39" height="39" rx="5.5" transform="matrix(-1 0 0 1 39 0)" style="stroke: var(--border-light);"/>
+    <path d="M23 14L17 20L23 26" stroke="currentColor" stroke-width="2"/>
+  </svg>
+  </button>
+
+</nav>

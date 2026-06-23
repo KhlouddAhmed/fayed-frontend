@@ -1,0 +1,35 @@
+<!-- FAQ Section -->
+<section class="faq-container" id="faq-section">
+  <h2 class="faq-main-title fw-bold">FAQ's</h2>
+  <p class="faq-sub-title">إجابات على أكثر الأسئلة شيوعاً حول فايض</p>
+
+  <!-- FAQ List -->
+  <div class="faq-list">
+    @for (faq of faqs(); track faq.question; let i = $index) {
+    <div class="faq-item" [class.active]="faq.isOpen" (click)="toggleFaq(i)">
+
+      <div class="faq-header">
+        <span class="faq-question">{{ faq.question }}</span>
+        <img ngSrc="assets/images/landing/drop.png" width="24" height="24" class="faq-icon" [class.rotated]="faq.isOpen"
+          alt="">
+      </div>
+
+      <div class="faq-answer" [class.show]="faq.isOpen">
+        <p>{{ faq.answer }}</p>
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- FAQ Footer / Support CTA -->
+  <div class="faq-footer">
+    <p class="footer-text">لم تجد إجابة لسؤالك؟ تواصل مع فريق الدعم أو أرسل استفسارك مباشرة</p>
+    <div class="faq-buttons">
+      <button type="button" class="btn-custom btn-blue">
+        تواصل مع الدعم
+        <img ngSrc="assets/images/landing/support.png" width="20" height="20" alt="">
+      </button>
+      <button type="button" class="btn-custom btn-white">إرسال استفسار</button>
+    </div>
+  </div>
+</section>

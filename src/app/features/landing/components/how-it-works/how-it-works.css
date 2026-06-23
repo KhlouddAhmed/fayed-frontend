@@ -1,0 +1,82 @@
+/* =============================================
+   SECTION BACKGROUND
+   ============================================= */
+.how-it-works {
+  background-color: var(--bg-muted);
+}
+
+/* =============================================
+   STEP CARD
+   ============================================= */
+.step-card {
+  display: flex;
+  width: 264.8px;
+  padding: 24px;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: right;
+  border-radius: 16px;
+  background-color: var(--white);
+  height: 100%;
+  border: 1px solid var(--border);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+/* =============================================
+   STEP ROW LAYOUT
+   ============================================= */
+.row.g-4 {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+
+/* =============================================
+   ICON BOX
+   ============================================= */
+.icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--gradient-icon);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  margin-bottom: 16px;
+}
+
+/* =============================================
+   STEP IMAGE BOX
+   ============================================= */
+.step-image-box {
+  width: 216px;
+  height: 120px;
+  background-color: var(--primary-light);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.step-image-box img {
+  max-width: 80%;
+  max-height: 80%;
+  object-fit: contain;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (min-width: 1200px) {
+  .row-steps {
+    flex-wrap: nowrap !important;
+  }
+}

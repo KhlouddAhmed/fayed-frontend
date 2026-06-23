@@ -1,0 +1,60 @@
+/* =============================================
+   PAGINATION NAV
+   ============================================= */
+.pagination-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 24px;
+}
+
+/* =============================================
+   PAGE BUTTONS
+   ============================================= */
+.page-btn {
+    min-width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid var(--border-light);
+    background: var(--white);
+    color: var(--text-main);
+    font-family: 'Cairo', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.page-btn:hover:not(:disabled):not(.active) {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.page-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--white);
+}
+
+.page-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* =============================================
+   ARROW BUTTONS
+   ============================================= */
+.arrow-btn {
+    font-size: 1rem;
+    background: var(--bg-muted);
+    color: var(--navy-light);
+}
+
+/* =============================================
+   ELLIPSIS
+   ============================================= */
+.ellipsis {
+    color: var(--text-muted);
+    padding: 0 4px;
+}

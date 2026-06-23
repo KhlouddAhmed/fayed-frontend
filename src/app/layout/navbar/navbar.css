@@ -1,0 +1,118 @@
+/* =============================================
+   NAVBAR CONTAINER
+   ============================================= */
+.navbar {
+  height: 72px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  z-index: 1000;
+}
+
+.navbar-container {
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+/* =============================================
+   NAV LINKS 
+   ============================================= */
+.nav-link {
+  color: var(--text-muted);
+  font-family: "Cairo", sans-serif;
+  font-weight: 500;
+  padding: 10px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: block;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  color: var(--primary);
+}
+
+/* =============================================
+   NAVBAR BUTTONS
+   ============================================= */
+.navbar-btn-login {
+  color: var(--text-main);
+  border: 1px solid var(--border-gray);
+  background-color: transparent;
+  font-family: "Cairo", sans-serif;
+  transition: all 0.3s ease;
+}
+
+.navbar-btn-login:hover {
+  background-color: var(--bg-soft);
+}
+
+.navbar-btn-register {
+  background-color: var(--primary);
+  border: 1px solid var(--primary);
+  color: var(--white);
+  font-family: "Cairo", sans-serif;
+  transition: all 0.3s ease;
+}
+
+.navbar-btn-register:hover {
+  background-color: var(--primary-dark);
+}
+
+
+
+/* =============================================
+   MOBILE TOGGLER & LOGO
+   ============================================= */
+.navbar-toggler {
+  padding: 0;
+  cursor: pointer;
+}
+
+.navbar-logo-img {
+  height: 40px;
+  width: auto;
+}
+
+/* =============================================
+   MOBILE MENU DROPDOWN 
+   ============================================= */
+.navbar-mobile-menu {
+  position: absolute;
+  top: 72px;
+  left: 0;
+  width: 280px;
+  background-color: var(--white);
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  box-shadow: 10px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  padding: 20px;
+  animation: slideDown 0.3s ease-out;
+}
+
+.navbar-mobile-menu a {
+  text-decoration: none !important;
+  color: var(--text-muted);
+}
+
+.navbar-mobile-menu a:hover {
+  color: var(--primary);
+}
+
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

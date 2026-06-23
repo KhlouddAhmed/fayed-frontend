@@ -1,0 +1,85 @@
+/* =============================================
+   WHY FAYED SECTION
+   ============================================= */
+.why-fayed {
+  background-color: var(--white);
+  padding: 80px 0;
+}
+
+/* Gradient Text */
+.linear-color {
+  background: var(--gradient-nav);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 900;
+}
+
+/* =============================================
+   FEATURE CARD 
+   ============================================= */
+.feature-card {
+  width: 100%;
+  max-width: 320px;
+  padding: 24px 20px;
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+  background: var(--white);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: right;
+  height: 100%;
+  direction: rtl;
+}
+
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover-neutral);
+}
+
+.feature-card h5 {
+  font-weight: 700;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  text-align: right;
+}
+
+.feature-card p {
+  color: var(--text-muted);
+  line-height: 1.55;
+  font-size: 0.95rem;
+  text-align: right;
+}
+
+/* =============================================
+   ICON WRAPPER 
+   ============================================= */
+.icon-wrapper {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-light);
+  border-radius: 14px;
+  margin-bottom: 18px;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.icon-wrapper img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+/* =============================================
+   BADGES
+   ============================================= */
+.badge.border {
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+}

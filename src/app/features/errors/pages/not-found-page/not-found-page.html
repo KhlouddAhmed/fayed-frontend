@@ -1,0 +1,37 @@
+<!-- not-found-page.component.html -->
+<div class="error-page-wrapper">
+
+  <div class="error-layout">
+
+    <!-- Illustration -->
+    <img
+      src="assets/images/error-page.png"
+      alt="صفحة خطأ 404"
+      class="error-img"
+    />
+
+    <!-- Text + Buttons -->
+    <div class="error-content">
+      <h1 class="error-title">الصفحة غير موجودة</h1>
+      <p class="error-description">
+        عذراً، يبدو أن الصفحة التي تبحث عنها غير موجودة أو ربما تم نقلها.
+      </p>
+      <div class="error-actions">
+        <a routerLink="/" class="btn btn--primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+               xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M10 19L3 12L10 5" stroke="currentColor" stroke-width="2.2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3 12H21" stroke="currentColor" stroke-width="2.2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          العودة للرئيسية
+        </a>
+        <button class="btn btn--secondary" (click)="goBack()">
+          الصفحة السابقة
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

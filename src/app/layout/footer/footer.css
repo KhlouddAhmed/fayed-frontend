@@ -1,0 +1,118 @@
+/* =============================================
+   FOOTER CONTAINER
+   ============================================= */
+.footer-container {
+  width: 100%;
+  min-height: 240px;
+  background: var(--navy-deep);
+  color: var(--white);
+  padding: 30px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* =============================================
+   FOOTER CONTENT LAYOUT
+   ============================================= */
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 0 40px;
+  direction: rtl;
+  gap: 40px;
+}
+
+.footer-column {
+  flex: 1;
+  min-width: 200px;
+}
+
+.footer-title {
+  margin-bottom: 15px;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-column ul li {
+  margin-bottom: 8px;
+  cursor: pointer;
+  color: var(--slate-light);
+  font-size: 0.9rem;
+}
+
+.desc {
+  color: var(--slate-light);
+  max-width: 280px;
+  font-size: 0.85rem;
+}
+
+/* =============================================
+   SOCIAL ICONS
+   ============================================= */
+.social-icons {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+  justify-content: flex-start;
+}
+
+/* =============================================
+   FOOTER BOTTOM / COPYRIGHT
+   ============================================= */
+.footer-bottom {
+  text-align: center;
+  font-size: 12px;
+  color: var(--slate-light);
+  margin-top: 20px;
+}
+
+/* =============================================
+   FOOTER ICONS
+   ============================================= */
+ .footer-icon { /*made social icons smaller - 0f delete they get bigger */
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 767.98px) {
+  .footer-container {
+    height: auto;
+    padding: 20px;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-column {
+    min-width: 100%;
+    align-items: center;
+  }
+
+  .footer-column p {
+    justify-content: center;
+  }
+
+  .social-icons {
+    justify-content: center;
+  }
+
+  .desc {
+    max-width: 100%;
+  }
+}

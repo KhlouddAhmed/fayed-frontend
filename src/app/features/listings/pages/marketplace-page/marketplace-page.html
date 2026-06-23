@@ -1,0 +1,98 @@
+<div class="container py-5 custom-container">
+
+  <!-- Page Hero -->
+  <div class="hero-section text-end">
+    <h1 class="hero-title">تصفح الخامات والمواد الخام المتاحة</h1>
+    <p class="hero-subtitle">
+      ابحث عن المواد الخام المناسبة أو اعرض فائض مصنعك للبيع.
+    </p>
+  </div>
+
+  <!-- AI Smart Search -->
+  <app-smart-search-bar (searchSubmitted)="onSmartSearch($event)"></app-smart-search-bar>
+
+  <!-- Results Toolbar -->
+  <div class="marketplace-toolbar d-flex align-items-center justify-content-between mb-4 mt-4">
+    <div class="count-text">
+        عرض {{startItem()}}-{{endItem()}} من {{totalCount()}} خامة متاحة
+    </div>
+    <div class="d-flex align-items-center gap-4">
+
+        <div class="d-flex align-items-center gap-2">
+            <span class="sort-label">ترتيب حسب:</span>
+            <select class="form-select sort-dropdown" (change)="onSortChange($event)">
+                <option value="newest">الأحدث</option>
+                <option value="oldest">الأقدم</option>
+                <option value="price_asc">السعر: من الأقل للأعلى</option>
+                <option value="price_desc">السعر: من الأعلى للأقل</option>
+            </select>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+            <button class="view-toggle-btn" [class.active]="currentViewMode() === 'grid'" (click)="setViewMode('grid')">
+                <svg width="24" height="24" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="8" y="8" width="10" height="10" />
+                    <rect x="22" y="8" width="10" height="10" />
+                    <rect x="8" y="22" width="10" height="10" />
+                    <rect x="22" y="22" width="10" height="10" />
+                </svg>
+            </button>
+
+            <button class="view-toggle-btn" [class.active]="currentViewMode() === 'list'" (click)="setViewMode('list')">
+                <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M40 14H8M30 24H8M20 34H8" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+        </div>
+    </div>
+  </div>
+
+  <!-- Filters + Results Grid -->
+  <div class="row g-lg-5">
+
+    <!-- Filters Sidebar -->
+    <div class="col-lg-3 order-1 order-lg-1 mb-4">
+      <div class="filters-wrapper">
+        <app-listing-filters></app-listing-filters>
+      </div>
+    </div>
+
+    <!-- Listings -->
+    <div class="col-lg-9 order-2 order-lg-2">
+
+      @if (isLoading()) {
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @for (i of [1,2,3,4,5,6]; track i) {
+        <div class="col">
+          <div class="card h-100 skeleton-card border-0 rounded-4 shadow-sm"></div>
+        </div>
+        }
+      </div>
+      } @else {
+      @if (currentViewMode() === 'grid') {
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @for (item of listings(); track item.id) {
+        <div class="col">
+          <app-listing-card [listing]="item" [viewMode]="'grid'"></app-listing-card>
+        </div>
+        }
+      </div>
+      } @else {
+      <div class="d-flex flex-column gap-4">
+        @for (item of listings(); track item.id) {
+        <app-listing-card [listing]="item" [viewMode]="'list'"></app-listing-card>
+        }
+      </div>
+      }
+      }
+
+      <!-- Pagination -->
+      <div class="mt-5">
+        <app-pagination [currentPage]="currentPage()" [totalPages]="totalPages()" (pageChange)="onPageChange($event)">
+        </app-pagination>
+      </div>
+
+    </div>
+
+  </div>
+</div>

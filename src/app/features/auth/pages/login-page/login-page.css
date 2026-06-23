@@ -1,0 +1,349 @@
+/* =============================================
+   MAIN LAYOUT & PANELS
+   ============================================= */
+.login-page {
+  background-color: var(--bg);
+  min-height: calc(100vh - 72px);
+  padding-block: 20px;
+}
+
+.login-page .form-panel {
+  background-color: var(--white);
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
+  max-width: 700px;
+  min-height: 750px;
+  margin: 0 auto;
+}
+
+.login-page .promo-panel {
+  background: linear-gradient(135deg, var(--white) 0%, var(--primary-light) 100%);
+  border-radius: 16px;
+  padding: 40px;
+  padding-top: 80px;
+  border: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 750px;
+  overflow: hidden;
+}
+
+/* =============================================
+   PROMO PANEL CONTENT
+   ============================================= */
+.promo-content {
+  text-align: center;
+  margin-block-end: 32px;
+}
+
+.promo-title {
+  font-family: "Cairo", sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--navy-mid);
+  line-height: 40px;
+  margin-block-end: 12px;
+}
+
+.promo-desc {
+  font-family: "Cairo", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 28px;
+  max-width: 340px;
+  margin-inline: auto;
+}
+
+.promo-img-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.promo-img {
+  width: 100%;
+  max-width: 456px;
+  height: auto;
+  object-fit: contain;
+}
+
+.promo-help {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-block-start: 32px;
+  font-family: "Cairo", sans-serif;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.help-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.help-link:hover {
+  text-decoration: underline;
+}
+
+/* =============================================
+   FORM TITLES & TEXTS
+   ============================================= */
+.form-title {
+  font-family: "Cairo", sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-block-end: 8px;
+  text-align: center;
+}
+
+.form-subtitle {
+  font-family: "Cairo", sans-serif;
+  font-size: 16px;
+  color: var(--text-muted);
+  margin-block-end: 32px;
+  text-align: center;
+}
+
+/* =============================================
+   FORM CONTROLS & INPUTS
+   ============================================= */
+.field-group {
+  margin-block-end: 20px;
+}
+
+.field-label {
+  display: block;
+  font-family: "Cairo", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy-mid);
+  margin-block-end: 8px;
+  text-align: right;
+}
+
+.login-page .input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.login-page .input-wrapper .field-input {
+  width: 100%;
+  padding-block: 14px;
+  padding-right: 56px;
+  padding-left: 16px;
+  border: 1px solid var(--border-input);
+  border-radius: 8px;
+  font-family: "Cairo", sans-serif;
+  font-size: 15px;
+  color: var(--navy-mid);
+  background-color: var(--white);
+  text-align: right;
+}
+
+.login-page .field-input::placeholder {
+  text-align: right;
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.login-page .field-input::-webkit-input-placeholder {
+  text-align: right;
+}
+
+.login-page .input-wrapper .field-input:focus {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-focus);
+  outline: none;
+}
+
+.login-page .input-wrapper .input-icon,
+.login-page .input-wrapper .icon-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  right: 18px;
+  left: auto;
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* =============================================
+   CHECKBOX & FORGOT PASSWORD ROW
+   ============================================= */
+.remember-label {
+  font-family: "Cairo", sans-serif;
+  font-size: 14px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.login-page .remember-check {
+  cursor: pointer;
+  border-color: var(--text-muted);
+}
+
+.login-page .remember-check:checked {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.forgot-link {
+  font-family: "Cairo", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+/* =============================================
+   SUBMIT BUTTON
+   ============================================= */
+.login-page .btn-primary {
+  background-color: var(--primary);
+  color: var(--white);
+  border: none;
+  border-radius: 16px;
+  padding-block: 16px;
+  padding-inline: 24px;
+  font-family: "Cairo", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  cursor: pointer;
+  margin-top: 50px;
+}
+
+.login-page .btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-dark);
+}
+
+.login-page .btn-primary:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.login-page .btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =============================================
+   DIVIDER ROW
+   ============================================= */
+.divider-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-block: 28px;
+}
+
+.divider-line {
+  background-color: var(--slate-light);
+  flex: 1;
+  height: 1px;
+}
+
+.divider-text {
+  font-family: "Cairo", sans-serif;
+  font-size: 14px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* =============================================
+   BACK BUTTON
+   ============================================= */
+.login-page .back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--text-muted);
+  font-family: "Cairo", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  margin-block-end: 24px;
+  margin-inline-start: auto;
+  margin-inline-end: 0;
+}
+
+.login-page .back-btn .back-icon {
+  display: block;
+  object-fit: contain;
+}
+
+.login-page .back-btn:hover {
+  color: var(--primary);
+}
+
+/* =============================================
+   SOCIAL BUTTONS
+   ============================================= */
+.login-page .social-buttons-container {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  justify-content: center;
+  margin-block-start: 16px;
+  margin-top: 50px;
+}
+
+.login-page .social-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-color: var(--white);
+  border: 1px solid var(--border-input);
+  border-radius: 12px;
+  padding-block: 14px;
+  color: var(--navy-mid);
+  font-family: "Cairo", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.login-page .social-btn:hover {
+  background-color: var(--bg-soft);
+  border-color: var(--text-muted);
+}
+
+
+.field-error {
+  display: block;
+  font-family: "Cairo", sans-serif;
+  font-size: 13px;
+  color: var(--danger);
+  margin-block-start: 6px;
+  text-align: right;
+}
+
+.login-page .input-wrapper .field-input.has-error {
+  border-color: var(--danger);
+}

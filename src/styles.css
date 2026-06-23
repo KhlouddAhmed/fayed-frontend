@@ -1,1 +1,177 @@
-/* You can add global styles to this file, and also import other style files */
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+:root {
+  /* =============================================
+     PRIMARY BLUES
+     ============================================= */
+  --primary: #155DFC;
+  --primary-dark: #1354E3;
+  --primary-darker: #0F172B;
+  --primary-light: #EFF6FF;
+  --primary-lighter: #BFDBFE;
+  --primary-deep: #2457C5;
+  --primary-hover: #3B76FF;
+  --primary-darkest:#092A71;
+
+  /* =============================================
+     DARK NAVY
+     ============================================= */
+  --navy: #101828;
+  --navy-mid: #1E2939;
+  --navy-soft: #263238;
+  --navy-light: #314158;
+  --navy-deep: #02153D;
+
+  /* =============================================
+     NEUTRALS / BACKGROUNDS
+     ============================================= */
+  --white: #FFFFFF;
+  --bg: #FBFBFB;
+  --bg-soft: #F1F5F9;
+  --bg-muted: #F9FAFB;
+  --bg-subtle: #F8FAFC;
+  --border: #E5E7EB;
+  --border-light: #E2E8F0;
+  --border-input: #A3ADBB;
+  --border-gray: #9A9FA6;
+  --border-dark: #1E293B;
+
+  /* =============================================
+     TEXT
+     ============================================= */
+  --text-main: #101828;
+  --text-muted: #62748E;
+  --text-soft: #4A5565;
+  --text-dark-alt: #333333;
+  --slate-light: #CBD5E1;
+  --slate-faint: #94A3B8;
+  --danger: #DC2626;
+  --danger-light: #FEF2F2;
+
+
+  /* =============================================
+     ACCENT
+     ============================================= */
+  --accent-blue: #3B82F6;
+  --accent-cyan: #6CBFE0;
+  --accent-green: #10B981;
+  --accent-teal: #00BC7D;
+  --accent-yellow: #F59E0B;
+  --accent-yellow-light: #FEF3C7;
+
+  /* =============================================
+     GRADIENTS
+     ============================================= */
+  --gradient-primary: linear-gradient(135deg, #1354E3, #407BFF);
+  --gradient-blue: linear-gradient(135deg, #3B82F6, #1E40AF);
+  --gradient-nav: linear-gradient(135deg, #155DFC, #00BC7D);
+  --gradient-icon: linear-gradient(117deg, #2B7FFF, #4F39F6);
+
+  /* =============================================
+     SHADOWS
+     ============================================= */
+  --shadow-sm: 0 10px 15px -3px rgba(0, 0, 0, 0.10), 0 4px 6px -4px rgba(0, 0, 0, 0.10);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.02);
+  --shadow-xs: 0 1px 4px rgba(0, 0, 0, 0.06);
+  --shadow-window: 0 8px 32px rgba(0, 0, 0, 0.15);
+  --shadow-focus: 0 0 0 3px rgba(21, 93, 252, 0.1);
+  --shadow-hover-neutral: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  --shadow-primary-strong: 0 20px 25px -5px rgba(21, 93, 252, 0.3);
+  --shadow-primary-glow: 0 4px 16px rgba(21, 93, 252, 0.4);
+  --shadow-primary-glow-strong: 0 6px 20px rgba(21, 93, 252, 0.5);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Cairo", sans-serif;
+  background-color: var(--bg);
+  color: var(--text-main);
+  direction: rtl;
+}
+
+/* =============================================
+   BUTTON SYSTEM
+   ============================================= */
+.btn-fayed {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: 10px;
+  font-family: "Cairo", sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-fayed:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* =============================================
+   BUTTON — BLUE (PRIMARY)
+   ============================================= */
+.btn-blue {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: var(--white);
+}
+
+.btn-blue:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-primary-strong);
+}
+
+.btn-blue:active:not(:disabled) {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* =============================================
+   BUTTON — WHITE (OUTLINE)
+   ============================================= */
+.btn-white {
+  background-color: var(--white);
+  border-color: var(--border-gray);
+  color: var(--text-dark-alt);
+}
+
+.btn-white:hover:not(:disabled) {
+  background-color: var(--bg-subtle);
+  border-color: var(--primary);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover-neutral);
+}
+
+.btn-white:active:not(:disabled) {
+  transform: translateY(0);
+  background-color: var(--bg-soft);
+}
+
+/* =============================================
+   BOLD FONT 900
+   ============================================= */
+/* .fw-heavy {
+  font-weight: 900 !important;
+ font-size: 36px;
+ font-style: normal;
+} */

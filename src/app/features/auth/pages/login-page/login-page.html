@@ -1,0 +1,133 @@
+<main class="login-page" dir="rtl">
+  <div class="container-fluid h-100 px-4">
+    <div class="row h-100 g-4 justify-content-center align-items-start pt-3">
+
+      <!-- Promo Panel -->
+      <div class="col-12 col-lg-4 d-none d-lg-block order-lg-1">
+        <div class="promo-panel">
+          <div class="promo-content">
+            <h2 class="promo-title">منصة موثوقة لتجارتك</h2>
+            <p class="promo-desc">
+              فايض يربط بين الشركات والمصانع والموردين في بيئة
+              آمنة وموثوقة لنمو أعمالك.
+            </p>
+          </div>
+
+          <div class="promo-img-wrapper">
+            <img ngSrc="assets/images/login/laptop-dashboard.png" alt="لوحة تحكم فايض" width="456" height="456"
+              class="promo-img" />
+          </div>
+
+          <div class="promo-help">
+            <img ngSrc="assets/icons/login-icons/help-icon.png" alt="" aria-hidden="true" width="16" height="16" />
+            <span>تحتاج مساعدة؟</span>
+            <a href="/contact" class="help-link">تواصل معنا</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Panel -->
+      <div class="col-12 col-lg-7 order-lg-2">
+        <div class="form-panel">
+
+          <!-- Back Button -->
+          <button type="button" class="back-btn" (click)="goBack()">
+            <span>الرجوع</span>
+            <img ngSrc="assets/icons/login-icons/weui-back.png" alt="" aria-hidden="true" width="12" height="24"
+              class="back-icon" />
+          </button>
+
+          <h1 class="form-title">مرحباً بك مجددًا!</h1>
+          <p class="form-subtitle">سجل الدخول إلى حسابك في فايض</p>
+
+          @if (errorMessage()) {
+          <div class="alert alert-danger text-end" role="alert">
+            {{ errorMessage() }}
+          </div>
+          }
+
+          <!-- Login Form -->
+          <form (submit)="$event.preventDefault(); onSubmit()" class="login-form">
+
+            <!-- Email Field -->
+            <div class="field-group">
+              <label for="email" class="field-label">البريد الإلكتروني</label>
+              <div class="input-wrapper">
+                <img ngSrc="assets/icons/login-icons/mail-icon.png" alt="" aria-hidden="true" width="24" height="24" class="input-icon" />
+                <input id="email" type="email" class="form-control field-input" placeholder="أدخل بريدك الإلكتروني"
+                  [value]="email()" (input)="email.set($any($event.target).value)" (blur)="emailTouched.set(true)"
+                  autocomplete="email" [disabled]="isLoading()" aria-label="البريد الإلكتروني" />
+              </div>
+              @if (emailTouched() && !isEmailValid()) {
+                <span class="field-error">البريد الإلكتروني مطلوب.</span>
+              }
+            </div>
+
+            <!-- Password Field -->
+            <div class="field-group">
+              <label for="password" class="field-label">كلمة المرور</label>
+              <div class="input-wrapper">
+                <img ngSrc="assets/icons/login-icons/password-icon.png" alt="" aria-hidden="true" width="20" height="20" class="input-icon" />
+                <input id="password" [type]="showPassword() ? 'text' : 'password'" class="form-control field-input"
+                  placeholder="أدخل كلمة المرور" [value]="password()" (input)="password.set($any($event.target).value)"
+                  (blur)="passwordTouched.set(true)" autocomplete="current-password" [disabled]="isLoading()"
+                  aria-label="كلمة المرور" />
+              </div>
+              @if (passwordTouched() && !isPasswordValid()) {
+                <span class="field-error">كلمة المرور مطلوبة.</span>
+              }
+            </div>
+
+            <!-- Remember Me / Forgot Password Row -->
+            <div class="d-flex justify-content-between align-items-center mb-4 text-row">
+              <div class="d-flex align-items-center gap-2">
+                <input id="remember" type="checkbox" class="form-check-input remember-check" [checked]="rememberMe()"
+                  (change)="onRememberMeChange($event)" aria-label="تذكرني" />
+                <label for="remember" class="remember-label">تذكرني</label>
+              </div>
+
+              <a href="/auth/forgot-password" class="forgot-link" (click)="$event.preventDefault(); onForgotPassword()">
+                نسيت كلمة المرور؟
+              </a>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="w-100 btn-primary" [disabled]="isLoading() || !isFormValid()" aria-label="تسجيل الدخول">
+              @if (isLoading()) {
+              <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+              <span>جارٍ التحقق...</span>
+              } @else {
+              <span>التالي</span>
+              }
+            </button>
+
+          </form>
+
+          <!-- Divider -->
+          <div class="divider-row">
+            <span class="divider-line"></span>
+            <span class="divider-text">أو سجل الدخول باستخدام</span>
+            <span class="divider-line"></span>
+          </div>
+
+          <!-- Social Login Buttons -->
+          <div class="social-buttons-container">
+            <button type="button" class="social-btn" (click)="onPhoneLogin()"
+              aria-label="تسجيل الدخول برقم الهاتف">
+              <span>رقم الهاتف</span>
+              <img ngSrc="assets/icons/login-icons/phone-icon.png" alt="" aria-hidden="true" width="20" height="20" />
+            </button>
+
+            <button type="button" class="social-btn" (click)="onGoogleLogin()"
+              aria-label="تسجيل الدخول بحساب Google">
+              <span>Google</span>
+              <img ngSrc="assets/icons/login-icons/google-icon.png" alt="" aria-hidden="true" width="18" height="18" />
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>

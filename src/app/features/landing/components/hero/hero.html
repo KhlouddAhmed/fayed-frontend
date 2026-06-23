@@ -1,0 +1,93 @@
+<!-- Hero Section -->
+<section class="hero-section d-flex align-items-center">
+  <div class="container-fluid p-0">
+    <div class="row g-0 align-items-center flex-row-reverse">
+      <div class="col-lg-6 image-col">
+        <div class="hero-image-wrapper">
+          <img ngSrc="assets/images/landing/hero.png" width="710" height="400" alt="إعادة تدوير المواد الخام في فايض"
+            class="hero-img" />
+        </div>
+      </div>
+      <div class="col-lg-6 content-col d-flex flex-column justify-content-center px-4 px-md-5 ">
+        <h1 class="hero-title fw-bold mb-3">حوّل فائض المواد الخام إلى فرص أعمال جديدة</h1>
+        <p class="hero-subtitle mb-4">منصة B2B موثقة تساعد المصانع على بيع وشراء فائض المواد الخام من خلال البحث الذكي،
+          العقود الرقمية، والدفع الآمن.</p>
+        <div class="hero-actions d-flex gap-3 mt-2">
+          <a href="#"
+            class="btn btn-register-hero rounded-3 fw-medium px-4 py-3 d-inline-flex align-items-center gap-2">
+            سجل شركتك الآن
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+              style="transform: scaleX(-1);">
+              <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </a>
+          <a href="#" class="btn btn-browse-hero rounded-3 fw-medium px-4 py-3 shadow-sm">تصفح الخامات</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-outer-container">
+  <div class="stats-inner-wrapper">
+    <div class="container-fluid p-0">
+      <div class="row m-0 w-100 stats-row">
+
+        <!-- Registered Factories Stat -->
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 p-0">
+          <div class="stat-custom-card">
+            <div class="stat-icon-box">
+              <img ngSrc="assets/images/landing/factory.png" width="38" height="38" alt="المصانع" />
+            </div>
+            <div class="stat-info">
+              <h3 class="stat-num">+{{ factoriesCount() }}</h3>
+              <p class="stat-text">مصنع مسجل</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Available Materials Stat -->
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 p-0">
+          <div class="stat-custom-card">
+            <div class="stat-icon-box">
+              <img ngSrc="assets/images/landing/fork-lift.png" width="38" height="38" alt="الخامات" />
+            </div>
+            <div class="stat-info">
+              <h3 class="stat-num">+{{ materialsCount() }}</h3>
+              <p class="stat-text">خامات متاحة</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Deal Success Rate Stat -->
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 p-0">
+          <div class="stat-custom-card">
+            <div class="stat-icon-box">
+              <img ngSrc="assets/images/landing/finance.png" width="38" height="38" alt="الصفقات" />
+            </div>
+            <div class="stat-info">
+              <h3 class="stat-num">{{ dealsCount() }}%</h3>
+              <p class="stat-text">معدل نجاح الصفقات</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Deals Value Stat -->
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 p-0">
+          <div class="stat-custom-card">
+            <div class="stat-icon-box">
+              <img ngSrc="assets/images/landing/financial-success.png" width="38" height="38" alt="القيمة" />
+            </div>
+            <div class="stat-info">
+              <h3 class="stat-num">{{ successCount() }}M</h3>
+              <p class="stat-text">جنيه قيمة الصفقات</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>

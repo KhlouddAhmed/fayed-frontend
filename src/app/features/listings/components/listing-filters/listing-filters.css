@@ -1,0 +1,116 @@
+/* =============================================
+   FILTERS CARD
+   ============================================= */
+.filters-card {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid var(--border-light);
+  width: 100%;
+}
+
+/* =============================================
+   FILTERS HEADER
+   ============================================= */
+.filters-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filters-header .title {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  font-size: 19px;
+  color: var(--primary-darkest);
+}
+
+.clear-btn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* =============================================
+   FORM LAYOUT
+   ============================================= */
+.filters-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-family: 'Cairo', sans-serif;
+  margin-bottom: 6px;
+  display: block;
+  color: var(--text-main);
+}
+
+/* =============================================
+   FORM CONTROLS
+   ============================================= */
+.form-control {
+  width: 100%;
+  height: 52px;
+  border-radius: 10px;
+  border: 1px solid var(--border-light);
+  background: var(--bg);
+  text-align: right;
+  font-family: 'Cairo', sans-serif;
+  padding-inline: 12px;
+}
+
+.form-control option {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 0.5rem center;
+  background-size: 1.5em;
+}
+
+/* =============================================
+   RANGE INPUTS
+   ============================================= */
+.range-inputs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.range-inputs input {
+  width: 100%;
+  height: 48px;
+  border-radius: 10px;
+  border: 1px solid var(--border-light);
+  background: var(--bg);
+  text-align: right;
+  padding-inline: 10px;
+}
+
+.range-inputs span {
+  color: var(--text-muted);
+}
+
+/* =============================================
+   APPLY BUTTON
+   ============================================= */
+.apply-btn {
+  margin-top: 10px;
+  height: 58px;
+  border-radius: 14px;
+  background-color: var(--primary);
+  color: var(--white);
+  font-weight: 700;
+  border: none;
+  font-family: 'Cairo', sans-serif;
+  cursor: pointer;
+  width: 100%;
+}
+
+.apply-btn:hover {
+  background-color: var(--primary-hover);
+}
