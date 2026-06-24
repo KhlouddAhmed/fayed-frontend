@@ -1,39 +1,38 @@
-<div class="card h-100 product-card border-0 shadow-sm overflow-hidden d-flex flex-column"
-  [class.flex-row-reverse]="viewMode() === 'list'" [class.align-items-stretch]="viewMode() === 'list'">
+<div class="card h-100 product-card border-0 shadow-sm overflow-hidden d-flex" [class.flex-row]="viewMode() === 'list'"
+  [class.flex-column]="viewMode() === 'grid'">
 
   <div class="position-relative img-container flex-shrink-0" [style.height]="viewMode() === 'grid' ? '220px' : '100%'"
     [style.width]="viewMode() === 'list' ? '35%' : '100%'">
 
     <img [ngSrc]="listing().thumbnailUrl" [alt]="listing().title" fill class="object-fit-cover" ngOptimizedImage />
-
-    <span class="badge product-badge">
-      {{ listing().materialTag }}
-    </span>
+    <span class="badge product-badge">{{ listing().materialTag }}</span>
   </div>
 
-  <div class="card-body d-flex flex-column p-4 flex-grow-1">
-    <h5 class="card-title fw-bold mb-3 text-dark line-clamp-2">
+  <div class="card-body p-4 card-body-wrapper">
+
+    <h5 class="card-title fw-bold mb-3 text-dark line-clamp-2 item-title">
       {{ listing().title }}
     </h5>
 
-    <div class="meta-text mb-1">
+    <div class="meta-text mb-1 item-qty">
       الكمية: <span class="fw-bold text-dark">{{ listing().quantity }} {{ listing().unit }}</span>
     </div>
-    <div class="meta-text mb-3">
+
+    <div class="meta-text mb-3 item-gov">
       المحافظة: <span class="fw-bold text-dark">{{ listing().governorate }}</span>
     </div>
 
-    <div class="price-text mb-1">
-      {{ listing().price }} <span class="price-unit">ج.م / {{ listing().unit }}</span>
+    <div class="price-text mb-1 item-price">
+      {{ listing().price | number }} <span class="price-unit"> ج.م &sol; {{ listing().unit }}</span>
     </div>
 
-    <div class="posted-text mb-3">
+    <div class="posted-text mb-4 item-date">
       {{ listing().postedAgo }}
     </div>
 
-    <button class="btn product-btn-outline w-100 mt-auto" (click)="onViewDetails()">
+    <button class="btn product-btn-outline w-100 item-btn" (click)="onViewDetails()">
       عرض التفاصيل
     </button>
-  </div>
 
+  </div>
 </div>

@@ -1,85 +1,100 @@
-/* not-found-page.component.css */
-
-/* ── Page shell ─────────────────────────────────────────────────────────── */
+/* =============================================
+    Page shell 
+   ============================================= */
 .error-page-wrapper {
-  width:           100%;
-  min-height:      100vh;
-  background:      #FBFBFB;
-  display:         flex;
-  align-items:     center;
+  width: 100%;
+  min-height: 100vh;
+  background: #FBFBFB;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  direction:       rtl;
-  font-family:     'Cairo', 'Tajawal', system-ui, sans-serif;
-  padding:         2rem 1.5rem;
-  box-sizing:      border-box;
+  direction: rtl;
+  font-family: 'Cairo', 'Tajawal', system-ui, sans-serif;
+  padding: 2rem 1.5rem;
+  box-sizing: border-box;
 }
 
-/* ── Column layout ───────────────────────────────────────────────────────── */
+/* =============================================
+Column layout 
+============================================= */
 .error-layout {
-  display:         flex;
-  flex-direction:  column;
-  align-items:     center;
-  text-align:      center;
-  width:           100%;
-  max-width:       700px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 700px;
 }
 
-/* ── Illustration ────────────────────────────────────────────────────────── */
+/* =============================================
+Illustration 
+============================================== */
 .error-img {
-  width:      100%;
-  max-width:  580px;
-  height:     auto;
-  display:    block;
-  margin:     0 auto -1rem; /* pull text slightly up under the image */
+  width: 100%;
+  max-width: 580px;
+  height: auto;
+  display: block;
+  margin: 0 auto -1rem;
+  /* pull text slightly up under the image */
 }
 
-/* ── Content ─────────────────────────────────────────────────────────────── */
+/* =============================================
+Content
+ ============================================== */
 .error-content {
-  width:     100%;
+  width: 100%;
   max-width: 520px;
-  padding:   0 1rem;
+  padding: 0 1rem;
 }
 
-/* ── Title ───────────────────────────────────────────────────────────────── */
+/* =============================================
+Title
+============================================= */
 .error-title {
-  font-size:      clamp(1.6rem, 4vw, 2.2rem);
-  font-weight:    800;
-  color:          #111827;
-  margin:         0 0 0.6rem;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 0.6rem;
   letter-spacing: -0.4px;
 }
 
-/* ── Description ─────────────────────────────────────────────────────────── */
+/* =============================================
+Description 
+============================================= */
 .error-description {
-  font-size:   1.0625rem;
+  font-size: 1.0625rem;
   line-height: 1.85;
-  color:       #6B7280;
-  margin:      0 0 2rem;
+  color: #6B7280;
+  margin: 0 0 2rem;
 }
 
-/* ── Buttons row ─────────────────────────────────────────────────────────── */
+/* =============================================
+Buttons row 
+============================================= */
 .error-actions {
-  display:         flex;
-  align-items:     center;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  gap:             1rem;
-  flex-wrap:       wrap;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-/* ── Button base ─────────────────────────────────────────────────────────── */
+/* =============================================
+Button base 
+============================================= */
 .btn {
-  display:         inline-flex;
-  align-items:     center;
-  gap:             0.5rem;
-  padding:         0.75rem 1.75rem;
-  border-radius:   50px;
-  font-size:       1rem;
-  font-weight:     600;
-  font-family:     'Cairo', 'Tajawal', system-ui, sans-serif;
-  cursor:          pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Cairo', 'Tajawal', system-ui, sans-serif;
+  cursor: pointer;
   text-decoration: none;
-  border:          none;
-  transition:      background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  border: none;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
 }
 
 .btn:active {
@@ -89,7 +104,7 @@
 /* primary */
 .btn--primary {
   background: #155DFC;
-  color:      #ffffff;
+  color: #ffffff;
   box-shadow: 0 4px 18px rgba(21, 93, 252, 0.35);
 }
 
@@ -101,21 +116,23 @@
 /* secondary */
 .btn--secondary {
   background: transparent;
-  color:      #374151;
-  border:     1.5px solid #D1D5DB;
+  color: #374151;
+  border: 1.5px solid #D1D5DB;
 }
 
 .btn--secondary:hover {
-  background:   rgba(21, 93, 252, 0.06);
+  background: rgba(21, 93, 252, 0.06);
   border-color: #155DFC;
-  color:        #155DFC;
+  color: #155DFC;
 }
 
-/* ── Mobile ──────────────────────────────────────────────────────────────── */
+/* =============================================
+Mobile 
+============================================= */
 @media (max-width: 480px) {
   .error-actions {
     flex-direction: column;
-    align-items:    stretch;
+    align-items: stretch;
   }
 
   .btn {
@@ -123,7 +140,11 @@
   }
 }
 
-/* ── Reduced motion ──────────────────────────────────────────────────────── */
+/* =============================================
+Reduced motion
+============================================= */
 @media (prefers-reduced-motion: reduce) {
-  .btn { transition: none; }
+  .btn {
+    transition: none;
+  }
 }

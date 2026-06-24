@@ -10,7 +10,7 @@ import { RouterLink } from '@angular/router';
   templateUrl: './not-found-page.html',
   styleUrl: './not-found-page.css',
 })
-export class NotFoundPageComponent {
+export class NotFoundPage {
   constructor(private location: Location) {}
 
   goBack(): void {

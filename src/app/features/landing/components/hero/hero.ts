@@ -11,17 +11,13 @@ import { Component, OnInit, signal, WritableSignal } from '@angular/core';
 
 export class Hero implements OnInit {
 
-  /* =============================================
-     COUNTER SIGNALS
-     ============================================= */
+  //COUNTER SIGNALS
   factoriesCount = signal(0);
   materialsCount = signal(0);
   dealsCount = signal(0);
   successCount = signal(0);
 
-  /* =============================================
-     LIFECYCLE
-     ============================================= */
+    //LIFECYCLE
   ngOnInit(): void {
     this.animateCounter(500, this.factoriesCount);
     this.animateCounter(1500, this.materialsCount);
@@ -29,9 +25,7 @@ export class Hero implements OnInit {
     this.animateCounter(12, this.successCount);
   }
 
-  /* =============================================
-     COUNTER ANIMATION LOGIC
-     ============================================= */
+     //COUNTER ANIMATION LOGIC
   private animateCounter(target: number, counterSignal: WritableSignal<number>): void {
     const duration = 2000;
     const steps = 50;

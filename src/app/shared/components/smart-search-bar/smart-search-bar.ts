@@ -8,9 +8,7 @@ import { Component, output, signal } from '@angular/core';
 })
 export class SmartSearchBarComponent {
 
-  /* =============================================
-     SEARCH STATE
-     ============================================= */
+  //SEARCH STATE
   readonly searchQuery = signal('');
 
   readonly suggestions: readonly string[] = [
@@ -22,9 +20,8 @@ export class SmartSearchBarComponent {
 
   readonly searchSubmitted = output<string>();
 
-  /* =============================================
-     ACTIONS
-     ============================================= */
+
+  //ACTIONS
   onInputChange(event: Event): void {
     this.searchQuery.set((event.target as HTMLInputElement).value);
   }

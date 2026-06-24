@@ -1,1 +1,67 @@
-<p>offer-popup works!</p>
+<div class="modal-overlay" (click)="onOverlayClick($event)">
+  <div class="modal-panel" dir="rtl" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+
+    <!-- Header -->
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-title">إرسال عرض شراء</h2>
+      <button class="close-btn" (click)="onClose()" aria-label="إغلاق">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M18 6L6 18M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Meta -->
+    <p class="modal-meta">إلى: <span class="modal-meta__value">{{ listing().company.name }}</span></p>
+    <p class="modal-meta">الخامة: <span class="modal-meta__value">{{ listing().title }}</span></p>
+
+    <!-- Form -->
+    <form class="modal-form" (submit)="$event.preventDefault(); onSubmit()">
+
+      <!-- Quantity -->
+      <div class="form-group">
+        <label class="form-label">الكمية المطلوبة</label>
+        <input
+          type="number"
+          class="form-input"
+          [placeholder]="'تبدأ من ' + listing().minOrder + ' طن'"
+          [value]="quantity()"
+          (input)="quantity.set(+$any($event.target).value)"
+          min="1"
+        />
+      </div>
+
+      <!-- Price -->
+      <div class="form-group">
+        <label class="form-label">سعر العرض (ج.م)</label>
+        <input
+          type="number"
+          class="form-input"
+          [placeholder]="'السعر المعلن ' + (listing().price | number)"
+          [value]="offerPrice()"
+          (input)="offerPrice.set(+$any($event.target).value)"
+          min="1"
+        />
+      </div>
+
+      <!-- Message -->
+      <div class="form-group">
+        <label class="form-label">رسالة للمورد (اختياري)</label>
+        <textarea
+          class="form-input form-textarea"
+          placeholder="اى تفاصيل اضافية عن طلبك......."
+          [value]="message()"
+          (input)="message.set($any($event.target).value)"
+          rows="3"
+        ></textarea>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="submit-btn" [disabled]="isLoading()">
+        {{ isLoading() ? 'جاري الإرسال...' : 'إرسال العرض' }}
+      </button>
+
+    </form>
+
+  </div>
+</div>

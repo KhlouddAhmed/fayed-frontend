@@ -78,7 +78,7 @@
 /* =============================================
    FOOTER ICONS
    ============================================= */
- .footer-icon { /*made social icons smaller - 0f delete they get bigger */
+ .footer-icon { 
   width: 20px;
   height: 20px;
   object-fit: contain;

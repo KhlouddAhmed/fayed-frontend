@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { NotFoundPageComponent } from './features/errors/pages/not-found-page/not-found-page';
+import { NotFoundPage } from './features/errors/pages/not-found-page/not-found-page';
 
 export const routes: Routes = [
   {
@@ -19,6 +19,12 @@ export const routes: Routes = [
     title: 'سوق فايض - تصفح الخامات'
   },
   {
+    path: 'marketplace/:id',
+    loadComponent: () => import('./features/listings/components/listing-details/listing-details')
+      .then(m => m.ListingDetailsComponent),
+    title: 'تفاصيل الخامة - فايض'
+  },
+  {
     path: 'auth/login',
     loadComponent: () =>
       import('./features/auth/pages/login-page/login-page').then(m => m.LoginPage),
@@ -27,6 +33,5 @@ export const routes: Routes = [
   //   path: 'auth/sign-up', 
   //   component: SignUpPage 
   // },
-  { path: '**', component: NotFoundPageComponent }
-,
+  { path: '**', component: NotFoundPage },
 ];

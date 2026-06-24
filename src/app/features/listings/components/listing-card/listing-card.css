@@ -1,3 +1,6 @@
+/* =============================================
+   PRODUCT CARD BASE STYLES
+============================================= */
 .product-card {
   border-radius: 20px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -12,32 +15,15 @@
   border-color: var(--primary-lighter) !important;
 }
 
-
-
+/* =============================================
+   TYPOGRAPHY & UTILITIES
+============================================= */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-}
-
-.img-container {
-  overflow: hidden;
-  background-color: var(--bg-muted);
-  position: relative;
-}
-
-.product-badge {
-  position: absolute;
-  top: 12px;
-  inset-inline-start: 12px;
-  background-color: rgba(255, 255, 255, 0.95);
-  color: var(--primary);
-  font-weight: 700;
-  padding: 8px 16px;
-  border-radius: 50px;
-  box-shadow: var(--shadow-xs);
-  font-size: 0.8rem;
 }
 
 .meta-text {
@@ -62,6 +48,37 @@
   color: var(--slate-faint);
 }
 
+/* =============================================
+   IMAGE & BADGE STYLES
+============================================= */
+.img-container {
+  overflow: hidden;
+  background-color: var(--bg-muted);
+  position: relative;
+}
+
+.img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-badge {
+  position: absolute;
+  top: 12px;
+  inset-inline-start: 12px;
+  background-color: rgba(255, 255, 255, 0.95);
+  color: var(--primary);
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 50px;
+  box-shadow: var(--shadow-xs);
+  font-size: 0.8rem;
+}
+
+/* =============================================
+   BUTTONS STYLES
+============================================= */
 .product-btn-outline {
   border-radius: 10px;
   border: 1.5px solid var(--primary);
@@ -69,10 +86,113 @@
   font-weight: 600;
   background: transparent;
   transition: all 0.2s ease;
-  padding: 10px 0;
+  padding: 8px 24px;
 }
 
 .product-btn-outline:hover {
   background-color: var(--primary);
   color: var(--white);
+}
+
+/* =============================================
+   CARD CONTENT LAYOUT (DEFAULT / GRID VIEW)
+============================================= */
+/* في الوضع الافتراضي (الجريد)، نرتب العناصر عمودياً */
+.card-body-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+/* ندفع الزرار لأسفل الكارد دائماً */
+.item-btn {
+  margin-top: auto;
+}
+
+/* =============================================
+   LIST VIEW ADJUSTMENTS (RTL COMPATIBLE)
+============================================= */
+/* الصورة في وضع القائمة */
+.product-card.flex-row .img-container {
+  min-height: 200px;
+  width: 35% !important;
+  flex-shrink: 0;
+}
+
+/* باستخدام الـ CSS Grid نوزع المحتوى يميناً ويساراً بدون تغيير الـ HTML */
+.product-card.flex-row .card-body-wrapper {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto auto 1fr;
+  column-gap: 20px;
+  text-align: right;
+}
+
+/* ترتيب العناصر داخل الشبكة (اليمين) */
+.product-card.flex-row .item-title {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.product-card.flex-row .item-qty {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.product-card.flex-row .item-gov {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+/* ترتيب العناصر داخل الشبكة (اليسار) */
+.product-card.flex-row .item-price {
+  grid-column: 2;
+  grid-row: 1;
+  text-align: left;
+}
+
+.product-card.flex-row .item-date {
+  grid-column: 2;
+  grid-row: 2;
+  text-align: left;
+}
+
+/* ضبط الزرار في وضع القائمة */
+.product-card.flex-row .item-btn {
+  grid-column: 2;
+  grid-row: 4;
+  align-self: end;
+  margin-top: 0;
+  width: auto !important;
+  padding: 8px 32px;
+}
+
+/* =============================================
+   RESPONSIVE ADJUSTMENTS
+============================================= */
+@media (max-width: 768px) {
+  .product-card.flex-row {
+    flex-direction: column !important;
+  }
+
+  .product-card.flex-row .img-container {
+    width: 100% !important;
+  }
+
+  /* إعادة الكارد لوضع الجريد في الشاشات الصغيرة */
+  .product-card.flex-row .card-body-wrapper {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+  }
+
+  .product-card.flex-row .item-price,
+  .product-card.flex-row .item-date {
+    text-align: right;
+  }
+
+  .product-card.flex-row .item-btn {
+    width: 100% !important;
+    margin-top: auto;
+  }
 }

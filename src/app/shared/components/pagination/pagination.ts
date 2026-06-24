@@ -9,16 +9,12 @@ type PageToken = number | 'ellipsis';
 })
 export class PaginationComponent {
 
-  /* =============================================
-     INPUTS / OUTPUTS
-     ============================================= */
+  //INPUTS / OUTPUTS
   currentPage = input.required<number>();
   totalPages = input.required<number>();
   pageChange = output<number>();
 
-  /* =============================================
-     DERIVED STATE
-     ============================================= */
+  //DERIVED STATE
   pageTokens = computed<PageToken[]>(() =>
     this.buildTokens(this.currentPage(), this.totalPages())
   );
@@ -26,9 +22,8 @@ export class PaginationComponent {
   isFirstPage = computed(() => this.currentPage() <= 1);
   isLastPage = computed(() => this.currentPage() >= this.totalPages());
 
-  /* =============================================
-     ACTIONS
-     ============================================= */
+
+  //ACTIONS
   onPageClick(page: number): void {
     if (page !== this.currentPage()) {
       this.pageChange.emit(page);
@@ -47,9 +42,8 @@ export class PaginationComponent {
     }
   }
 
-  /* =============================================
-     HELPERS
-     ============================================= */
+
+  //HELPERS
   private buildTokens(current: number, total: number): PageToken[] {
     const siblingCount = 1;
     const rangeStart = Math.max(2, current - siblingCount);
