@@ -139,7 +139,7 @@
   width: 100%;
   padding-block: 14px;
   padding-right: 56px;
-  padding-left: 16px;
+  padding-left: 48px; /* تم زيادتها لتوفير مساحة لأيقونة العين */
   border: 1px solid var(--border-input);
   border-radius: 8px;
   font-family: "Cairo", sans-serif;
@@ -165,8 +165,8 @@
   outline: none;
 }
 
-.login-page .input-wrapper .input-icon,
-.login-page .input-wrapper .icon-btn {
+/* أيقونة الحقل الأساسية (يمين) */
+.login-page .input-wrapper .input-icon {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -179,6 +179,22 @@
   left: auto;
   z-index: 4;
   pointer-events: none;
+}
+
+/* زر العين (أقصى اليسار) */
+.login-page .input-wrapper .toggle-password-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  left: 18px; /* تم ضبطها لأقصى اليسار */
+  right: auto;
+  z-index: 5;
+  cursor: pointer;
 }
 
 /* =============================================
@@ -334,7 +350,6 @@
   border-color: var(--text-muted);
 }
 
-
 .field-error {
   display: block;
   font-family: "Cairo", sans-serif;
@@ -346,4 +361,34 @@
 
 .login-page .input-wrapper .field-input.has-error {
   border-color: var(--danger);
+}
+/* =============================================
+   REGISTER LINK
+   ============================================= */
+.register-link {
+  font-family: "Cairo", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.register-link:hover {
+  text-decoration: underline;
+}
+
+/* =============================================
+   INPUT FOCUS STATE — border يتغير للأزرق
+   ============================================= */
+.login-page .input-wrapper:focus-within .field-input:not(.has-error) {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-focus);
+}
+
+/* =============================================
+   EYE ICON — opacity تعكس الـ active/inactive
+   (الـ 4 حالات بتتحكم فيها الـ src في الـ HTML)
+   ============================================= */
+.login-page .input-wrapper .toggle-password-btn img {
+  transition: opacity 0.2s ease;
 }

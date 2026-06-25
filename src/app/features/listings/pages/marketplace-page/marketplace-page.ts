@@ -5,6 +5,8 @@ import { PaginationComponent } from '../../../../shared/components/pagination/pa
 import { SmartSearchBarComponent } from '../../../../shared/components/smart-search-bar/smart-search-bar';
 import { MarketplaceService } from '../../services/marketplace';
 import { Listing } from '../../models/listing.model';
+import { NavbarComponent } from "../../../../layout/navbar/navbar";
+import { Footer } from "../../../../layout/footer/footer";
 
 const PAGE_SIZE = 6;
 
@@ -14,17 +16,17 @@ const PAGE_SIZE = 6;
     ListingCardComponent,
     ListingFiltersComponent,
     PaginationComponent,
-    SmartSearchBarComponent
-  ],
+    SmartSearchBarComponent,
+    NavbarComponent,
+    Footer
+],
   templateUrl: './marketplace-page.html',
   styleUrl: './marketplace-page.css'
 })
 export class MarketplacePageComponent {
   private readonly marketplaceService = inject(MarketplaceService);
 
-  /* =============================================
-     LISTINGS STATE
-     ============================================= */
+  //LISTINGS STATE
   listings = signal<Listing[]>([]);
   isLoading = signal(true);
   currentViewMode = signal<'grid' | 'list'>('grid');
@@ -32,9 +34,7 @@ export class MarketplacePageComponent {
   totalCount = signal(0);
   currentSort = signal('newest');
 
-  /* =============================================
-     DERIVED STATE
-     ============================================= */
+  //DERIVED STATE
   startItem = computed(() => this.totalCount() > 0 ? (this.currentPage() - 1) * PAGE_SIZE + 1 : 0);
   endItem = computed(() => Math.min(this.currentPage() * PAGE_SIZE, this.totalCount()));
   totalPages = computed(() => Math.ceil(this.totalCount() / PAGE_SIZE));
@@ -43,9 +43,7 @@ export class MarketplacePageComponent {
     this.loadListings();
   }
 
-  /* =============================================
-     ACTIONS
-     ============================================= */
+  //ACTIONS
   onPageChange(page: number): void {
     this.currentPage.set(page);
     this.loadListings();
@@ -69,9 +67,7 @@ export class MarketplacePageComponent {
 
   onApplyFilters(): void {}
 
-  /* =============================================
-     DATA LOADING
-     ============================================= */
+  //DATA LOADING
   private loadListings(): void {
     this.isLoading.set(true);
 

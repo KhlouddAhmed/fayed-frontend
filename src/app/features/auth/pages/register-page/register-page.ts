@@ -11,7 +11,6 @@ import { RegisterRequest } from '../../models/registration.models';
 @Component({
   selector: 'app-register-page',
   imports: [NgOptimizedImage, RegistrationStepper, AccountDetailsStep, UploadDocumentsStep, IdentityVerificationStep],
-
   templateUrl: './register-page.html',
   styleUrl: './register-page.css',
 })

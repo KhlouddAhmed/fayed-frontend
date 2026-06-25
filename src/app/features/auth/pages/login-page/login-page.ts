@@ -1,53 +1,66 @@
 import { Component, signal, computed, inject } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '../../services/auth';
 import { LoginRequest } from '../../models/auth.models';
 
 @Component({
-  imports: [NgOptimizedImage],
+  imports: [RouterLink, NgOptimizedImage],
   templateUrl: './login-page.html',
   styleUrl: './login-page.css',
 })
 export class LoginPage {
   private authService = inject(AuthService);
-  private router = inject(Router);
+  private router      = inject(Router);
 
-  /* =============================================
-     FORM STATE
-     ============================================= */
-  email = signal('');
-  password = signal('');
+  //FORM STATE
+  email     = signal('');
+  password  = signal('');
   rememberMe = signal(false);
 
-  /* =============================================
-     UI STATE
-     ============================================= */
-  isLoading = signal(false);
+  //UI STATE
+  isLoading    = signal(false);
   errorMessage = signal<string | null>(null);
   showPassword = signal(false);
 
-  /* =============================================
-     FIELD-LEVEL VALIDATION
-     ============================================= */
-  emailTouched = signal(false);
+  // PASSWORD EYE ICON
+  passwordFocused = signal(false);
+
+  eyeIcon = computed(() => {
+    const open   = this.showPassword();
+    const active = this.passwordFocused();
+
+    if (open  && active)  return 'assets/icons/login-icons/eye-open-active.png';
+    if (open  && !active) return 'assets/icons/login-icons/eye-open-inactive.png';
+    if (!open && active)  return 'assets/icons/login-icons/eye-closed-active.png';
+    return                       'assets/icons/login-icons/eye-closed-inactive.png';
+  });
+
+  //FIELD-LEVEL VALIDATION
+  emailTouched    = signal(false);
   passwordTouched = signal(false);
 
-  isEmailValid = computed(() => this.email().trim().length > 0);
+  isEmailValid    = computed(() => this.email().trim().length > 0);
   isPasswordValid = computed(() => this.password().length > 0);
-  isFormValid = computed(() => this.isEmailValid() && this.isPasswordValid());
+  isFormValid     = computed(() => this.isEmailValid() && this.isPasswordValid());
 
-  /* =============================================
-     ACTIONS
-     ============================================= */
-  togglePassword(): void {
+  //ACTIONS
+  togglePasswordVisibility(): void {
     this.showPassword.update(v => !v);
   }
 
+  onPasswordFocus(): void {
+    this.passwordFocused.set(true);
+  }
+
+  onPasswordBlur(): void {
+    this.passwordFocused.set(false);
+    this.passwordTouched.set(true);
+  }
+
   onRememberMeChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.rememberMe.set(input.checked);
+    this.rememberMe.set((event.target as HTMLInputElement).checked);
   }
 
   onSubmit(): void {
@@ -61,8 +74,8 @@ export class LoginPage {
     }
 
     const credentials: LoginRequest = {
-      email: this.email().trim(),
-      password: this.password(),
+      email:      this.email().trim(),
+      password:   this.password(),
       rememberMe: this.rememberMe(),
     };
 
@@ -82,14 +95,6 @@ export class LoginPage {
         this.errorMessage.set('البريد الإلكتروني أو كلمة المرور غير صحيحة.');
       },
     });
-  }
-
-  onGoogleLogin(): void {
-    // Placeholder — wire up OAuth redirect when backend provides the endpoint
-  }
-
-  onPhoneLogin(): void {
-    this.router.navigate(['/auth/phone-login']);
   }
 
   onForgotPassword(): void {
