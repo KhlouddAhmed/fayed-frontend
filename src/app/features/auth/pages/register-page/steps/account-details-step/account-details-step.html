@@ -1,1 +1,71 @@
-<p>account-details-step works!</p>
+<div class="account-details-step">
+  <h2 class="form-title">إنشاء حساب الدخول</h2>
+  <p class="form-subtitle">أكمل بياناتك لإنشاء حساب لك والبدء في استخدام منصة فايض</p>
+
+  <form (submit)="$event.preventDefault(); onSubmit()" class="account-details-form">
+
+    <div class="fields-grid">
+
+      <!-- Phone Field -->
+      <div class="field-group">
+        <label for="phoneNumber" class="field-label">رقم الهاتف <span class="required-mark">*</span></label>
+        <div class="phone-wrapper">
+          <input id="phoneNumber" type="tel" class="form-control field-input" placeholder="أدخل رقم الهاتف"
+            [value]="phoneNumber()" (input)="phoneNumber.set($any($event.target).value)"
+            (blur)="phoneTouched.set(true)" aria-label="رقم الهاتف" />
+          <span class="phone-prefix">+20</span>
+        </div>
+        @if (phoneTouched() && !isPhoneValid()) {
+          <span class="field-error">يرجى إدخال رقم هاتف صحيح (10 إلى 11 رقم).</span>
+        }
+      </div>
+
+      <!-- Email Field -->
+      <div class="field-group">
+        <label for="email" class="field-label">البريد الإلكتروني <span class="required-mark">*</span></label>
+        <div class="input-wrapper">
+          <input id="email" type="email" class="form-control field-input" placeholder="أدخل بريدك الإلكتروني الرسمي"
+            [value]="email()" (input)="email.set($any($event.target).value)" (blur)="emailTouched.set(true)"
+            autocomplete="email" aria-label="البريد الإلكتروني" />
+        </div>
+        @if (emailTouched() && !isEmailValid()) {
+          <span class="field-error">يرجى إدخال بريد إلكتروني صحيح.</span>
+        }
+      </div>
+
+      <!-- Password Field -->
+      <div class="field-group">
+        <label for="password" class="field-label">كلمة المرور <span class="required-mark">*</span></label>
+        <div class="input-wrapper">
+          <input id="password" type="password" class="form-control field-input" placeholder="أدخل كلمة المرور"
+            [value]="password()" (input)="password.set($any($event.target).value)"
+            (blur)="passwordTouched.set(true)" autocomplete="new-password" aria-label="كلمة المرور" />
+        </div>
+        @if (passwordTouched() && !isPasswordValid()) {
+          <span class="field-error">يجب أن تكون 8 أحرف على الأقل وتحتوي على حرف كبير ورقم.</span>
+        } @else {
+          <span class="field-hint">يجب أن تكون كلمة المرور 8 أحرف على الأقل وتحتوي على حرف كبير ورقم</span>
+        }
+      </div>
+
+      <!-- Confirm Password Field -->
+      <div class="field-group">
+        <label for="confirmPassword" class="field-label">تأكيد كلمة المرور <span class="required-mark">*</span></label>
+        <div class="input-wrapper">
+          <input id="confirmPassword" type="password" class="form-control field-input" placeholder="تأكيد كلمة المرور"
+            [value]="confirmPassword()" (input)="confirmPassword.set($any($event.target).value)"
+            (blur)="confirmPasswordTouched.set(true)" autocomplete="new-password" aria-label="تأكيد كلمة المرور" />
+        </div>
+        @if (confirmPasswordTouched() && !isPasswordMatch()) {
+          <span class="field-error">كلمتا المرور غير متطابقتين.</span>
+        }
+      </div>
+
+    </div>
+
+    <button type="submit" class="w-100 btn-primary" [disabled]="!isFormValid()" aria-label="التالي">
+      <span>التالي</span>
+    </button>
+
+  </form>
+</div>

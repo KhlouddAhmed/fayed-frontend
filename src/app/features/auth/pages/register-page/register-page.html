@@ -1,1 +1,74 @@
-<p>register-page works!</p>
+<main class="register-page" dir="rtl">
+  <div class="container-fluid h-100 px-4">
+    <div class="row h-100 g-4 justify-content-center align-items-start pt-3">
+
+      <!-- Promo Panel -->
+      <div class="col-12 col-lg-4 d-none d-lg-block order-lg-1">
+        <div class="promo-panel">
+          <div class="promo-content">
+            <h2 class="promo-title">لماذا نطلب هذه المستندات؟</h2>
+            <p class="promo-desc">
+              نضمن في فايض ان جميع الشركات موثوقين ومعتمدين
+            </p>
+          </div>
+
+          <div class="promo-benefits">
+            <div class="benefit-item">
+              <span class="benefit-title">بيئة تجارية موثوقة</span>
+              <p class="benefit-desc">نضمن أن جميع الشركات على المنصة موثوقة ومعتمدة</p>
+            </div>
+            <div class="benefit-item">
+              <span class="benefit-title">تقليل المخاطر والاحتيال</span>
+              <p class="benefit-desc">نساعدك على التعامل مع شركاء موثوقين فقط</p>
+            </div>
+            <div class="benefit-item">
+              <span class="benefit-title">حماية بياناتك وشركتك</span>
+              <p class="benefit-desc">نلتزم بحماية بياناتك ومعلومات شركتك بأعلى معايير الأمان</p>
+            </div>
+            <div class="benefit-item">
+              <span class="benefit-title">مزايا أكثر لشركتك</span>
+              <p class="benefit-desc">بعد التحقق، ستحصل على مزايا إضافية ودعم أفضل</p>
+            </div>
+          </div>
+
+          <div class="promo-help">
+            <span>تحتاج مساعدة؟</span>
+            <a href="/contact" class="help-link">تواصل معنا</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Panel -->
+      <div class="col-12 col-lg-7 order-lg-2">
+        <div class="form-panel">
+
+          <!-- Back Button -->
+          <button type="button" class="back-btn" (click)="goBack()">
+            <span>الرجوع</span>
+          </button>
+
+          <h1 class="form-title">إنشاء حساب جديد</h1>
+          <p class="form-subtitle">أنشئ حسابك للانضمام إلى منصة فايض وابدأ رحلتك في تجارة المصانع</p>
+
+          <!-- <div class="stepper-wrapper">
+            <RegistrationStepper [currentStep]="currentStep()" />
+          </div>
+
+          @switch (currentStep()) {
+            @case (1) {
+              <UploadDocumentsStep />
+            }
+            @case (2) {
+              <IdentityVerificationStep />
+            }
+            @case (3) {
+              <AccountDetailsStep (completed)="onAccountDetailsCompleted($event)" />
+            }
+          } -->
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>

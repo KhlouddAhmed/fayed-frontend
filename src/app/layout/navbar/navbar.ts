@@ -44,10 +44,4 @@ export class NavbarComponent {
   closeMenu(): void {
     this.menuOpen.set(false);
   }
-
-  // Handles registration button click
-  onRegisterClick(): void {
-    this.closeMenu();
-    this.registerClicked.emit();
-  }
 }

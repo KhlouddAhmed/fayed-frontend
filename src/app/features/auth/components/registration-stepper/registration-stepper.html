@@ -1,1 +1,22 @@
-<p>registration-stepper works!</p>
+<div class="stepper-container">
+  @for (item of steps; track item.step; let isLast = $last) {
+    <div class="step-item" [class.step-item--completed]="stepStates()[$index] === 'completed'"
+      [class.step-item--active]="stepStates()[$index] === 'active'"
+      [class.step-item--upcoming]="stepStates()[$index] === 'upcoming'">
+
+      <div class="step-circle">
+        @if (stepStates()[$index] === 'completed') {
+          <span class="step-check">✓</span>
+        } @else {
+          <span class="step-number">{{ item.step }}</span>
+        }
+      </div>
+
+      <span class="step-label">{{ item.label }}</span>
+    </div>
+
+    @if (!isLast) {
+      <div class="step-connector"></div>
+    }
+  }
+</div>

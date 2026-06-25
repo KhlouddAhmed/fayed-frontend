@@ -1,0 +1,154 @@
+.register-page {
+  background-color: var(--bg);
+  min-height: calc(100vh - 72px);
+  padding-block: 20px;
+}
+
+.register-page .form-panel {
+  background-color: var(--white);
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
+  max-width: 700px;
+  min-height: 750px;
+  margin: 0 auto;
+}
+
+.register-page .promo-panel {
+  background: linear-gradient(135deg, var(--white) 0%, var(--primary-light) 100%);
+  border-radius: 16px;
+  padding: 40px;
+  padding-top: 60px;
+  border: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 750px;
+  overflow: hidden;
+}
+
+/* =============================================
+   PROMO PANEL CONTENT
+   ============================================= */
+.promo-content {
+  text-align: right;
+  margin-block-end: 32px;
+}
+
+.promo-title {
+  font-family: "Cairo", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--navy-mid);
+  line-height: 32px;
+  margin-block-end: 12px;
+}
+
+.promo-desc {
+  font-family: "Cairo", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 24px;
+}
+
+.promo-benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+}
+
+.benefit-item {
+  text-align: right;
+}
+
+.benefit-title {
+  display: block;
+  font-family: "Cairo", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy-mid);
+  margin-block-end: 4px;
+}
+
+.benefit-desc {
+  font-family: "Cairo", sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 22px;
+}
+
+.promo-help {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-block-start: 32px;
+  font-family: "Cairo", sans-serif;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.help-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.help-link:hover {
+  text-decoration: underline;
+}
+
+/* =============================================
+   FORM TITLES & TEXTS
+   ============================================= */
+.form-title {
+  font-family: "Cairo", sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-block-end: 8px;
+  text-align: center;
+}
+
+.form-subtitle {
+  font-family: "Cairo", sans-serif;
+  font-size: 16px;
+  color: var(--text-muted);
+  margin-block-end: 32px;
+  text-align: center;
+}
+
+/* =============================================
+   STEPPER WRAPPER
+   ============================================= */
+.stepper-wrapper {
+  margin-block-end: 32px;
+}
+
+/* =============================================
+   BACK BUTTON
+   ============================================= */
+.register-page .back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--text-muted);
+  font-family: "Cairo", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  margin-block-end: 24px;
+  margin-inline-start: auto;
+  margin-inline-end: 0;
+}
+
+.register-page .back-btn:hover {
+  color: var(--primary);
+}

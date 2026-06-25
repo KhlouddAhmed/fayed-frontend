@@ -3,12 +3,7 @@
 
     <!-- Logo -->
     <a [routerLink]="'/'" class="navbar-brand" aria-label="فايض - الصفحة الرئيسية">
-      <img ngSrc="/assets/icons/logo-text.png"
-           alt="فايض"
-           width="120"
-           height="40"
-           priority
-           class="navbar-logo-img" />
+      <img ngSrc="/assets/icons/logo-text.png" alt="فايض" width="120" height="40" priority class="navbar-logo-img" />
     </a>
 
 
@@ -16,16 +11,13 @@
     <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
       <ul class="navbar-nav gap-4">
         @for (link of navLinks; track link.label) {
-          <li class="nav-item">
-            <a [routerLink]="link.route"
-               [fragment]="link.fragment"
-               [routerLinkActive]="link.fragment ? '' : 'nav-link--active'"
-               [routerLinkActiveOptions]="{ exact: link.route === '/' }"
-               class="nav-link"
-               (click)="closeMenu()">
-              {{ link.label }}
-            </a>
-          </li>
+        <li class="nav-item">
+          <a [routerLink]="link.route" [fragment]="link.fragment"
+            [routerLinkActive]="link.fragment ? '' : 'nav-link--active'"
+            [routerLinkActiveOptions]="{ exact: link.route === '/' }" class="nav-link" (click)="closeMenu()">
+            {{ link.label }}
+          </a>
+        </li>
         }
       </ul>
     </div>
@@ -33,60 +25,50 @@
     <!-- Desktop Auth Buttons -->
     <div class="navbar-auth d-none d-md-flex align-items-center gap-3">
       @if (isLoggedIn()) {
-        <a [routerLink]="'/dashboard'" class="btn btn-outline-primary rounded-3 fw-medium">
-          لوحة التحكم
-        </a>
+      <a [routerLink]="'/dashboard'" class="btn btn-outline-primary rounded-3 fw-medium">
+        لوحة التحكم
+      </a>
       } @else {
-        <a routerLink="/auth/login"
-           class="btn navbar-btn-login rounded-3 fw-medium px-4 d-inline-flex align-items-center justify-content-center"
-           aria-label="تسجيل الدخول">
-          تسجيل الدخول
-        </a>
+      <a routerLink="/auth/login"
+        class="btn navbar-btn-login rounded-3 fw-medium px-4 d-inline-flex align-items-center justify-content-center"
+        aria-label="تسجيل الدخول">
+        تسجيل الدخول
+      </a>
 
-        <button type="button"
-                class="btn navbar-btn-register rounded-3 fw-medium px-4"
-                (click)="onRegisterClick()"
-                [disabled]="isLoading()"
-                aria-label="ابدأ الآن">
-          ابدأ الآن
-        </button>
+      <a routerLink="/auth/signup" class="btn navbar-btn-register rounded-3 fw-medium px-4"
+        [class.disabled]="isLoading()" aria-label="ابدأ الآن">
+        ابدأ الآن
+      </a>
       }
     </div>
 
     <!-- Mobile Toggler -->
-    <button class="navbar-toggler border-0 d-md-none"
-            type="button"
-            (click)="toggleMenu()"
-            [attr.aria-expanded]="menuOpen()"
-            aria-controls="mobileMenu"
-            aria-label="تبديل القائمة">
+    <button class="navbar-toggler border-0 d-md-none" type="button" (click)="toggleMenu()"
+      [attr.aria-expanded]="menuOpen()" aria-controls="mobileMenu" aria-label="تبديل القائمة">
       <img ngSrc="assets/icons/navbar-toggler.png" alt="" width="24" height="24" />
     </button>
 
   </div>
 
   <!-- Mobile Menu -->
-@if (menuOpen()) {
+  @if (menuOpen()) {
   <div id="mobileMenu" class="navbar-mobile-menu d-md-none">
     <ul class="list-unstyled">
       @for (link of navLinks; track link.label) {
-        <li class="list-unstyled px-1 py-2">
-          <a [routerLink]="link.route"
-             [fragment]="link.fragment"
-             class="mobile-nav-link"
-             [routerLinkActive]="link.fragment ? '' : 'nav-link--active'"
-             (click)="closeMenu()">
-            {{ link.label }}
-          </a>
-        </li>
+      <li class="list-unstyled px-1 py-2">
+        <a [routerLink]="link.route" [fragment]="link.fragment" class="mobile-nav-link"
+          [routerLinkActive]="link.fragment ? '' : 'nav-link--active'" (click)="closeMenu()">
+          {{ link.label }}
+        </a>
+      </li>
       }
     </ul>
 
     <div class="d-flex flex-column gap-2 mt-3">
       <a routerLink="/auth/login" class="btn navbar-btn-login w-100">تسجيل الدخول</a>
-      <button class="btn navbar-btn-register w-100" (click)="onRegisterClick()">إنشاء حساب</button>
+      <a routerLink="/auth/signup" class="btn navbar-btn-register w-100"> إنشاء حساب</a>
     </div>
   </div>
-}
+  }
 
 </nav>

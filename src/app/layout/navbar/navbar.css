@@ -54,7 +54,7 @@
 .navbar-btn-register {
   background-color: var(--primary);
   border: 1px solid var(--primary);
-  color: var(--white);
+  color: var(--white) !important;
   font-family: "Cairo", sans-serif;
   transition: all 0.3s ease;
 }

@@ -1,11 +1,12 @@
 import { NgOptimizedImage } from '@angular/common';
 import { Component, OnInit, signal, WritableSignal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-hero',
   templateUrl: './hero.html',
   styleUrl: './hero.css',
-  imports: [NgOptimizedImage]
+  imports: [NgOptimizedImage, RouterLink]
 })
 
 
