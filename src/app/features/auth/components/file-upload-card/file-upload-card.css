@@ -1,0 +1,166 @@
+.upload-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  border: 1.5px dashed var(--border-input);
+  border-radius: 12px;
+  padding: 28px 20px;
+  background-color: var(--white);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.upload-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-block-end: 4px;
+}
+
+.upload-card-file-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-block-end: 4px;
+}
+
+.upload-card-label {
+  font-family: "Cairo", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy-mid);
+}
+
+.required-mark {
+  color: var(--danger);
+}
+
+.upload-card-hint {
+  font-family: "Cairo", sans-serif;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.upload-card-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary);
+  color: var(--white);
+  font-family: "Cairo", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  padding-block: 10px;
+  padding-inline: 24px;
+  cursor: pointer;
+  margin-block-start: 4px;
+}
+
+.upload-card-button:hover {
+  background-color: var(--primary-dark);
+}
+
+.upload-card-link {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-family: "Cairo", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  text-decoration: underline;
+}
+
+.upload-card-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.upload-card-constraints {
+  font-family: "Cairo", sans-serif;
+  font-size: 11px;
+  color: var(--slate-faint);
+  margin-block-start: 4px;
+}
+
+.upload-card-filename {
+  font-family: "Cairo", sans-serif;
+  font-size: 13px;
+  color: var(--navy-mid);
+}
+
+.upload-card-filesize {
+  font-family: "Cairo", sans-serif;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.upload-card-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: "Cairo", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 20px;
+  padding-block: 4px;
+  padding-inline: 14px;
+  margin-block-start: 4px;
+}
+
+.upload-card-badge--error {
+  background-color: var(--danger-light);
+  color: var(--danger);
+}
+
+.upload-card-badge--success {
+  background-color: var(--accent-yellow-light);
+  color: var(--accent-green);
+}
+
+.upload-card-status-text {
+  font-family: "Cairo", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.upload-progress-track {
+  width: 100%;
+  height: 6px;
+  border-radius: 4px;
+  background-color: var(--border-light);
+  overflow: hidden;
+}
+
+.upload-progress-fill {
+  height: 100%;
+  background-color: var(--primary);
+  transition: width 0.2s ease;
+}
+
+/* State borders */
+.upload-card--uploading {
+  border-style: dashed;
+  border-color: var(--primary);
+}
+
+.upload-card--unsupported {
+  border-style: solid;
+  border-color: var(--danger);
+  background-color: var(--danger-light);
+}
+
+.upload-card--success {
+  border-style: solid;
+  border-color: var(--accent-green);
+  background-color: var(--light-green);
+}

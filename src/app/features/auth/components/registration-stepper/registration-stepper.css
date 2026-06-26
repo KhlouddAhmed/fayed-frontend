@@ -44,7 +44,7 @@
   flex: 1;
   min-width: 60px;
   height: 0;
-  border-top: 1px dashed var(--slate-light);
+  border-top: 1px dashed var(--text-main);
   margin-inline: 4px;
 }
 

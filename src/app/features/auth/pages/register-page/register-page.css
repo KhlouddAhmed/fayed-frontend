@@ -1,100 +1,156 @@
+/* =============================================
+   PAGE
+   ============================================= */
 .register-page {
   background-color: var(--bg);
   min-height: calc(100vh - 72px);
-  padding-block: 20px;
+  padding: 24px 40px;
+  box-sizing: border-box;
 }
 
-.register-page .form-panel {
+/* =============================================
+   LAYOUT — form right, promo left (RTL)
+   ============================================= */
+.register-layout {
+  display: flex;
+  gap: 24px;
+  align-items: stretch;        /* الاتنين نفس الارتفاع */
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.form-col {
+  flex: 0 0 65%;
+  display: flex;
+  flex-direction: column;
+}
+
+.promo-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* =============================================
+   FORM PANEL
+   ============================================= */
+.form-panel {
   background-color: var(--white);
   border-radius: 16px;
   padding: 40px;
   box-shadow: var(--shadow-card);
   border: 1px solid var(--border-light);
-  max-width: 700px;
-  min-height: 750px;
-  margin: 0 auto;
-}
-
-.register-page .promo-panel {
-  background: linear-gradient(135deg, var(--white) 0%, var(--primary-light) 100%);
-  border-radius: 16px;
-  padding: 40px;
-  padding-top: 60px;
-  border: 1px solid var(--border-light);
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  min-height: 750px;
-  overflow: hidden;
+  flex: 1;                     /* يمتد لنفس ارتفاع الـ promo */
 }
 
 /* =============================================
-   PROMO PANEL CONTENT
+   PROMO PANEL
+   ============================================= */
+.promo-panel {
+  background: linear-gradient(160deg, var(--white) 0%, var(--primary-light) 100%);
+  border-radius: 16px;
+  padding: 142px 45px 63px 51px;
+  border: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex: 1;                     
+}
+
+/* =============================================
+   PROMO HEADER
    ============================================= */
 .promo-content {
   text-align: right;
-  margin-block-end: 32px;
+  margin-bottom: 28px;
 }
 
 .promo-title {
   font-family: "Cairo", sans-serif;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--navy-mid);
-  line-height: 32px;
-  margin-block-end: 12px;
+  margin-bottom: 8px;
 }
 
 .promo-desc {
   font-family: "Cairo", sans-serif;
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 13px;
   color: var(--text-muted);
-  line-height: 24px;
+  line-height: 22px;
 }
 
+/* =============================================
+   BENEFITS LIST
+   ============================================= */
 .promo-benefits {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
   flex: 1;
 }
 
 .benefit-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 10px;
+  flex-direction: row-reverse;  /* أيقونة على اليسار، نص على اليمين في RTL */
+}
+
+.benefit-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  /* background: var(--white); */
+  border: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-xs);
+}
+
+.benefit-text {
+  flex: 1;
   text-align: right;
 }
 
 .benefit-title {
   display: block;
   font-family: "Cairo", sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--navy-mid);
-  margin-block-end: 4px;
+  margin-bottom: 4px;
 }
 
 .benefit-desc {
   font-family: "Cairo", sans-serif;
-  font-size: 13px;
-  font-weight: 400;
+  font-size: 12px;
   color: var(--text-muted);
-  line-height: 22px;
+  line-height: 20px;
+  margin: 0;
 }
 
+/* =============================================
+   PROMO HELP
+   ============================================= */
 .promo-help {
-  display: flex;
   align-items: center;
+  justify-content: flex-end;
+  text-align: center;
   gap: 6px;
-  margin-block-start: 32px;
+  margin-top: 28px;
   font-family: "Cairo", sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-muted);
 }
 
 .help-link {
   color: var(--primary);
-  text-decoration: none;
   font-weight: 600;
+  text-decoration: none;
 }
 
 .help-link:hover {
@@ -102,43 +158,43 @@
 }
 
 /* =============================================
-   FORM TITLES & TEXTS
+   FORM TITLES
    ============================================= */
 .form-title {
   font-family: "Cairo", sans-serif;
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 700;
   color: var(--navy);
-  margin-block-end: 8px;
   text-align: center;
+  margin-bottom: 8px;
 }
 
 .form-subtitle {
   font-family: "Cairo", sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   color: var(--text-muted);
-  margin-block-end: 32px;
   text-align: center;
+  margin-bottom: 28px;
 }
 
 /* =============================================
-   STEPPER WRAPPER
+   STEPPER
    ============================================= */
 .stepper-wrapper {
-  margin-block-end: 32px;
+  margin-bottom: 28px;
 }
 
 /* =============================================
    BACK BUTTON
    ============================================= */
-.register-page .back-btn {
+.back-btn {
   display: flex;
   align-items: center;
   gap: 8px;
   background: transparent;
   border: none;
   padding: 0;
-  color: var(--text-muted);
+  color: var(--primary);
   font-family: "Cairo", sans-serif;
   font-size: 16px;
   font-weight: 500;
@@ -149,6 +205,30 @@
   margin-inline-end: 0;
 }
 
-.register-page .back-btn:hover {
-  color: var(--primary);
+.back-btn:hover {
+  opacity: 0.75;
+}
+
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 1024px) {
+  .register-page {
+    padding: 20px 16px;
+  }
+
+  .register-layout {
+    flex-direction: column;
+  }
+
+  .form-col,
+  .promo-col {
+    flex: none;
+    width: 100%;
+  }
+
+  .promo-col {
+    display: none;   /* مخفي على الموبايل زي الـ Bootstrap d-none d-lg-block */
+  }
 }

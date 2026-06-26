@@ -1,0 +1,60 @@
+.identity-verification-step .form-title {
+  font-family: "Cairo", sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-block-end: 8px;
+  text-align: center;
+}
+
+.identity-verification-step .form-subtitle {
+  font-family: "Cairo", sans-serif;
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-block-end: 28px;
+  text-align: center;
+}
+
+.upload-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-block-end: 16px;
+}
+
+@media (min-width: 768px) {
+  .upload-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.upload-disclaimer {
+  font-family: "Cairo", sans-serif;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-block-end: 28px;
+}
+
+.identity-verification-step .btn-primary {
+  background-color: var(--primary);
+  color: var(--white);
+  border: none;
+  border-radius: 16px;
+  padding-block: 16px;
+  padding-inline: 24px;
+  font-family: "Cairo", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.identity-verification-step .btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-dark);
+}
+
+.identity-verification-step .btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

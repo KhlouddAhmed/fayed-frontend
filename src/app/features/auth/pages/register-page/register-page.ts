@@ -9,32 +9,27 @@ import { IdentityVerificationStep } from './steps/identity-verification-step/ide
 import { RegisterRequest } from '../../models/registration.models';
 
 @Component({
-  selector: 'app-register-page',
-  imports: [NgOptimizedImage, RegistrationStepper, AccountDetailsStep, UploadDocumentsStep, IdentityVerificationStep],
+  imports: [
+    NgOptimizedImage,
+    RegistrationStepper,
+    AccountDetailsStep,
+    UploadDocumentsStep,
+    IdentityVerificationStep
+  ],
   templateUrl: './register-page.html',
   styleUrl: './register-page.css',
 })
 export class RegisterPage {
   private router = inject(Router);
 
-  //STEP NAVIGATION STATE
   currentStep = signal<RegistrationStepNumber>(1);
-
-  //ACCUMULATED REGISTRATION DATA
   accountDetails = signal<RegisterRequest | null>(null);
 
-  //STEP EVENT HANDLERS
-  onDocumentsUploaded(): void {
-    this.currentStep.set(2);
-  }
-
-  onIdentityConfirmed(): void {
-    this.currentStep.set(3);
-  }
+  onDocumentsUploaded(): void { this.currentStep.set(2); }
+  onIdentityConfirmed(): void { this.currentStep.set(3); }
 
   onAccountDetailsCompleted(data: RegisterRequest): void {
     this.accountDetails.set(data);
-    // Final submission to RegistrationService happens here once steps 1 & 2 are wired
   }
 
   goBack(): void {

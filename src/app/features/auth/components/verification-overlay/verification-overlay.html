@@ -1,1 +1,104 @@
-<p>verification-overlay works!</p>
+<div class="verification-overlay">
+
+  @switch (status()) {
+
+    @case ('pending') {
+      <div class="overlay-content">
+        <h3 class="overlay-title overlay-title--pending">{{ pendingTitle() }}</h3>
+        <p class="overlay-subtitle">{{ pendingSubtitle() }}</p>
+
+        <div class="spinner-wrapper">
+          <div class="spinner-ring"></div>
+        </div>
+
+        <span class="overlay-status-text">جار التحقق.....</span>
+        <p class="overlay-timing">تستغرق هذه العملية 2: 5 دقائق</p>
+        <p class="overlay-warning">يرجي عدم اغلاق الصفحة</p>
+      </div>
+    }
+
+    @case ('success') {
+      <div class="overlay-content">
+        <div class="overlay-icon overlay-icon--success">✓</div>
+        <h3 class="overlay-title overlay-title--success">{{ successTitle() }}</h3>
+
+        @if (extractedData(); as data) {
+          <p class="overlay-subtitle">هل هذه بيانات شركتك</p>
+
+          <div class="extracted-data-table">
+            <div class="extracted-data-row">
+              <span class="extracted-data-value">{{ data.companyName }}</span>
+              <span class="extracted-data-key">اسم الشركة</span>
+            </div>
+            <div class="extracted-data-row">
+              <span class="extracted-data-value">{{ data.ownerName }}</span>
+              <span class="extracted-data-key">اسم المالك</span>
+            </div>
+            <div class="extracted-data-row">
+              <span class="extracted-data-value">{{ data.registryNumber }}</span>
+              <span class="extracted-data-key">رقم السجل</span>
+            </div>
+            <div class="extracted-data-row">
+              <span class="extracted-data-value">{{ data.taxNumber }}</span>
+              <span class="extracted-data-key">الرقم الضريبي</span>
+            </div>
+          </div>
+
+          <p class="ai-disclaimer">هذا اقتراح من الذكاء الاصطناعي — القرار النهائي للمسؤول</p>
+
+          <div class="overlay-actions overlay-actions--split">
+            <button type="button" class="overlay-btn overlay-btn--outline" (click)="reportIncorrect.emit()">
+              بيانات غير صحيحة
+            </button>
+            <button type="button" class="overlay-btn overlay-btn--primary" (click)="confirmCorrect.emit()">
+              نعم, التالي
+            </button>
+          </div>
+        } @else {
+          <p class="overlay-subtitle">{{ successSubtitle() }}</p>
+          <p class="ai-disclaimer">هذا اقتراح من الذكاء الاصطناعي — القرار النهائي للمسؤول</p>
+
+          <button type="button" class="overlay-btn overlay-btn--primary overlay-btn--full" (click)="confirmCorrect.emit()">
+            التالي
+          </button>
+        }
+      </div>
+    }
+
+    @case ('failed') {
+      <div class="overlay-content">
+        <div class="overlay-icon overlay-icon--error">✕</div>
+        <h3 class="overlay-title overlay-title--error">{{ failedTitle() }}</h3>
+
+        @if (rejectionReasons().length > 0) {
+          <p class="overlay-subtitle">للأسف لم نتمكن من التحقق من مستنداتك. يرجى مراجعة الأسباب أدناه وإعادة التقديم.</p>
+
+          <div class="rejection-reasons-box">
+            <span class="rejection-reasons-title">أسباب الرفض</span>
+            <ul class="rejection-reasons-list">
+              @for (reason of rejectionReasons(); track reason) {
+                <li>{{ reason }}</li>
+              }
+            </ul>
+          </div>
+
+          <div class="overlay-actions overlay-actions--split">
+            <button type="button" class="overlay-btn overlay-btn--outline" (click)="contactSupport.emit()">
+              تواصل مع الدعم
+            </button>
+            <button type="button" class="overlay-btn overlay-btn--primary" (click)="retry.emit()">
+              اعادة رفع المستندات
+            </button>
+          </div>
+        } @else {
+          <p class="overlay-subtitle">{{ failedSubtitle() }}</p>
+
+          <button type="button" class="overlay-btn overlay-btn--primary overlay-btn--full" (click)="retry.emit()">
+            اعد المحاولة
+          </button>
+        }
+      </div>
+    }
+
+  }
+</div>
