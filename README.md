@@ -1,59 +1,128 @@
 # FayedFrontend
 
+**فايض | FAYED**  
+**B2B Marketplace for Industrial Surplus & Production By-Products**  
+**سوق إلكتروني لبيع وشراء فائض المواد الخام وهدر الإنتاج بين المصانع**
+
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.1.
 
-## Development server
+---
 
-To start a local development server, run:
+## About the Project
+
+FAYED is a specialized **B2B online marketplace** in Egypt that connects verified industrial companies to buy and sell surplus raw materials and production by-products, promoting a circular economy.
+
+**Key Highlights**:
+- Single company account per owner (no internal RBAC in MVP)
+- AI-Powered Prompt Search as primary discovery method
+- KYB verification with AI assistance + mandatory human review
+- Secure in-platform chat, Escrow payments, and dispute resolution
+- Fully RTL Arabic-first interface
+
+**Latest SRS**: Version 1.2 (May 2026)
+
+---
+
+## Tech Stack
+
+- **Frontend**: Angular 22 (Standalone, Zoneless, Signals, Signal Forms)
+- **Language**: TypeScript 6 (strict mode)
+- **Styling**: Bootstrap 5 + Tailwind CSS (RTL-first)
+- **State Management**: NgRx SignalStore
+- **Real-time**: SignalR
+- **Backend**: .NET 8 (API)
+- **AI Services**: LLM + OCR + MCP external lookups
+
+---
+
+## Development server
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Navigate to `http://localhost:4200/`. The application will automatically reload on file changes.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Code Scaffolding
 
 ```bash
 ng generate component component-name
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+For a full list of schematics:
 
 ```bash
 ng generate --help
 ```
 
-## Building
+---
 
-To build the project run:
+## Project Structure
+
+```bash
+src/app/
+├── core/                  # Core services, interceptors, config
+├── shared/                # Reusable components, pipes, directives
+├── features/
+│   ├── auth/
+│   ├── listings/
+│   ├── search/            # AI Prompt Search + results
+│   ├── chat/
+│   ├── orders/
+│   ├── profile/
+│   └── admin/             # KYB queue, moderation, etc.
+├── store/                 # NgRx SignalStore slices
+└── models/                # Shared interfaces & types
+```
+
+---
+
+## Sprint Plan Summary
+
+- **Sprint 1**: Foundation, Auth & KYB, Listings, Traditional Search, Profiles
+- **Sprint 2**: Chat, Orders, Escrow Payments, Logistics, Disputes
+- **Sprint 3**: Full AI Layer (Prompt Search + KYB), Reporting, Hardening
+
+---
+
+## Key Features (MVP)
+
+- Company Registration & Document Verification
+- AI Prompt Search with explainability
+- Listing creation with media & lab reports
+- Real-time chat with quote support
+- Escrow-based secure payments + E-Invoice
+- Seller & Buyer dashboards
+- Ratings, Reviews & Dispute management
+
+---
+
+## Running the Project
+
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start development server:
+   ```bash
+   ng serve
+   ```
+
+---
+
+## Build
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+The build artifacts will be stored in the `dist/` directory.
 
-## Running unit tests
+---
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Further Reading
 
-```bash
-ng test
-```
+- [Software Requirements Specification (SRS)](docs/Fayed_SRS_v1.2.docx)
+- [Sprint Plan](docs/Fayed_Sprint_Plan.docx)
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
