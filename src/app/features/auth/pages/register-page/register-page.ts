@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { RegistrationStepper, RegistrationStepNumber } from '../../components/registration-stepper/registration-stepper';
 import { AccountDetailsStep } from './steps/account-details-step/account-details-step';
@@ -9,7 +9,7 @@ import { IdentityVerificationStep } from './steps/identity-verification-step/ide
 import { RegisterRequest } from '../../models/registration.models';
 
 @Component({
-  imports: [
+  imports: [RouterLink,
     NgOptimizedImage,
     RegistrationStepper,
     AccountDetailsStep,

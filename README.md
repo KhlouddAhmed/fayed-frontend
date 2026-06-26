@@ -1,8 +1,7 @@
-# FayedFrontend
+# Fayed-Frontend
 
 **فايض | FAYED**  
 **B2B Marketplace for Industrial Surplus & Production By-Products**  
-**سوق إلكتروني لبيع وشراء فائض المواد الخام وهدر الإنتاج بين المصانع**
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.1.
 
