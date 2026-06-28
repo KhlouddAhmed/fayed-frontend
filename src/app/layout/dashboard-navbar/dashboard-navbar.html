@@ -1,0 +1,28 @@
+<header class="dashboard-navbar">
+    <div class="dashboard-navbar-search">
+    <i class="lucide-search" aria-hidden="true"></i>
+    <input
+      type="search"
+      placeholder="البحث عن شركات، طلبات، نزاعات..."
+      aria-label="البحث"
+    />
+  </div>
+  
+  <div class="dashboard-navbar-identity">
+    <span class="dashboard-navbar-avatar">{{ avatarInitial() }}</span>
+
+    <div class="dashboard-navbar-identity-text">
+      <span class="dashboard-navbar-company-name">{{ companyName() }}</span>
+      <span class="dashboard-navbar-company-code">{{ companyCode() }}</span>
+    </div>
+
+    <button type="button" class="dashboard-navbar-bell" aria-label="الإشعارات">
+      <i class="lucide-bell" aria-hidden="true"></i>
+      @if (hasUnreadNotifications()) {
+        <span class="dashboard-navbar-bell-dot" aria-hidden="true"></span>
+      }
+    </button>
+  </div>
+
+
+</header>

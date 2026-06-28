@@ -1,0 +1,24 @@
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <img
+      ngSrc="/images/logo/logo-icon.svg"
+      width="28"
+      height="28"
+      alt=""
+      priority
+    />
+    <span class="sidebar-logo-text">فايض</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    @for (item of navItems(); track item.route) {
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="sidebar-link--active"
+        class="sidebar-link"
+      >
+        {{ item.label }}
+      </a>
+    }
+  </nav>
+</aside>

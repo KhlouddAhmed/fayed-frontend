@@ -87,6 +87,28 @@
   gap: 12px;
 }
 
+.quick-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: 1.5px solid var(--primary);
+  background: transparent;
+  color: var(--primary);
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  direction: rtl;
+}
+
+.quick-action-btn:hover {
+  background: rgba(21, 93, 252, 0.06);
+}
+
 /* =============================================
    RESPONSIVE
    ============================================= */

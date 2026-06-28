@@ -1,79 +1,59 @@
 <div class="chatbot-widgets">
 
   @if (isOpen()) {
-    <div class="chatbot-widgets-window" role="dialog" aria-label="مساعد فايض الذكي">
+  <div class="chatbot-widgets-window" role="dialog" aria-label="مساعد فايض الذكي">
 
-      <!-- Window Header -->
-      <div class="chatbot-widgets-header">
-        <button class="chatbot-widgets-close"
-                (click)="closeChat()"
-                aria-label="إغلاق المحادثة">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-               viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 6L6 18M6 6l12 12"/>
-          </svg>
-        </button>
-        <div class="chatbot-widgets-header-title">
-          <span>مساعد فايض الذكي</span>
-          <img ngSrc="/assets/images/ai/chatbot.png"
-               alt="مساعد فايض"
-               width="42"
-               height="42" />
-        </div>
+    <!-- Window Header -->
+    <div class="chatbot-widgets-header">
+      <div class="chatbot-widgets-header-title">
+        <img ngSrc="/assets/images/ai/chatbot.png" alt="مساعد فايض" width="42" height="42" />
       </div>
+      <span>مساعد فايض الذكي</span>
 
-      <!-- Messages Area -->
-      <div class="chatbot-widgets-messages">
-        @for (message of messages(); track message.time) {
-          <div class="chatbot-widgets-message"
-               [class.chatbot-widgets-message--bot]="message.sender === 'bot'"
-               [class.chatbot-widgets-message--user]="message.sender === 'user'">
-            <p class="chatbot-widgets-message-text">{{ message.text }}</p>
-            <span class="chatbot-widgets-message-time">{{ message.time }}</span>
-          </div>
-        }
-
-        @if (messages().length === 1) {
-          <div class="chatbot-widgets-suggestions">
-            @for (question of suggestedQuestions; track question) {
-              <button class="chatbot-widgets-suggestion"
-                      (click)="sendMessage(question)">
-                {{ question }}
-              </button>
-            }
-          </div>
-        }
-      </div>
-
-      <!-- Input Area -->
-      <div class="chatbot-widgets-input-area">
-        <button class="chatbot-widgets-send"
-                (click)="sendMessage()"
-                aria-label="إرسال">
-          <img ngSrc="/assets/images/ai/send-btn.png" alt="إرسال" width="20" height="20" />
-        </button>
-        <input type="text"
-               class="chatbot-widgets-input"
-               placeholder="اكتب سؤالك هنا ..."
-               [value]="userInput()"
-               (input)="onInputChange($event)"
-               (keydown)="onKeyDown($event)"
-               aria-label="اكتب رسالتك" />
-      </div>
+      <button class="chatbot-widgets-close" (click)="closeChat()" aria-label="إغلاق المحادثة">
+        <img ngSrc="/assets/images/ai/close.png" alt="إرسال" width="20" height="20" />
+      </button>
 
     </div>
+
+    <!-- Messages Area -->
+    <div class="chatbot-widgets-messages">
+      @for (message of messages(); track message.time) {
+      <div class="chatbot-widgets-message" [class.chatbot-widgets-message--bot]="message.sender === 'bot'"
+        [class.chatbot-widgets-message--user]="message.sender === 'user'">
+        <p class="chatbot-widgets-message-text">{{ message.text }}</p>
+        <span class="chatbot-widgets-message-time">{{ message.time }}</span>
+      </div>
+      }
+
+      @if (messages().length === 1) {
+      <div class="chatbot-widgets-suggestions">
+        @for (question of suggestedQuestions; track question) {
+        <button class="chatbot-widgets-suggestion" (click)="sendMessage(question)">
+          {{ question }}
+        </button>
+        }
+      </div>
+      }
+    </div>
+
+    <!-- Input Area -->
+    <div class="chatbot-widgets-input-area">
+      <input type="text" class="chatbot-widgets-input" placeholder="اكتب سؤالك هنا ..." [value]="userInput()"
+        (input)="onInputChange($event)" (keydown)="onKeyDown($event)" aria-label="اكتب رسالتك" />
+      <button class="chatbot-widgets-send" (click)="sendMessage()" aria-label="إرسال">
+        <img ngSrc="/assets/images/ai/send-btn.png" alt="إرسال" width="20" height="20" />
+      </button>
+
+    </div>
+
+  </div>
   }
 
   <!-- Toggle Button -->
-  <button class="chatbot-widgets-toggle"
-          (click)="toggleChat()"
-          [attr.aria-expanded]="isOpen()"
-          aria-label="فتح مساعد فايض الذكي">
-    <img ngSrc="/assets/images/ai/chatbot.png"
-         alt="مساعد فايض"
-         width="42"
-         height="42" />
+  <button class="chatbot-widgets-toggle" (click)="toggleChat()" [attr.aria-expanded]="isOpen()"
+    aria-label="فتح مساعد فايض الذكي">
+    <img ngSrc="/assets/images/ai/chatbot.png" alt="مساعد فايض" width="42" height="42" />
   </button>
 
 </div>

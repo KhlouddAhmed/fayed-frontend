@@ -55,7 +55,7 @@
    WINDOW HEADER
    ============================================= */
 .chatbot-widgets-header {
-  background: var(--gradient-primary);
+  /* background: var(--gradient-primary); */
   padding: 1rem 1.25rem;
   display: flex;
   align-items: center;

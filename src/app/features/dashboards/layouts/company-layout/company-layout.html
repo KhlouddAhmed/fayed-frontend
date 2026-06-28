@@ -1,0 +1,15 @@
+<div class="company-layout">
+  <app-sidebar [navItems]="navItems" />
+
+  <div class="company-layout-main">
+    <app-dashboard-navbar
+      [companyName]="companyName"
+      [companyCode]="companyCode"
+      [avatarInitial]="avatarInitial"
+    />
+
+    <main class="company-layout-content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

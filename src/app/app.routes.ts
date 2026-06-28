@@ -39,9 +39,22 @@ export const routes: Routes = [
   //   component: SignUpPage 
   // },
   {
-  path: 'dashboard/company/overview',
-  loadComponent: () => import('./features/dashboards/company/pages/overview/overview')
-    .then(m => m.Overview),
-},
+    path: 'dashboard/company',
+    loadComponent: () => import('./features/dashboards/layouts/company-layout/company-layout')
+      .then(m => m.CompanyLayout),
+    children: [
+      { path: '', redirectTo: 'overview', pathMatch: 'full' },
+      {
+        path: 'overview',
+        loadComponent: () => import('./features/dashboards/company/pages/overview/overview')
+          .then(m => m.Overview),
+      },
+    ],
+  },
+  {
+    path: 'dashboard/company/overview',
+    loadComponent: () => import('./features/dashboards/company/pages/overview/overview')
+      .then(m => m.Overview),
+  },
   { path: '**', component: NotFoundPage },
 ];
