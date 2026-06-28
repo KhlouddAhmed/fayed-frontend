@@ -1,0 +1,166 @@
+<div class="orders-container" dir="rtl" style="font-family: 'Cairo', sans-serif;">
+  
+  <!-- عنوان الصفحة -->
+  <div class="page-header mb-4 text-end">
+    <h4 class="fw-bold text-navy mb-1">الطلبات والمدفوعات</h4>
+    <p class="text-muted" style="font-size: 14px;">تتبع عقود الصفقات وحالة التسليم وتأمين المشتريات</p>
+  </div>
+
+  <!-- التابات الأربعة -->
+  <div class="d-flex border-bottom mb-4 gap-2">
+    <button class="btn tab-btn px-4 py-3" 
+            [class.active]="activeTab() === 'all'" 
+            (click)="setTab('all')">
+      جميع الطلبات
+    </button>
+    
+    <button class="btn tab-btn px-4 py-3" 
+            [class.active]="activeTab() === 'escrow'" 
+            (click)="setTab('escrow')">
+      الحساب الضامن
+    </button>
+
+    <button class="btn tab-btn px-4 py-3" 
+            [class.active]="activeTab() === 'refunds'" 
+            (click)="setTab('refunds')">
+      المستردات والأرباح
+    </button>
+
+    <button class="btn tab-btn px-4 py-3" 
+            [class.active]="activeTab() === 'history'" 
+            (click)="setTab('history')">
+      سجل المعاملات
+    </button>
+  </div>
+
+  <!-- كارت الجدول -->
+  <div class="card shadow-sm border overflow-hidden" style="border-radius: 16px; border-color: #E2E8F0 !important;">
+    <div class="card-body p-0 pt-2">
+      <div class="table-responsive">
+        <table class="table table-borderless text-center align-middle mb-0">
+          
+          <thead class="text-muted border-bottom custom-thead" style="font-size: 13px;">
+            <tr>
+              @if (activeTab() === 'all') {
+                <th class="py-4 fw-semibold text-end pe-4">رقم الصفقة</th>
+                <th class="py-4 fw-semibold">الشركة المشترية</th>
+                <th class="py-4 fw-semibold">المصنع البائع</th>
+                <th class="py-4 fw-semibold">قيمة العقد</th>
+                <th class="py-4 fw-semibold">تاريخ التعاقد</th>
+                <th class="py-4 fw-semibold">حالة التسليم</th>
+                <th class="py-4 fw-semibold">الضمان المالي</th>
+              }
+              @else if (activeTab() === 'escrow') {
+                <th class="py-4 fw-semibold text-end pe-4">رقم الطلب</th>
+                <th class="py-4 fw-semibold">الشركة المشترية</th>
+                <th class="py-4 fw-semibold">المبلغ المحتجز</th>
+                <th class="py-4 fw-semibold">حالة الحجز</th>
+                <th class="py-4 fw-semibold text-center">إفراج يدوي</th>
+              }
+              <!-- عناوين تاب "المستردات والأرباح" -->
+              @else if (activeTab() === 'refunds') {
+                <th class="py-4 fw-semibold text-end pe-4">رقم العملية</th>
+                <th class="py-4 fw-semibold">المستفيد</th>
+                <th class="py-4 fw-semibold">النوع</th>
+                <th class="py-4 fw-semibold">المبلغ</th>
+                <th class="py-4 fw-semibold">بوابة الصرف</th>
+                <th class="py-4 fw-semibold text-center">إجراء</th>
+              }
+            </tr>
+          </thead>
+          
+          <tbody>
+            <!-- اللوب الأول: خاص بالطلبات (التاب الأول والثاني) -->
+            @if (activeTab() === 'all' || activeTab() === 'escrow') {
+              @for (order of orders(); track order.id) {
+                <tr class="border-bottom last-no-border">
+                  @if (activeTab() === 'all') {
+                    <td class="py-4 fw-bold text-navy text-end pe-4" style="font-size: 13px;">{{ order.id }}</td>
+                    <td class="py-4 text-muted" style="font-size: 13px;">{{ order.buyer }}</td>
+                    <td class="py-4 text-muted" style="font-size: 13px;">{{ order.seller }}</td>
+                    <td class="py-4 fw-bold text-primary" style="font-size: 13px;">{{ order.value }}</td>
+                    <td class="py-4 text-muted" style="font-size: 13px;">{{ order.date }}</td>
+                    <td class="py-4">
+                      <span class="badge px-3 py-2 rounded-pill fw-bold status-badge" 
+                            [class.bg-blue]="order.deliveryStatus === 'shipping'" [class.bg-green]="order.deliveryStatus === 'delivered'" [class.bg-orange]="order.deliveryStatus === 'preparing'" [class.bg-red]="order.deliveryStatus === 'dispute'">
+                        {{ getDeliveryStatusText(order.deliveryStatus) }}
+                      </span>
+                    </td>
+                    <td class="py-4">
+                      <span class="badge px-3 py-2 rounded-pill fw-bold status-badge" 
+                            [class.bg-orange]="order.financialStatus === 'held'" [class.bg-green]="order.financialStatus === 'released'" [class.bg-red]="order.financialStatus === 'suspended'">
+                        {{ getFinancialStatusText(order.financialStatus) }}
+                      </span>
+                    </td>
+                  }
+                  @else if (activeTab() === 'escrow') {
+                    <td class="py-4 fw-bold text-navy text-end pe-4" style="font-size: 13px;">{{ order.id }}</td>
+                    <td class="py-4 fw-semibold text-navy" style="font-size: 13px;">{{ order.buyer }}</td>
+                    <td class="py-4 fw-bold text-primary" style="font-size: 13px;">{{ order.value }}</td>
+                    <td class="py-4">
+                      <span class="badge px-3 py-2 rounded-pill fw-bold status-badge" 
+                            [class.bg-orange]="order.financialStatus === 'held'" [class.bg-green]="order.financialStatus === 'released'" [class.bg-red]="order.financialStatus === 'suspended'">
+                        {{ getFinancialStatusText(order.financialStatus) }}
+                      </span>
+                    </td>
+                    <td class="py-4 text-center">
+                      @if (order.financialStatus === 'released') {
+                        <span class="text-muted" style="font-size: 12px;">تم الإفراج مسبقاً</span>
+                      } @else {
+                        <button class="btn btn-primary btn-sm px-4 py-2 rounded-2 fw-medium d-inline-flex align-items-center justify-content-center gap-2" 
+                                style="font-size: 12px; background-color: #2563EB; border: none;" (click)="releaseFunds(order.id)">
+                          إفراج يدوي <i class="bi bi-unlock"></i>
+                        </button>
+                      }
+                    </td>
+                  }
+                </tr>
+              } @empty {
+                <tr><td colspan="7" class="text-center py-5 text-muted">لا توجد طلبات</td></tr>
+              }
+            }
+            
+            <!-- اللوب الثاني: خاص بالمعاملات (التاب الثالث) -->
+            @else if (activeTab() === 'refunds') {
+              @for (txn of transactions(); track txn.id) {
+                <tr class="border-bottom last-no-border">
+                  <td class="py-4 text-muted text-end pe-4" style="font-size: 13px;">{{ txn.id }}</td>
+                  <td class="py-4 fw-semibold text-navy" style="font-size: 13px;">{{ txn.beneficiary }}</td>
+                  
+                  <!-- نوع المعاملة -->
+                  <td class="py-4">
+                    <span class="badge px-3 py-2 rounded-pill fw-bold status-badge" 
+                          [class.bg-green]="txn.type === 'profit'" 
+                          [class.bg-orange]="txn.type === 'refund'">
+                      {{ txn.type === 'profit' ? 'أرباح بائع' : 'استرداد مشتري' }}
+                    </span>
+                  </td>
+                  
+                  <td class="py-4 fw-bold text-primary" style="font-size: 13px;">{{ txn.amount }}</td>
+                  <td class="py-4 text-muted" style="font-size: 13px;">{{ txn.gateway }}</td>
+                  
+                  <td class="py-4 text-center">
+                    @if (txn.isProcessed) {
+                      <span class="text-success fw-semibold" style="font-size: 12px;"><i class="bi bi-check2-circle"></i> تم التنفيذ</span>
+                    } @else {
+                      <button class="btn btn-sm px-4 py-2 rounded-pill fw-bold" 
+                              [class.btn-solid-blue]="txn.type === 'profit'"
+                              [class.btn-outline-blue]="txn.type === 'refund'"
+                              (click)="processTransaction(txn.id)">
+                        {{ txn.type === 'profit' ? 'تأكيد التحويل' : 'إرجاع للبطاقة' }}
+                      </button>
+                    }
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td colspan="6" class="text-center py-5 text-muted">لا توجد معاملات مالية</td></tr>
+              }
+            }
+          </tbody>
+          
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>

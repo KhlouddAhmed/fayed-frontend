@@ -1,0 +1,13 @@
+.text-navy {
+  color: #0B1B3D;
+}
+
+.activity-item:last-child {
+  border-bottom: none !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.chart-placeholder {
+  border: 1px dashed #cbd5e1;
+}

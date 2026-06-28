@@ -1,0 +1,51 @@
+/* الألوان الأساسية */
+.text-navy { color: #0B1B3D; }
+.bg-light-blue { background-color: #EBF5FF !important; }
+
+/* التابات (الخط المنور) */
+.tab-btn {
+  font-size: 15px;
+  font-weight: 600;
+  border: none !important;
+  background: transparent !important;
+  border-bottom: 3px solid transparent !important;
+  border-radius: 0 !important;
+  color: #64748B;
+  padding: 12px 16px;
+  transition: all 0.3s ease;
+  margin-bottom: -1px;
+}
+.tab-btn:hover { color: #0B1B3D; }
+.tab-btn:focus, .tab-btn:active { outline: none; box-shadow: none !important; }
+.tab-btn.active { color: #2563EB !important; border-bottom: 3px solid #2563EB !important; }
+
+/* الجدول */
+.custom-thead th { background-color: #F8FAFC !important; }
+tr.last-no-border:last-child, tr.last-no-border:last-child td { border-bottom: none !important; }
+
+/* بادجات الحالة (Status Badges) */
+.badge-pending {
+  background-color: #FFF7ED; /* برتقالي فاتح جداً */
+  color: #EA580C; /* برتقالي غامق */
+}
+.badge-active {
+  background-color: #ECFDF5; /* أخضر فاتح جداً */
+  color: #10B981; /* أخضر غامق */
+}
+
+/* قائمة تعديل الحالة (Select Dropdown) */
+.custom-status-select {
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #64748B;
+  background-color: #ffffff;
+  padding: 6px 32px 6px 12px;
+  width: auto;
+  display: inline-block;
+  cursor: pointer;
+  box-shadow: none !important;
+}
+.custom-status-select:focus {
+  border-color: #2563EB;
+}

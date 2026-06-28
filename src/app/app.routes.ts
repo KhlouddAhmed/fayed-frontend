@@ -34,10 +34,42 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/auth/pages/register-page/register-page').then(m => m.RegisterPage),
   },
-  // { 
-  //   path: 'auth/sign-up', 
-  //   component: SignUpPage 
-  // },
+
+  // Admin Dashboard
+  {
+    path: 'admin',
+    loadComponent: () => import('./features/dashboards/layouts/admin-layout/admin-layout')
+      .then(m => m.AdminLayoutComponent),
+    children: [
+      { path: '', redirectTo: 'overview', pathMatch: 'full' },
+      {
+        path: 'overview',
+        loadComponent: () => import('./features/dashboards/admin/pages/overview/overview')
+          .then(m => m.OverviewComponent),
+        title: 'لوحة تحكم الأدمن - فايض'
+      },
+      {
+        path: 'kyb',
+        loadComponent: () => import('./features/dashboards/admin/pages/kyb-verification/kyb-verification')
+          .then(m => m.KybComponent),
+        title: 'التحقق من الهوية - فايض'
+      },
+      {
+        path: 'moderation',
+        loadComponent: () => import('./features/dashboards/admin/pages/listings-moderation/listings-moderation')
+          .then(m => m.ModerationComponent),
+        title: 'إدارة الإعلانات - فايض'
+      },
+      {
+        path: 'orders',
+        loadComponent: () => import('./features/dashboards/admin/pages/orders-payments/orders-payments')
+          .then(m => m.OrdersComponent),
+        title: 'الطلبات والمدفوعات - فايض'
+      }
+    ]
+  },
+
+  // Company Dashboard
   {
     path: 'dashboard/company',
     loadComponent: () => import('./features/dashboards/layouts/company-layout/company-layout')
@@ -51,10 +83,6 @@ export const routes: Routes = [
       },
     ],
   },
-  {
-    path: 'dashboard/company/overview',
-    loadComponent: () => import('./features/dashboards/company/pages/overview/overview')
-      .then(m => m.Overview),
-  },
+
   { path: '**', component: NotFoundPage },
 ];
