@@ -7,6 +7,7 @@ import { MarketplaceService } from '../../services/marketplace';
 import { Listing } from '../../models/listing.model';
 import { NavbarComponent } from "../../../../layout/navbar/navbar";
 import { Footer } from "../../../../layout/footer/footer";
+import { ChatbotWidget } from "../../../ai/components/chatbot-widget/chatbot-widget";
 
 const PAGE_SIZE = 6;
 
@@ -18,7 +19,8 @@ const PAGE_SIZE = 6;
     PaginationComponent,
     SmartSearchBarComponent,
     NavbarComponent,
-    Footer
+    Footer,
+    ChatbotWidget
 ],
   templateUrl: './marketplace-page.html',
   styleUrl: './marketplace-page.css'

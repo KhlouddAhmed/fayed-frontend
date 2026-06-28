@@ -2,6 +2,8 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { NgOptimizedImage, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OfferPopup } from '../offer-popup/offer-popup';
+import { NavbarComponent } from "../../../../layout/navbar/navbar";
+import { ChatbotWidget } from "../../../ai/components/chatbot-widget/chatbot-widget";
 
 export interface ListingSpec {
   label: string;
@@ -197,7 +199,7 @@ const LISTINGS_DETAILS: Record<string, ListingDetail> = {
 
 @Component({
   selector: 'app-listing-details',
-  imports: [NgOptimizedImage, DecimalPipe, OfferPopup],
+  imports: [NgOptimizedImage, DecimalPipe, OfferPopup, NavbarComponent, ChatbotWidget],
   templateUrl: './listing-details.html',
   styleUrl: './listing-details.css',
 })

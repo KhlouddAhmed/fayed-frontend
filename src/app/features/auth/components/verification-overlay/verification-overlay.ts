@@ -1,10 +1,11 @@
 import { Component, input, output } from '@angular/core';
  
 import { ExtractedCompanyData } from '../../models/registration.models';
+import { NgOptimizedImage } from '@angular/common';
  
 @Component({
   selector: 'app-verification-overlay',
-  imports: [],
+  imports: [NgOptimizedImage],
   templateUrl: './verification-overlay.html',
   styleUrl: './verification-overlay.css',
 })

@@ -1,0 +1,15 @@
+<div class="empty-state">
+  <img [ngSrc]="illustrationSrc()" width="160" height="160" alt="" class="empty-state-illustration" />
+
+  <h3 class="empty-state-title">{{ title() }}</h3>
+
+  @if (description()) {
+    <p class="empty-state-description">{{ description() }}</p>
+  }
+
+  @if (actionLabel()) {
+    <button type="button" class="btn-fayed btn-blue empty-state-action" (click)="actionClick.emit()">
+      {{ actionLabel() }}
+    </button>
+  }
+</div>

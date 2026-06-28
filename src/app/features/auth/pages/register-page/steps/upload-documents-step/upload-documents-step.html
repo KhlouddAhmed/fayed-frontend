@@ -1,38 +1,26 @@
 <div class="upload-documents-step">
 
-    @if (verificationStatus() === 'idle') {
+  <h2 class="form-title">ارفع مستندات شركتك</h2>
+  <p class="form-subtitle">نحتاج الي السجل التجاري والبطاقه الضريبية للتحقق من الشركة</p>
 
-    <h2 class="form-title">ارفع مستندات شركتك</h2>
-    <p class="form-subtitle">نحتاج الي السجل التجاري والبطاقه الضريبية للتحقق من الشركة</p>
+  <div class="upload-cards-grid">
+    <app-file-upload-card label="البطاقة الضريبية" [acceptedExtensions]="['pdf', 'jpg', 'png']" [maxSizeMb]="10"
+      iconType="document" (fileAccepted)="onTaxCardAccepted($event)" (fileRemoved)="onTaxCardRemoved()" />
 
-    <div class="upload-cards-grid">
-        <app-file-upload-card label="السجل التجاري" [acceptedExtensions]="['pdf', 'jpg', 'png']" [maxSizeMb]="10"
-            iconType="document" (fileAccepted)="onCommercialRegistryAccepted($event)"
-            (fileRemoved)="onCommercialRegistryRemoved()" />
+    <app-file-upload-card label="السجل التجاري" [acceptedExtensions]="['pdf', 'jpg', 'png']" [maxSizeMb]="10"
+      iconType="document" (fileAccepted)="onCommercialRegistryAccepted($event)"
+      (fileRemoved)="onCommercialRegistryRemoved()" />
+  </div>
 
-        <app-file-upload-card label="البطاقة الضريبية" [acceptedExtensions]="['pdf', 'jpg', 'png']" [maxSizeMb]="10"
-            iconType="document" (fileAccepted)="onTaxCardAccepted($event)" (fileRemoved)="onTaxCardRemoved()" />
-    </div>
+  <p class="upload-disclaimer">تأكد أن جميع البيانات ظاهرة وبوضوح للقراءة</p>
 
-    <p class="upload-disclaimer">تأكد أن جميع البيانات ظاهرة وبوضوح للقراءة</p>
+  <button type="button" class="w-100 btn-primary" [disabled]="!isNextEnabled()" (click)="onNext()">
+    التالي
+  </button>
 
-    <button type="button" class="w-100 btn-primary" [disabled]="!isNextEnabled()" (click)="onNext()">
-        التالي
-    </button>
+  <div class="text-center mt-3">
+    <span class="text-muted">هل لديك حساب بالفعل ؟ </span>
+    <a routerLink="/auth/login" class="register-link ms-1">تسجيل الدخول</a>
+  </div>
 
-    } @else {
-
-    <app-verification-overlay
-        [status]="verificationStatus() === 'pending' ? 'pending' : verificationStatus() === 'success' ? 'success' : 'failed'"
-        pendingTitle="جار التحقق من وجود شركتك"
-        pendingSubtitle="نقوم الان بمراجعة مستنداتك والتحقق من بيانات الشركة في السجلات الرسمية"
-        successTitle="تم استخراج بيانات شركتك بنجاح" [extractedData]="extractedData()"
-        failedTitle="تعذر التحقق من المستندات" [rejectionReasons]="rejectionReasons()"
-        (confirmCorrect)="onConfirmCorrect()" (reportIncorrect)="onReportIncorrect()" (retry)="onRetry()" />
-
-    }
-    <div class="text-center mt-3">
-        <span class="text-muted">هل لديك حساب بالفعل ؟ </span>
-        <a routerLink="/auth/login" class="register-link ms-1">تسجيل الدخول</a>
-    </div>
 </div>

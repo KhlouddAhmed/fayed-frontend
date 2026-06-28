@@ -1,0 +1,103 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(16, 24, 40, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-card {
+  background-color: var(--white);
+  border-radius: 16px;
+  padding: 40px;
+  max-width: 480px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: var(--shadow-window);
+}
+
+.modal-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  /* background-color: var(--accent-green);    icon was replaced with an img */
+  color: var(--white);
+  font-size: 28px;
+  font-weight: 700;
+  margin-block-end: 20px;
+}
+
+.modal-title {
+  font-family: "Cairo", sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent-green);
+  margin-block-end: 12px;
+}
+
+.modal-subtitle {
+  font-family: "Cairo", sans-serif;
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 24px;
+  margin-block-end: 24px;
+}
+
+.modal-data-table {
+  width: 100%;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-block-end: 24px;
+}
+
+.modal-data-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-block: 8px;
+}
+
+.modal-data-row:not(:last-child) {
+  border-bottom: 1px solid var(--border-light);
+}
+
+.modal-data-key {
+  font-family: "Cairo", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy-mid);
+}
+
+.modal-data-value {
+  font-family: "Cairo", sans-serif;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.modal-btn-primary {
+  width: 100%;
+  background-color: var(--primary);
+  color: var(--white);
+  border: none;
+  border-radius: 12px;
+  padding-block: 16px;
+  font-family: "Cairo", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.modal-btn-primary:hover {
+  background-color: var(--primary-dark);
+}

@@ -2,6 +2,8 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessC
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 
+import { OVERVIEW_REPOSITORY } from './features/dashboards/company/services/overview-repository.token';
+import { MockOverviewRepository } from './features/dashboards/company/services/mock-overview-repository';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -16,5 +18,6 @@ export const appConfig: ApplicationConfig = {
       })
     ),
     provideHttpClient(),
-  ]
+    { provide: OVERVIEW_REPOSITORY, useClass: MockOverviewRepository },
+  ],
 };

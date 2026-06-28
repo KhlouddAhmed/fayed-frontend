@@ -1,0 +1,118 @@
+/* =============================================
+   PAGE SHELL
+   ============================================= */
+.overview-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+  font-family: 'Cairo', sans-serif;
+}
+
+/* =============================================
+   ROW 1 — Greeting + AI Promo side by side
+   ============================================= */
+.overview-page-top-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 24px;
+}
+
+/* =============================================
+   GREETING
+   ============================================= */
+.overview-page-greeting-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.overview-page-greeting-subtitle {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  margin: 4px 0 0;
+}
+
+.overview-page-greeting-date {
+  font-size: 0.8125rem;
+  color: var(--slate-faint);
+  margin: 8px 0 0;
+}
+
+.overview-page-greeting-skeleton {
+  max-width: 320px;
+}
+
+/* =============================================
+   ROW 2 — Stat Cards (4 columns, RTL order)
+   ============================================= */
+.overview-page-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+/* =============================================
+   ROW 3 — Lower Grid: activity + orders
+   ============================================= */
+.overview-page-lower-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 16px;
+  align-items: stretch;
+}
+
+/* =============================================
+   ROW 4 — Quick Actions
+   ============================================= */
+.overview-page-quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.overview-page-quick-actions-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+  text-align: right;
+}
+
+.overview-page-quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 1199.98px) {
+  .overview-page-top-row {
+    grid-template-columns: 1fr;
+  }
+
+  .overview-page-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 991.98px) {
+  .overview-page-lower-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .overview-page {
+    padding: 16px;
+  }
+
+  .overview-page-stats-grid,
+  .overview-page-quick-actions-grid {
+    grid-template-columns: 1fr;
+  }
+}

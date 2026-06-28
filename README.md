@@ -26,7 +26,7 @@ FAYED is a specialized **B2B online marketplace** in Egypt that connects verifie
 
 - **Frontend**: Angular 22 (Standalone, Zoneless, Signals, Signal Forms)
 - **Language**: TypeScript 6 (strict mode)
-- **Styling**: Bootstrap 5 + Tailwind CSS (RTL-first)
+- **Styling**: Bootstrap 5 (RTL-first)
 - **State Management**: NgRx SignalStore
 - **Real-time**: SignalR
 - **Backend**: .NET 8 (API)

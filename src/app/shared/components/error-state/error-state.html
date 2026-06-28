@@ -1,0 +1,7 @@
+<div class="error-state" role="alert">
+  <i class="lucide-alert-circle error-state-icon" aria-hidden="true"></i>
+  <p class="error-state-message">{{ message() }}</p>
+  <button type="button" class="btn-fayed btn-white error-state-retry" (click)="retry.emit()">
+    إعادة المحاولة
+  </button>
+</div>

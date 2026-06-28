@@ -1,0 +1,87 @@
+.activity-feed {
+  background-color: var(--white);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+  height: 100%;
+}
+
+.activity-feed-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-block-end: 16px;
+}
+
+.activity-feed-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.activity-feed-view-all {
+  font-size: 0.8125rem;
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.activity-feed-view-all:hover {
+  text-decoration: underline;
+}
+
+.activity-feed-empty {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  text-align: center;
+  padding: 24px 0;
+}
+
+.activity-feed-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.activity-feed-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.activity-feed-dot {
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  margin-block-start: 6px;
+  flex-shrink: 0;
+}
+
+.activity-feed-item-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.activity-feed-item-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.activity-feed-item-desc {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin: 2px 0 0;
+}
+
+.activity-feed-time {
+  font-size: 0.75rem;
+  color: var(--slate-faint);
+  white-space: nowrap;
+  flex-shrink: 0;
+}

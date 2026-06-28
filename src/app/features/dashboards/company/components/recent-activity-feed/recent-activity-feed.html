@@ -1,0 +1,25 @@
+<section class="activity-feed" aria-labelledby="activity-feed-title">
+  <header class="activity-feed-header">
+    <h2 id="activity-feed-title" class="activity-feed-title">آخر النشاطات</h2>
+    <a href="#" class="activity-feed-view-all">عرض الكل</a>
+  </header>
+
+  @if (activities().length === 0) {
+    <p class="activity-feed-empty">لا توجد نشاطات حديثة</p>
+  } @else {
+    <ul class="activity-feed-list">
+      @for (item of activities(); track item.id) {
+        <li class="activity-feed-item">
+          <span class="activity-feed-dot" aria-hidden="true"></span>
+          <div class="activity-feed-item-body">
+            <p class="activity-feed-item-title">{{ item.titleKey }}</p>
+            <p class="activity-feed-item-desc">
+              {{ item.descriptionKey }} {{ item.relatedEntityCode }}
+            </p>
+          </div>
+          <span class="activity-feed-time">{{ item.occurredAt | relativeTime }}</span>
+        </li>
+      }
+    </ul>
+  }
+</section>

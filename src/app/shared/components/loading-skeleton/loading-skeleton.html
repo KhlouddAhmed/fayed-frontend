@@ -1,0 +1,36 @@
+@switch (variant()) {
+  @case ('cards') {
+    <div class="skeleton skeleton--cards">
+      @for (row of rowsArray(); track row) {
+        <div class="skeleton-card"></div>
+      }
+    </div>
+  }
+  @case ('table') {
+    <div class="skeleton skeleton--table">
+      @for (row of rowsArray(); track row) {
+        <div class="skeleton-row"></div>
+      }
+    </div>
+  }
+  @case ('feed') {
+    <div class="skeleton skeleton--feed">
+      @for (row of rowsArray(); track row) {
+        <div class="skeleton-feed-item">
+          <div class="skeleton-feed-dot"></div>
+          <div class="skeleton-feed-lines">
+            <div class="skeleton-line skeleton-line--short"></div>
+            <div class="skeleton-line skeleton-line--long"></div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+  @default {
+    <div class="skeleton skeleton--text">
+      @for (row of rowsArray(); track row) {
+        <div class="skeleton-line"></div>
+      }
+    </div>
+  }
+}

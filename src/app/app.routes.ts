@@ -38,5 +38,10 @@ export const routes: Routes = [
   //   path: 'auth/sign-up', 
   //   component: SignUpPage 
   // },
+  {
+  path: 'dashboard/company/overview',
+  loadComponent: () => import('./features/dashboards/company/pages/overview/overview')
+    .then(m => m.Overview),
+},
   { path: '**', component: NotFoundPage },
 ];

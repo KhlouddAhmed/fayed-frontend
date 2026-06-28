@@ -1,0 +1,74 @@
+.recent-orders {
+  background-color: var(--white);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+  height: 100%;
+}
+
+.recent-orders-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-block-end: 16px;
+}
+
+.recent-orders-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.recent-orders-view-all {
+  font-size: 0.8125rem;
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.recent-orders-view-all:hover {
+  text-decoration: underline;
+}
+
+.recent-orders-empty {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  text-align: center;
+  padding: 24px 0;
+}
+
+.recent-orders-table-wrapper {
+  overflow-x: auto;
+}
+
+.recent-orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+.recent-orders-table th {
+  text-align: start;
+  color: var(--text-muted);
+  font-weight: 600;
+  padding-block-end: 10px;
+  border-block-end: 1px solid var(--border-light);
+  white-space: nowrap;
+}
+
+.recent-orders-table td {
+  padding-block: 12px;
+  border-block-end: 1px solid var(--border-light);
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.recent-orders-table tr:last-child td {
+  border-block-end: none;
+}
+
+@media (max-width: 767.98px) {
+  .recent-orders-table {
+    min-width: 480px;
+  }
+}
