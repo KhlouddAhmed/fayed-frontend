@@ -1,1 +1,97 @@
-<p>add-material-modal works!</p>
+<div class="add-material-modal" role="dialog" aria-modal="true" aria-labelledby="add-material-modal-title">
+  <header class="add-material-modal-header">
+    <h2 id="add-material-modal-title" class="add-material-modal-title">
+      {{ isEditMode() ? 'تعديل المادة' : 'اضافة خامة جديدة' }}
+    </h2>
+    <button type="button" class="add-material-modal-close-btn" (click)="cancel.emit()" aria-label="إغلاق">
+      <i class="lucide-x"></i>
+    </button>
+  </header>
+
+  <form class="add-material-modal-form" (ngSubmit)="onSubmit()">
+    <label class="add-material-modal-field">
+      <span>اسم الخامة</span>
+      <input
+        type="text"
+        [value]="formValue().name"
+        (input)="updateField('name', $any($event.target).value)"
+        placeholder="مثال: PET معاد تدويره شفاف"
+      />
+    </label>
+
+    <label class="add-material-modal-field">
+      <span>تصنيف الخامة</span>
+      <input
+        type="text"
+        [value]="formValue().category"
+        (input)="updateField('category', $any($event.target).value)"
+        placeholder="مثال: بلاستيك"
+      />
+    </label>
+
+    <label class="add-material-modal-field">
+      <span>وصف الخامة</span>
+      <textarea
+        rows="3"
+        [value]="formValue().description"
+        (input)="updateField('description', $any($event.target).value)"
+        placeholder="وصف مختصر يوضح حالة الخامة وصلاحيتها للتصنيع"
+      ></textarea>
+    </label>
+
+    <div class="add-material-modal-row">
+      <label class="add-material-modal-field">
+        <span>الكمية المتاحة</span>
+        <input
+          type="number"
+          min="0"
+          [value]="formValue().availableQuantity"
+          (input)="updateField('availableQuantity', $any($event.target).value)"
+        />
+      </label>
+
+      <label class="add-material-modal-field">
+        <span>أقل كمية للبيع</span>
+        <input
+          type="number"
+          min="0"
+          [value]="formValue().minOrderQuantity"
+          (input)="updateField('minOrderQuantity', $any($event.target).value)"
+        />
+      </label>
+    </div>
+
+    <div class="add-material-modal-row">
+      <label class="add-material-modal-field">
+        <span>الوحدة</span>
+        <select [value]="formValue().unit" (change)="updateField('unit', $any($event.target).value)">
+          <option value="طن">طن</option>
+          <option value="كيلو">كيلو</option>
+        </select>
+      </label>
+
+      <label class="add-material-modal-field">
+        <span>السعر (ج.م)</span>
+        <input
+          type="number"
+          min="0"
+          [value]="formValue().pricePerUnit"
+          (input)="updateField('pricePerUnit', $any($event.target).value)"
+        />
+      </label>
+    </div>
+
+    <footer class="add-material-modal-footer">
+      <button type="button" class="btn-fayed btn-white" (click)="cancel.emit()">
+        الغاء
+      </button>
+      <button
+        type="submit"
+        class="btn-fayed btn-blue"
+        [disabled]="!isFormValid() || isSubmitting()"
+      >
+        {{ isEditMode() ? 'حفظ التعديلات' : 'اضافة المادة' }}
+      </button>
+    </footer>
+  </form>
+</div>

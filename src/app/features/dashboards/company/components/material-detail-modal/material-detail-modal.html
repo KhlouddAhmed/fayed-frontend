@@ -1,1 +1,77 @@
-<p>material-detail-modal works!</p>
+<div class="material-modal" role="dialog" aria-modal="true" aria-labelledby="material-modal-title">
+  <header class="material-modal-header">
+    <h2 id="material-modal-title" class="material-modal-title">تفاصيل الخامة</h2>
+    <button type="button" class="material-modal-close-btn" (click)="close.emit()" aria-label="إغلاق">
+      <i class="lucide-x"></i>
+    </button>
+  </header>
+
+  <app-status-badge
+    class="material-modal-status"
+    [statusMap]="statusMap"
+    [status]="material().status"
+  />
+
+  <h3 class="material-modal-name">{{ material().name }}</h3>
+
+  <div class="material-modal-image-placeholder" aria-hidden="true">
+    <i class="lucide-image"></i>
+  </div>
+
+  <section class="material-modal-section">
+    <h4 class="material-modal-section-title">وصف الخامة</h4>
+    <p class="material-modal-description">{{ material().description }}</p>
+  </section>
+
+  <div class="material-modal-stats">
+    <div class="material-modal-stat">
+      <span class="material-modal-stat-label">الكمية المتاحة</span>
+      <span class="material-modal-stat-value">
+        {{ material().availableQuantity }} {{ material().unit }}
+      </span>
+    </div>
+    <div class="material-modal-stat">
+      <span class="material-modal-stat-label">أقل كمية للبيع</span>
+      <span class="material-modal-stat-value">
+        {{ material().minOrderQuantity }} {{ material().unit }}
+      </span>
+    </div>
+    <div class="material-modal-stat">
+      <span class="material-modal-stat-label">السعر</span>
+      <span class="material-modal-stat-value">
+        {{ material().pricePerUnit }} ج.م /{{ material().unit }}
+      </span>
+    </div>
+  </div>
+
+  <div class="material-modal-dates">
+    <div>
+      <span class="material-modal-stat-label">تاريخ النشر</span>
+      <span class="material-modal-stat-value">{{ material().publishedAt | date: 'd/M/y' }}</span>
+    </div>
+    <div>
+      <span class="material-modal-stat-label">آخر تحديث</span>
+      <span class="material-modal-stat-value">{{ material().updatedAt | date: 'd/M/y' }}</span>
+    </div>
+  </div>
+
+  @if (material().labCertificate; as certificate) {
+    <section class="material-modal-section">
+      <h4 class="material-modal-section-title">شهادة التحليل والجودة</h4>
+      <a [href]="certificate.url" class="material-modal-certificate" download>
+        <i class="lucide-file-text"></i>
+        <span>{{ certificate.fileName }}</span>
+        <span class="material-modal-certificate-size">{{ certificate.fileSizeKb }} KB</span>
+      </a>
+    </section>
+  }
+
+  <footer class="material-modal-footer">
+    <button type="button" class="btn-fayed btn-white" (click)="onDeleteClick()">
+      حذف المادة
+    </button>
+    <button type="button" class="btn-fayed btn-blue" (click)="onEditClick()">
+      تعديل المادة
+    </button>
+  </footer>
+</div>

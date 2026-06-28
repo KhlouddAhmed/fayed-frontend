@@ -1,0 +1,55 @@
+.listing-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  position: relative;
+}
+
+.listing-card-image-placeholder {
+  inline-size: 100%;
+  block-size: 140px;
+  border-radius: 8px;
+  background-color: var(--bg-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--slate-faint);
+  font-size: 1.75rem;
+}
+
+.listing-card-status {
+  position: absolute;
+  inset-block-start: 24px;
+  inset-inline-start: 24px;
+}
+
+.listing-card-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 4px 0 0;
+}
+
+.listing-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.listing-card-price {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.listing-card-details-btn {
+  margin-block-start: 4px;
+  width: 100%;
+  font-size: 0.875rem;
+  padding: 8px;
+}

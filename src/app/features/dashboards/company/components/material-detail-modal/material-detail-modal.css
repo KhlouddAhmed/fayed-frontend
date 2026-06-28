@@ -1,0 +1,131 @@
+.material-modal {
+  background-color: var(--white);
+  border-radius: 14px;
+  padding: 24px;
+  max-width: 420px;
+  position: relative;
+}
+
+.material-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-block-end: 12px;
+}
+
+.material-modal-title {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.material-modal-close-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.material-modal-status {
+  margin-block-end: 8px;
+}
+
+.material-modal-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 16px;
+}
+
+.material-modal-image-placeholder {
+  inline-size: 100%;
+  block-size: 180px;
+  border-radius: 10px;
+  background-color: var(--bg-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--slate-faint);
+  font-size: 2rem;
+  margin-block-end: 16px;
+}
+
+.material-modal-section {
+  margin-block-end: 16px;
+}
+
+.material-modal-section-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 6px;
+}
+
+.material-modal-description {
+  font-size: 0.875rem;
+  color: var(--text-soft);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.material-modal-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 14px;
+  background-color: var(--bg-soft);
+  border-radius: 10px;
+  margin-block-end: 16px;
+}
+
+.material-modal-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.material-modal-stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.material-modal-stat-value {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.material-modal-dates {
+  display: flex;
+  gap: 24px;
+  margin-block-end: 16px;
+}
+
+.material-modal-certificate {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-main);
+  font-size: 0.875rem;
+}
+
+.material-modal-certificate-size {
+  margin-inline-start: auto;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.material-modal-footer {
+  display: flex;
+  gap: 12px;
+  margin-block-start: 8px;
+}
+
+.material-modal-footer .btn-fayed {
+  flex: 1;
+}

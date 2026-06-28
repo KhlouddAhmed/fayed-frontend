@@ -81,6 +81,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/dashboards/company/pages/overview/overview')
           .then(m => m.Overview),
       },
+      {
+        path: 'my-listings',
+        loadComponent: () => import('./features/dashboards/company/pages/my-listings/my-listings')
+          .then(m => m.MyListings),
+      },
     ],
   },
 

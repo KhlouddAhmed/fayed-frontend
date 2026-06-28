@@ -1,1 +1,50 @@
-<p>my-listings works!</p>
+<div class="my-listings-page">
+  <header class="my-listings-page-header">
+    <div>
+      <h1 class="my-listings-page-title">إدارة المنتجات والمخازن المعروضة</h1>
+      <p class="my-listings-page-subtitle">
+        أضف منتجات جديدة، عدل البيانات والأسعار، وراقب نقرات المشترين على بضائعك.
+      </p>
+    </div>
+
+    <button type="button" class="btn-fayed btn-blue" (click)="onAddMaterialClick()">
+      <img src="assets/icons/dashboard/add.svg" alt="" width="18" height="18" />
+      إضافة خامة جديدة
+    </button>
+  </header>
+
+  @if (materialsResource.isLoading()) {
+  <app-loading-skeleton variant="cards" [rows]="4" />
+  } @else if (materialsResource.error()) {
+  <app-error-state (retry)="materialsResource.reload()" />
+  } @else if (materialsResource.value(); as materials) {
+  @if (materials.length === 0) {
+  <app-empty-state title="لا توجد خامات معروضة بعد" description="ابدأ بإضافة أول منتج لعرضه على المشترين"
+    actionLabel="إضافة خامة جديدة" (actionClick)="onAddMaterialClick()" />
+  } @else {
+  <div class="my-listings-page-grid">
+    @for (material of materials; track material.id) {
+    <app-listing-grid-item [material]="material" (viewDetails)="onViewDetails($event)" />
+    }
+  </div>
+  }
+  }
+
+  @if (activeModal() === 'detail' && selectedMaterial(); as material) {
+  <div class="my-listings-page-overlay" (click)="closeModal()">
+    <div (click)="$event.stopPropagation()">
+      <app-material-detail-modal [material]="material" (close)="closeModal()" (edit)="onEditFromDetail($event)"
+        (delete)="onDeleteMaterial($event)" />
+    </div>
+  </div>
+  }
+
+  @if (activeModal() === 'addEdit') {
+  <div class="my-listings-page-overlay" (click)="closeModal()">
+    <div (click)="$event.stopPropagation()">
+      <app-add-material-modal [editingMaterial]="selectedMaterial()" [isSubmitting]="isSubmitting()"
+        (cancel)="closeModal()" (submitForm)="onSubmitForm($event)" />
+    </div>
+  </div>
+  }
+</div>

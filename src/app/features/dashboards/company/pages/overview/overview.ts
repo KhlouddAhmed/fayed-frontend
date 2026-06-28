@@ -5,7 +5,6 @@ import { OverviewService } from '../../services/overview';
 import { AiPromoCard } from '../../components/ai-promo-card/ai-promo-card';
 import { RecentActivityFeed } from '../../components/recent-activity-feed/recent-activity-feed';
 import { RecentOrdersTable } from '../../components/recent-orders-table/recent-orders-table';
-import { StatCardComponent } from '../../../../../shared/components/stat-card/stat-card';
 import { LoadingSkeleton } from '../../../../../shared/components/loading-skeleton/loading-skeleton';
 import { ErrorState } from '../../../../../shared/components/error-state/error-state';
 import { CompanyStatCard } from '../../../../../shared/components/company-stat-card/company-stat-card';
@@ -13,7 +12,6 @@ import { CompanyStatCard } from '../../../../../shared/components/company-stat-c
 @Component({
   selector: 'app-overview',
   imports: [CompanyStatCard,
-    StatCardComponent,
     AiPromoCard,
     RecentActivityFeed,
     RecentOrdersTable,

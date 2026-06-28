@@ -1,9 +1,41 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Material } from '../../models/material.model';
+import { StatusBadge, StatusBadgeVariant } from '../../../../../shared/components/status-badge/status-badge';
+
+interface MaterialStatusConfig {
+  readonly labelKey: string;
+  readonly variant: StatusBadgeVariant;
+}
+
+const MATERIAL_STATUS_DISPLAY_MAP: Readonly<Record<string, MaterialStatusConfig>> = {
+  active: { labelKey: 'نشط', variant: 'success' },
+  underReview: { labelKey: 'قيد المراجعة', variant: 'warning' },
+  paused: { labelKey: 'متوقف', variant: 'neutral' },
+  rejected: { labelKey: 'مرفوض', variant: 'danger' },
+};
 
 @Component({
   selector: 'app-material-detail-modal',
-  imports: [],
+  imports: [StatusBadge, DatePipe],
   templateUrl: './material-detail-modal.html',
   styleUrl: './material-detail-modal.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MaterialDetailModal {}
+export class MaterialDetailModal {
+  readonly material = input.required<Material>();
+
+  readonly close = output<void>();
+  readonly edit = output<string>();
+  readonly delete = output<string>();
+
+  protected readonly statusMap = MATERIAL_STATUS_DISPLAY_MAP;
+
+  protected onEditClick(): void {
+    this.edit.emit(this.material().id);
+  }
+
+  protected onDeleteClick(): void {
+    this.delete.emit(this.material().id);
+  }
+}
