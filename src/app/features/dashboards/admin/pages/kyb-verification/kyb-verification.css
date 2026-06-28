@@ -1,0 +1,88 @@
+/* =========================================
+   1. الألوان الأساسية
+   ========================================= */
+.text-navy {
+  color: #0B1B3D;
+}
+
+.bg-light-blue {
+  background-color: #EBF5FF !important;
+}
+
+/* =========================================
+   2. تنسيق التابات (نظام الخط السفلي المنور)
+   ========================================= */
+.tab-btn {
+  font-size: 15px;
+  font-weight: 600;
+  border: none !important;
+  background: transparent !important;
+  border-bottom: 3px solid transparent !important; /* حجز مساحة الخط عشان الشاشة متهتزش */
+  border-radius: 0 !important;
+  color: #64748B;
+  padding: 12px 16px;
+  transition: all 0.3s ease;
+  margin-bottom: -1px; /* عشان الخط يركب فوق الـ Border بتاع الحاوية */
+}
+
+.tab-btn:hover {
+  color: #0B1B3D;
+}
+
+.tab-btn:focus, 
+.tab-btn:active {
+  outline: none;
+  box-shadow: none !important;
+}
+
+/* حالة التاب النشط */
+.tab-btn.active {
+  color: #2563EB !important;
+  border-bottom: 3px solid #2563EB !important;
+}
+
+/* =========================================
+   3. تنسيقات الجدول
+   ========================================= */
+/* لون خلفية الهيدر الرصاصي الفاتح */
+.custom-thead th {
+  background-color: #F8FAFC !important;
+}
+
+/* إزالة الخط من آخر صف للحفاظ على نعومة الدوران */
+tr.last-no-border:last-child,
+tr.last-no-border:last-child td {
+  border-bottom: none !important;
+}
+
+/* =========================================
+   4. تنسيقات صفحة مراجعة المستندات
+   ========================================= */
+/* تنسيق البوكسات المنقطة للمستندات */
+.border-dashed {
+  border: 1.5px dashed #CBD5E1;
+  background-color: #ffffff;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.border-dashed:hover {
+  border-color: #2563EB;
+  background-color: #F8FAFC;
+}
+
+/* تنسيق بادج النجاح الأخضر الفاتح */
+.badge-success-light {
+  background-color: #ECFDF5;
+  color: #10B981;
+}
+
+/* تعديل الـ Focus للحقول (شكل القراءة فقط) */
+.form-control[readonly] {
+  cursor: default;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  border-color: #E2E8F0;
+}
