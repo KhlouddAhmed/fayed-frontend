@@ -17,19 +17,3 @@ export class StatCardComponent {
   icon = input.required<string>();
   color = input.required<string>(); 
 }
-
-export class StatCard {
-  icon      = input.required<string>();
-  label     = input.required<string>();
-  value     = input.required<number>();
-  accent    = input<'yellow' | 'green' | 'blue' | 'red'>('blue');
-  unit      = input<string>('');
-  linkText  = input<string | null>(null);
-  badgeText = input<string | null>(null);
-
-  readonly linkClicked = output<void>();
-
-  onLinkClick(): void {
-    this.linkClicked.emit();
-  }
-}

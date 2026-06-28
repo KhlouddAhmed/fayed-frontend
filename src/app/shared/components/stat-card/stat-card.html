@@ -1,32 +1,7 @@
-<article class="stat-card" [class]="'stat-card--' + accent()">
-  <div class="stat-card-top">
-    <div class="stat-card-icon">
-      <img [src]="'assets/icons/dashboard/' + icon() + '.svg'" alt="" width="44" height="44" />
-    </div>
-    <span class="stat-card-label">{{ label() }}</span>
-  </div>
-
-  <div class="stat-card-middle">
-    <span class="stat-card-value">{{ value() }}</span>
-    <span class="stat-card-unit">{{ unit() }}</span>
-  </div>
-
-  @if (badgeText()) {
-    <span class="stat-card-badge">{{ badgeText() }}</span>
-  }
-
-  @if (linkText()) {
-    <button type="button" class="stat-card-link" (click)="onLinkClick()">
-      {{ linkText() }}
-    </button>
-  }
-</article>
-
-<hr class="my-4" />
-
-<div class="card border-0 shadow-sm h-100 custom-stat-card" style="border-radius: 16px;">
+<div class="card border-0 shadow-sm h-100" style="border-radius: 16px;">
   <div class="card-body d-flex justify-content-between align-items-center p-4">
     
+    <!-- الأيقونة (نخليها الأول في الكود عشان تظهر على اليمين في الـ RTL) -->
     <div class="stat-icon d-flex justify-content-center align-items-center flex-shrink-0"
          [style.color]="color()"
          [style.background-color]="color() + '1A'"
@@ -34,6 +9,7 @@
       <i [class]="icon()" style="font-size: 26px;"></i>
     </div>
 
+    <!-- النصوص (نخليها التانية عشان تظهر على اليسار) -->
     <div class="stat-text text-end">
       <h6 class="text-muted mb-2" style="font-size: 13px; font-weight: 600;">{{ title() }}</h6>
       <h4 class="fw-bold mb-1 text-navy" style="font-size: 22px;">{{ value() }}</h4>

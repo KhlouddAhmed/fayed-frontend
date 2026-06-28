@@ -31,14 +31,14 @@
 
   <!-- Row 2: Stat Cards -->
   <div class="overview-page-stats-grid">
-    <app-stat-card icon="disputes" label="النزاعات المفتوحة" [value]="summary.openDisputesCount" unit="نزاع جديد"
+    <app-company-stat-card icon="disputes" label="النزاعات المفتوحة" [value]="summary.openDisputesCount" unit="نزاع جديد"
       accent="red" [badgeText]="summary.requiresUrgentAction ? 'تحتاج اجراء عاجل' : null" linkText="اضغط لعرضها"
       (linkClicked)="onNavigate('disputes')" />
-    <app-stat-card icon="messages" label="رسائل جديدة" [value]="summary.newMessagesCount" unit="رسائل" accent="blue"
+    <app-company-stat-card icon="messages" label="رسائل جديدة" [value]="summary.newMessagesCount" unit="رسائل" accent="blue"
       linkText="اضغط لقراءتها" (linkClicked)="onNavigate('messages')" />
-    <app-stat-card icon="offers" label="عروض جديدة" [value]="summary.newOffersCount" unit="عرض" accent="green"
+    <app-company-stat-card icon="offers" label="عروض جديدة" [value]="summary.newOffersCount" unit="عرض" accent="green"
       linkText="اضغط لعرضها" (linkClicked)="onNavigate('offers')" />
-    <app-stat-card icon="alerts" label="تنبيهات ذكية" [value]="summary.smartAlertsCount" unit="تنبيه" accent="yellow"
+    <app-company-stat-card icon="alerts" label="تنبيهات ذكية" [value]="summary.smartAlertsCount" unit="تنبيه" accent="yellow"
       linkText="اضغط لعرضها" (linkClicked)="onNavigate('alerts')" />
   </div>
 

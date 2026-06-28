@@ -1,0 +1,26 @@
+<article class="stat-card" [class]="'stat-card--' + accent()">
+
+  <div class="stat-card-top">
+
+    <div class="stat-card-icon">
+      <img [src]="'assets/icons/dashboard/' + icon() + '.svg'" alt="" width="44" height="44" />
+    </div>
+        <span class="stat-card-label">{{ label() }}</span>
+  </div>
+
+  <div class="stat-card-middle">
+    <span class="stat-card-value">{{ value() }}</span>
+    <span class="stat-card-unit">{{ unit() }}</span>
+  </div>
+
+  @if (badgeText()) {
+    <span class="stat-card-badge">{{ badgeText() }}</span>
+  }
+
+  @if (linkText()) {
+    <button type="button" class="stat-card-link" (click)="onLinkClick()">
+      {{ linkText() }}
+    </button>
+  }
+
+</article>
