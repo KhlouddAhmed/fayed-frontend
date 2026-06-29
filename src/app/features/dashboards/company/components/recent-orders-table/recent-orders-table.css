@@ -4,6 +4,7 @@
   padding: 20px;
   box-shadow: var(--shadow-card);
   height: 100%;
+  text-align:center ;
 }
 
 .recent-orders-header {

@@ -20,4 +20,14 @@ export class CompanyStatCard {  // company
   onLinkClick(): void {
     this.linkClicked.emit();
   }
+
+  getAccentColor(): string {
+  switch (this.accent()) {
+    case 'blue': return '#155DFC';
+    case 'green': return '#10B981';
+    case 'red': return '#EF4444';
+    case 'yellow': return '#FBBF24';
+    default: return '#667085';
+  }
+}
 }

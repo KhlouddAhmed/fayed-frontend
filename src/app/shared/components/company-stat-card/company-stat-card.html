@@ -1,26 +1,27 @@
-<article class="stat-card" [class]="'stat-card--' + accent()">
+<div class="card border-0 shadow-sm h-100" style="border-radius: 16px;">
+  <div class="card-body d-flex align-items-center p-4">
+    
+    <!-- الأيقونة (على اليمين) -->
+    <div class="stat-icon d-flex justify-content-center align-items-center flex-shrink-0 ms-3"
+         [style.color]="getAccentColor()"
 
-  <div class="stat-card-top">
-
-    <div class="stat-card-icon">
-      <img [src]="'assets/icons/dashboard/' + icon() + '.svg'" alt="" width="44" height="44" />
+         style="width: 56px; height: 56px; border-radius: 16px;">
+      <img [src]="'assets/icons/dashboard/' + icon() + '.svg'" alt="" width="56" height="56" />
     </div>
-        <span class="stat-card-label">{{ label() }}</span>
+
+    <!-- النصوص (على اليسار) -->
+    <div class="stat-text text-end flex-grow-1">
+      <h6 class="text-muted mb-1" style="font-size: 13px; font-weight: 600;">{{ label() }}</h6>
+      <h4 class="fw-bold mb-1 text-navy" style="font-size: 20px;">{{ value() }} {{ unit() }}</h4>
+      
+      <!-- الرابط أو النص الإضافي -->
+      <a href="javascript:void(0)" 
+         class="text-decoration-none" 
+         style="font-size: 12px; color: #667085;"
+         (click)="linkClicked.emit()">
+         {{ linkText() }}
+      </a>
+    </div>
+    
   </div>
-
-  <div class="stat-card-middle">
-    <span class="stat-card-value">{{ value() }}</span>
-    <span class="stat-card-unit">{{ unit() }}</span>
-  </div>
-
-  @if (badgeText()) {
-    <span class="stat-card-badge">{{ badgeText() }}</span>
-  }
-
-  @if (linkText()) {
-    <button type="button" class="stat-card-link" (click)="onLinkClick()">
-      {{ linkText() }}
-    </button>
-  }
-
-</article>
+</div>

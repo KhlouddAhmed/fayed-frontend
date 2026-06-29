@@ -1,6 +1,18 @@
 /* =============================================
    STAT CARD
    ============================================= */
+   .card {
+  transition: transform 0.2s;
+}
+
+.text-navy {
+  color: #111827; /* اللون الغامق للنصوص */
+}
+
+.stat-icon img {
+  object-fit: contain;
+}
+
 .stat-card {
   display: flex;
   flex-direction: column;

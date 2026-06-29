@@ -2,86 +2,77 @@
   background-color: var(--white);
   border-radius: 12px;
   padding: 20px;
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   height: 100%;
+  direction: rtl;
 }
 
 .activity-feed-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  margin-block-end: 16px;
+  align-items: center;
+  margin-bottom: 16px;
 }
 
 .activity-feed-title {
   font-size: 1rem;
   font-weight: 700;
-  color: var(--text-main);
+  color: #111827;
   margin: 0;
 }
 
-.activity-feed-view-all {
-  font-size: 0.8125rem;
-  color: var(--primary);
-  text-decoration: none;
-}
-
-.activity-feed-view-all:hover {
-  text-decoration: underline;
-}
-
-.activity-feed-empty {
-  color: var(--text-muted);
-  font-size: 0.875rem;
-  text-align: center;
-  padding: 24px 0;
+.activity-feed-view-all{
+    font-size: 0.8125rem;
+    color: var(--primary);
+    text-decoration: none
 }
 
 .activity-feed-list {
   list-style: none;
-  margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  margin: 0;
 }
 
 .activity-feed-item {
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
+  align-items: flex-start; 
+  padding: 12px 0;
+  border-bottom: 1px solid #F3F4F6;
+  background: #F9FAFB;
+  margin-bottom: 10px;
 }
 
-.activity-feed-dot {
-  inline-size: 8px;
-  block-size: 8px;
+
+.activity-dot {
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background-color: var(--primary);
-  margin-block-start: 6px;
+  background-color: #155DFC; 
+  margin-top: 6px; 
+  margin-left: 12px;
   flex-shrink: 0;
 }
 
-.activity-feed-item-body {
+.activity-body {
   flex: 1;
-  min-width: 0;
 }
 
-.activity-feed-item-title {
+.activity-title {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--text-main);
+  color: #111827;
   margin: 0;
 }
 
-.activity-feed-item-desc {
-  font-size: 0.8125rem;
-  color: var(--text-muted);
-  margin: 2px 0 0;
+.activity-desc {
+  font-size: 0.75rem;
+  color: #6B7280;
+  margin: 2px 0 0 0;
 }
 
-.activity-feed-time {
+.activity-time {
   font-size: 0.75rem;
-  color: var(--slate-faint);
+  color: #9CA3AF;
   white-space: nowrap;
-  flex-shrink: 0;
+  margin-right: 8px;
 }

@@ -10,5 +10,6 @@ import { RelativeTimePipe } from '../../../../../shared/pipes/relative-time.pipe
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RecentActivityFeed {
+  // Input property to receive the list of activities from the parent
   readonly activities = input.required<readonly ActivityItem[]>();
 }

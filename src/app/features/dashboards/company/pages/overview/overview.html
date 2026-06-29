@@ -45,7 +45,8 @@
   <!-- Row 3: Activity + Orders -->
   <div class="overview-page-lower-grid">
     <app-recent-orders-table [orders]="summary.recentOrders" />
-    <app-recent-activity-feed [activities]="summary.recentActivities" />
+   <!-- <app-recent-activity-feed [activities]="summary.recentActivities" />  -->
+<app-recent-activity-feed [activities]="mockActivities" />
   </div>
 
   <!-- Row 4: Quick Actions -->
