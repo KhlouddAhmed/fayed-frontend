@@ -5,10 +5,13 @@
       <p class="my-listings-page-subtitle">
         أضف منتجات جديدة، عدل البيانات والأسعار، وراقب نقرات المشترين على بضائعك.
       </p>
+      <p class="my-listings-page-greeting-date">
+        التاريخ الحالي {{ currentDate | date: 'h:mma, yyyy MMMM d' }}
+      </p>
     </div>
 
     <button type="button" class="btn-fayed btn-blue" (click)="onAddMaterialClick()">
-      <img src="assets/icons/dashboard/add.svg" alt="" width="18" height="18" />
+      <img src="assets/icons/dashboard/white-add.svg" alt="" width="24" height="24" />
       إضافة خامة جديدة
     </button>
   </header>

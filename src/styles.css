@@ -136,14 +136,14 @@ body {
 .btn-blue:hover:not(:disabled) {
   background-color: var(--primary-hover);
   border-color: var(--primary-hover);
-  transform: translateY(-3px);
+  /* transform: translateY(-3px); */
   box-shadow: var(--shadow-primary-strong);
 }
 
 .btn-blue:active:not(:disabled) {
   background-color: var(--primary-dark);
   border-color: var(--primary-dark);
-  transform: translateY(0);
+  /* transform: translateY(0); */
   box-shadow: none;
 }
 
@@ -159,12 +159,12 @@ body {
 .btn-white:hover:not(:disabled) {
   background-color: var(--bg-subtle);
   border-color: var(--primary);
-  transform: translateY(-3px);
+  /* transform: translateY(-3px); */
   box-shadow: var(--shadow-hover-neutral);
 }
 
 .btn-white:active:not(:disabled) {
-  transform: translateY(0);
+  /* transform: translateY(0); */
   background-color: var(--bg-soft);
 }
 

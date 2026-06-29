@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { SidebarNavItem } from '../../../../core/models/sidebar-nav-item.model';
 import { NgOptimizedImage } from '@angular/common';
 
@@ -17,15 +17,34 @@ const COMPANY_NAV_ITEMS: readonly SidebarNavItem[] = [
 @Component({
   selector: 'app-company-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive,NgOptimizedImage],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, NgOptimizedImage],
   templateUrl: './company-layout.html',
   styleUrl: './company-layout.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CompanyLayout {
   protected readonly navItems = COMPANY_NAV_ITEMS;
+  private readonly router = inject(Router);
+
+  // State for logout modal
+  protected readonly isLogoutModalOpen = signal(false);
 
   protected readonly companyName = 'شركة النور';
   protected readonly companyCode = 'FYD-2586';
   protected readonly avatarInitial = 'N';
+
+  // Toggle modal visibility
+  protected openLogoutModal(): void {
+    this.isLogoutModalOpen.set(true);
+  }
+
+  protected closeLogoutModal(): void {
+    this.isLogoutModalOpen.set(false);
+  }
+
+  protected confirmLogout(): void {
+    this.isLogoutModalOpen.set(false);
+    // Perform logout logic and redirect
+    this.router.navigate(['/']);
+  }
 }

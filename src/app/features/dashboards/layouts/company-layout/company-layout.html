@@ -1,12 +1,14 @@
 <div class="company-layout-wrapper" dir="rtl">
-  
+
   <aside class="sidebar bg-navy">
-    <div class="sidebar-logo-container d-flex align-items-center gap-2 w-100 text-decoration-none" style="height: 90px; padding-right: 20px;">
-      
+    <div class="sidebar-logo-container d-flex align-items-center gap-2 w-100 text-decoration-none"
+      style="height: 90px; padding-right: 20px;">
+
       <div class="logo-icon mt-1">
-    <a [routerLink]="'/'" class="navbar-logo" aria-label="فايض - الصفحة الرئيسية">
-      <img ngSrc="/assets/icons/logo-text.png" alt="فايض" width="120" height="40" priority class="navbar-logo-img" />
-    </a>
+        <a [routerLink]="'/'" class="navbar-logo" aria-label="فايض - الصفحة الرئيسية">
+          <img ngSrc="/assets/icons/logo-text.png" alt="فايض" width="120" height="40" priority
+            class="navbar-logo-img" />
+        </a>
       </div>
 
       <h3 class="text-white fw-bold mb-0" style="font-size: 24px;">فايض</h3>
@@ -15,23 +17,30 @@
     <nav class="sidebar-nav mt-2">
       <ul class="nav flex-column mb-0">
         @for (item of navItems; track item.route) {
-          <li class="nav-item">
-            <a [routerLink]="item.route" routerLinkActive="active" class="nav-link custom-nav-link py-3 px-4">
-              {{ item.label }}
-            </a>
-          </li>
+        <li class="nav-item">
+          <a [routerLink]="item.route" routerLinkActive="active" class="nav-link custom-nav-link py-3 px-4">
+            {{ item.label }}
+          </a>
+        </li>
         }
       </ul>
     </nav>
+
+    <div class="sidebar-logout">
+      <button type="button" class="logout-btn" (click)="openLogoutModal()">
+        <img src="assets/icons/dashboard/logout.svg" alt="" width="20" height="20" />
+        تسجيل الخروج
+      </button>
+    </div>
   </aside>
 
   <div class="main-content d-flex flex-column bg-light-gray">
-    
+
     <header class="topbar bg-white px-4 d-flex align-items-center justify-content-between shadow-sm z-1">
-      
+
       <div class="search-box position-relative" style="width: 400px;">
-        <input type="text" class="form-control rounded-pill bg-light border-0 py-2 pe-4" placeholder="البحث عن شركات، طلبات، نزاعات..." style="font-size: 13px;">
-        <i class="bi bi-search position-absolute top-50 translate-middle-y text-muted" style="left: 15px;"></i>
+        <input type="text" class="form-control rounded-pill bg-light border-0 py-2 pe-4"
+          placeholder="البحث عن شركات، طلبات، نزاعات..." style="font-size: 13px;">
       </div>
 
       <div class="d-flex align-items-center gap-4">
@@ -40,15 +49,14 @@
         </button>
 
         <div class="d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-navy text-white d-flex align-items-center justify-content-center fw-bold" style="width: 45px; height: 45px; font-size: 18px;">
+          <div class="rounded-circle bg-navy text-white d-flex align-items-center justify-content-center fw-bold"
+            style="width: 45px; height: 45px; font-size: 18px;">
             {{ avatarInitial }}
           </div>
           <div class="text-end">
             <h6 class="mb-0 fw-bold text-navy" style="font-size: 14px;">{{ companyName }}</h6>
             <small class="text-muted" style="font-size: 12px;">{{ companyCode }}</small>
           </div>
-        
-
         </div>
       </div>
     </header>
@@ -58,4 +66,18 @@
     </main>
 
   </div>
+
+  @if (isLogoutModalOpen()) {
+  <div class="modal-overlay">
+    <div class="modal-card">
+      <h4 class="mb-3">تسجيل الخروج</h4>
+      <p class="mb-4 text-muted">هل أنت متأكد أنك ترغب بتسجيل الخروج من لوحة التحكم؟</p>
+      <div class="d-flex gap-2 justify-content-end">
+        <button class="btn btn-danger" (click)="confirmLogout()">نعم، تسجيل الخروج</button>
+        <button class="btn btn-light" (click)="closeLogoutModal()">لا، إلغاء</button>
+      </div>
+    </div>
+  </div>
+  }
+
 </div>

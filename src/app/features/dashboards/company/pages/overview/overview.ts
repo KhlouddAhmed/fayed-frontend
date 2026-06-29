@@ -78,6 +78,7 @@ export class Overview {
       titleKey: 'تم تحديث حالة الطلب 1245-ORD#',
       descriptionKey: 'بخصوص',
       relatedEntityCode: 'Aluminum Pipes',
-occurredAt: new Date(new Date().getTime() - (5 * 24 * 60 * 60 * 1000))    }
+      occurredAt: new Date(new Date().getTime() - (5 * 24 * 60 * 60 * 1000))
+    }
   ];
 }

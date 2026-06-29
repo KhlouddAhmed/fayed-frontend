@@ -8,12 +8,13 @@ import { AddMaterialModal } from '../../components/add-material-modal/add-materi
 import { LoadingSkeleton } from '../../../../../shared/components/loading-skeleton/loading-skeleton';
 import { ErrorState } from '../../../../../shared/components/error-state/error-state';
 import { EmptyState } from '../../../../../shared/components/empty-state/empty-state';
+import { DatePipe } from '@angular/common';
 
 type ActiveModal = 'detail' | 'addEdit' | null;
 
 @Component({
   selector: 'app-my-listings',
-  imports: [ListingGridItem, MaterialDetailModal, AddMaterialModal, LoadingSkeleton, ErrorState, EmptyState],
+  imports: [DatePipe, ListingGridItem, MaterialDetailModal, AddMaterialModal, LoadingSkeleton, ErrorState, EmptyState],
   templateUrl: './my-listings.html',
   styleUrl: './my-listings.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,6 +25,8 @@ export class MyListings {
   protected readonly materialsResource = resource({
     loader: async () => adaptMaterials(await this.repository.getAll()),
   });
+
+  protected readonly currentDate = new Date();
 
   protected readonly activeModal = signal<ActiveModal>(null);
   protected readonly selectedMaterial = signal<Material | null>(null);
