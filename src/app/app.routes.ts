@@ -11,6 +11,7 @@ export const routes: Routes = [
     path: 'home',
     loadComponent: () => import('./features/landing/pages/landing-page/landing-page')
       .then(m => m.LandingPage),
+      title: 'فايض',
   },
   {
     path: 'marketplace',
@@ -28,11 +29,13 @@ export const routes: Routes = [
     path: 'auth/login',
     loadComponent: () =>
       import('./features/auth/pages/login-page/login-page').then(m => m.LoginPage),
+    title: 'تسجيل الدخول - فايض',
   },
   {
     path: 'auth/signup',
     loadComponent: () =>
       import('./features/auth/pages/register-page/register-page').then(m => m.RegisterPage),
+    title: 'التسجيل - فايض',
   },
 
   // Admin Dashboard
@@ -80,11 +83,13 @@ export const routes: Routes = [
         path: 'overview',
         loadComponent: () => import('./features/dashboards/company/pages/overview/overview')
           .then(m => m.Overview),
+          title: 'الرئيسية - فايض',
       },
       {
         path: 'my-listings',
         loadComponent: () => import('./features/dashboards/company/pages/my-listings/my-listings')
           .then(m => m.MyListings),
+          title: 'المنتجات المعروضة - فايض',
       },
       {
         path: 'profile',
