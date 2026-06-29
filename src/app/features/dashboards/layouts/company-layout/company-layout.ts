@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { Sidebar } from '../../../../layout/sidebar/sidebar';
-import { DashboardNavbar } from '../../../../layout/dashboard-navbar/dashboard-navbar';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { SidebarNavItem } from '../../../../core/models/sidebar-nav-item.model';
+import { NgOptimizedImage } from '@angular/common';
 
 const COMPANY_NAV_ITEMS: readonly SidebarNavItem[] = [
   { label: 'الرئيسية', route: '/dashboard/company/overview' },
@@ -17,7 +16,8 @@ const COMPANY_NAV_ITEMS: readonly SidebarNavItem[] = [
 
 @Component({
   selector: 'app-company-layout',
-  imports: [RouterOutlet, Sidebar, DashboardNavbar],
+  standalone: true,
+  imports: [RouterOutlet, RouterLink, RouterLinkActive,NgOptimizedImage],
   templateUrl: './company-layout.html',
   styleUrl: './company-layout.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,8 +25,6 @@ const COMPANY_NAV_ITEMS: readonly SidebarNavItem[] = [
 export class CompanyLayout {
   protected readonly navItems = COMPANY_NAV_ITEMS;
 
-  // TODO(auth-mock-layer): replace these static values with
-  // authStore.currentUser() once the Auth Mock Layer is built.
   protected readonly companyName = 'شركة النور';
   protected readonly companyCode = 'FYD-2586';
   protected readonly avatarInitial = 'N';
