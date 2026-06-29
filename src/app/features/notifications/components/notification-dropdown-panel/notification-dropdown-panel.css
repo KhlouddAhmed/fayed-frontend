@@ -1,0 +1,167 @@
+/* ============================================= 
+ NOTIFICATIONS PANEL - MAIN CONTAINER
+ ============================================= */
+.notif-panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    inset-inline-end: 0;
+    width: 360px;
+    max-height: 522px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 14px;
+    border: 0.8px solid #E5E7EB;
+    background: #fff;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.10), 0 4px 6px -4px rgba(0, 0, 0, 0.10);
+    z-index: 9999;
+    overflow: hidden;
+}
+
+/* ============================================= 
+ HEADER SECTION 
+ ============================================= */
+.notif-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-block-end: 1px solid #F3F4F6;
+}
+
+.notif-panel-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.notif-panel-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #9CA3AF;
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    border-radius: 6px;
+    transition: color 0.15s;
+}
+
+.notif-panel-close:hover {
+    color: #374151;
+}
+
+/* =============================================
+NOTIFICATIONS LIST
+============================================= */
+.notif-panel-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* =============================================
+NOTIFICATION ITEM 
+============================================= */
+.notif-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 20px;
+    border-block-end: 1px solid #F9FAFB;
+    transition: background 0.15s;
+    flex-direction: row;
+}
+
+.notif-item:hover {
+    background: #F9FAFB;
+}
+
+.notif-item--unread {
+    background: #EFF6FF;
+}
+
+.notif-item--unread:hover {
+    background: #DBEAFE;
+}
+
+.notif-item-icon-wrapper {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: #EFF6FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.notif-item-content {
+    flex: 1;
+    text-align: right;
+}
+
+/* =============================================
+ITEM HEADER (Title + Unread Dot) 
+ ============================================= */
+.notif-item-header {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-left: 15px;
+    gap: 8px;
+    margin-block-end: 4px;
+}
+
+.notif-item-dot {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #155DFC;
+    flex-shrink: 0;
+}
+
+.notif-item-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.notif-item-body {
+    font-size: 0.8125rem;
+    color: #6B7280;
+    margin: 0 0 6px 0;
+    line-height: 1.5;
+}
+
+.notif-item-time {
+    font-size: 0.75rem;
+    color: #9CA3AF;
+}
+
+/* =============================================
+ FOOTER SECTION
+ ============================================= */
+.notif-panel-footer {
+    padding: 14px 20px;
+    border-block-start: 1px solid #F3F4F6;
+    text-align: center;
+}
+
+.notif-panel-view-all {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #155DFC;
+    text-decoration: none;
+}
+
+.notif-panel-view-all:hover {
+    text-decoration: underline;
+}
