@@ -86,6 +86,12 @@ export const routes: Routes = [
         loadComponent: () => import('./features/dashboards/company/pages/my-listings/my-listings')
           .then(m => m.MyListings),
       },
+      {
+        path: 'profile',
+        loadComponent: () => import('./features/dashboards/company/pages/profile/profile')
+          .then(m => m.Profile),
+        title: 'الملف الشخصي - فايض',
+      },
     ],
   },
 

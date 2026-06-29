@@ -1,0 +1,168 @@
+<!-- PROFILE PAGE -->
+
+<div class="profile-page" dir="rtl">
+
+    <!-- Page Header -->
+    <header class="profile-page-header">
+        <h1 class="profile-page-title">الملف الشخصي</h1>
+        <p class="profile-page-date">التاريخ الحالي {{ currentDate | date: 'h:mma, d MMMM yyyy' }}</p>
+    </header>
+
+    <!-- Company Info Card -->
+    <div class="profile-card">
+
+        <div class="profile-card-top">
+            <!-- Avatar -->
+            <div class="profile-avatar">{{ profile().initial }}</div>
+
+            <!-- Name + Status -->
+            <div class="profile-card-identity">
+                <h2 class="profile-company-name">{{ profile().name }}</h2>
+                @if (profile().isVerified) {
+                <span class="profile-verified-badge">
+                    <img src="assets/icons/dashboard/profile/verified.svg" alt="" width="16" height="16" />
+                    شركة موثقة
+                </span>
+                }
+                <p class="profile-company-code">{{ profile().code }}</p>
+                <p class="profile-registry">السجل التجاري: {{ profile().registryNumber }}</p>
+            </div>
+
+            <!-- Edit Button -->
+            <button type="button" class="profile-edit-btn" (click)="onEditProfile()">
+                <img src="assets/icons/dashboard/profile/edit.svg" alt="" width="16" height="16" />
+                تعديل البيانات
+            </button>
+        </div>
+
+        <!-- Meta Info -->
+        <div class="profile-meta-row">
+
+            <div class="profile-meta-item">
+                <div>
+                    <span class="profile-meta-label">الموقع</span>
+                    <span class="profile-meta-value">{{ profile().location }}</span>
+                </div>
+                <img src="assets/icons/dashboard/profile/location.svg" alt="" width="16" height="16" />
+            </div>
+
+
+
+            <div class="profile-meta-item">
+                <div>
+                    <span class="profile-meta-label">سنة التأسيس</span>
+                    <span class="profile-meta-value">{{ profile().foundedYear }}</span>
+                </div>
+                <img src="assets/icons/dashboard/profile/calendar.svg" alt="" width="16" height="16" />
+            </div>
+
+            <div class="profile-meta-item">
+                <div>
+                    <span class="profile-meta-label">نوع النشاط</span>
+                    <span class="profile-meta-value">{{ profile().activityType }}</span>
+                </div>
+                <img src="assets/icons/dashboard/profile/activity.svg" alt="" width="16" height="16" />
+            </div>
+
+        </div>
+
+        <!-- Description -->
+        <p class="profile-description">{{ profile().description }}</p>
+
+    </div>
+
+    <!-- Lower Grid - Documents on RIGHT, Contact on LEFT -->
+    <div class="profile-lower-grid">
+
+        <!-- Documents (Right Column) -->
+        <div class="profile-card profile-docs-card">
+            <h3 class="profile-section-title">المستندات والتوثيق</h3>
+
+            <div class="profile-doc-list">
+                @for (doc of profile().documents; track doc.id) {
+                <div class="profile-doc-item">
+                    <div class="profile-doc-icon">
+                        <img src="assets/icons/dashboard/profile/pdf.svg" alt="" width="24" height="24" />
+                    </div>
+
+                    <div class="profile-doc-info">
+                        <span class="profile-doc-name">{{ doc.name }}</span>
+                        <span class="profile-doc-file">{{ doc.fileName }}</span>
+                    </div>
+
+                    @if (doc.status === 'approved') {
+                    <span class="profile-doc-badge profile-doc-badge--approved">
+                        <img src="assets/icons/dashboard/profile/verified.svg" alt="" width="24" height="24" />
+                        معتمد
+                    </span>
+                    }
+
+                    <div class="profile-doc-actions">
+                        <button type="button" class="profile-doc-action-btn" (click)="onViewDocument(doc.id)"
+                            aria-label="عرض">
+                            <img src="assets/icons/dashboard/profile/download.svg" alt="" width="24" height="24" />
+
+                        </button>
+                        <button type="button" class="profile-doc-action-btn" (click)="onDownloadDocument(doc.id)"
+                            aria-label="تحميل">
+                            <img src="assets/icons/dashboard/profile/eye.svg" alt="" width="24" height="24" />
+                        </button>
+                    </div>
+                </div>
+                }
+            </div>
+
+            <button type="button" class="profile-upload-btn" (click)="onUploadDocument()">
+                رفع ملف جديد
+                <img src="assets/icons/dashboard/profile/upload.svg" alt="" width="18" height="18" />
+            </button>
+        </div>
+
+        <!-- Contact Info (Left Column) -->
+        <div class="profile-card profile-contact-card">
+            <h3 class="profile-section-title">بيانات التواصل</h3>
+
+            <div class="profile-contact-list">
+                <div class="profile-contact-item">
+                    <div class="profile-contact-right">
+                        <span class="profile-contact-label">البريد الإلكتروني</span>
+                        <img src="assets/icons/dashboard/profile/email.svg" alt="" width="18" height="18" />
+                    </div>
+                    <span class="profile-contact-value">{{ profile().email }}</span>
+
+                </div>
+
+                <div class="profile-contact-item">
+                    <div class="profile-contact-right">
+                        <span class="profile-contact-label">رقم الهاتف</span>
+                        <img src="assets/icons/dashboard/profile/phone.svg" alt="" width="18" height="18" />
+                    </div>
+                    <span class="profile-contact-value">{{ profile().phone }}</span>
+                </div>
+
+                <div class="profile-contact-item">
+                    <div class="profile-contact-right">
+                        <span class="profile-contact-label">الشخص المسؤول</span>
+                        <img src="assets/icons/dashboard/profile/person.svg" alt="" width="18" height="18" />
+                    </div>
+                    <span class="profile-contact-value">{{ profile().contactPerson }}</span>
+                </div>
+
+                <div class="profile-contact-item">
+                    <div class="profile-contact-right">
+                        <span class="profile-contact-label">الموقع الإلكتروني</span>
+                        <img src="assets/icons/dashboard/profile/globe.svg" alt="" width="18" height="18" />
+                    </div>
+                    <span class="profile-contact-value">{{ profile().website }}</span>
+                </div>
+
+            </div>
+
+            <button type="button" class="profile-edit-btn profile-edit-btn--full" (click)="onEditProfile()">
+                تعديل البيانات
+                <img src="assets/icons/dashboard/profile/edit.svg" alt="" width="16" height="16" />
+            </button>
+        </div>
+
+    </div>
+</div>
