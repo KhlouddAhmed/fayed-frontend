@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { SidebarNavItem } from '../../../../core/models/sidebar-nav-item.model';
 import { NgOptimizedImage } from '@angular/common';
+import { NotificationBell } from '../../../notifications/components/notification-bell/notification-bell';
+
 
 const COMPANY_NAV_ITEMS: readonly SidebarNavItem[] = [
   { label: 'الرئيسية', route: '/dashboard/company/overview' },
@@ -17,7 +19,7 @@ const COMPANY_NAV_ITEMS: readonly SidebarNavItem[] = [
 @Component({
   selector: 'app-company-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, NgOptimizedImage],
+imports: [RouterOutlet, RouterLink, RouterLinkActive, NgOptimizedImage, NotificationBell],
   templateUrl: './company-layout.html',
   styleUrl: './company-layout.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -2,16 +2,15 @@
 
   <aside class="sidebar bg-navy">
     <div class="sidebar-logo-container d-flex align-items-center gap-2 w-100 text-decoration-none"
-      style="height: 90px; padding-right: 20px;">
+      style="height: 50px; padding-right: 20px;">
 
-      <div class="logo-icon mt-1">
+      <div class="logo-icon ">
         <a [routerLink]="'/'" class="navbar-logo" aria-label="فايض - الصفحة الرئيسية">
-          <img ngSrc="/assets/icons/logo-text.png" alt="فايض" width="120" height="40" priority
+          <img ngSrc="/assets/icons/logo-text.png" alt="فايض" width="40" height="40" 
             class="navbar-logo-img" />
         </a>
       </div>
 
-      <h3 class="text-white fw-bold mb-0" style="font-size: 24px;">فايض</h3>
     </div>
 
     <nav class="sidebar-nav mt-2">
@@ -41,12 +40,13 @@
       <div class="search-box position-relative" style="width: 400px;">
         <input type="text" class="form-control rounded-pill bg-light border-0 py-2 pe-4"
           placeholder="البحث عن شركات، طلبات، نزاعات..." style="font-size: 13px;">
+        <i class="bi bi-search position-absolute top-50 translate-middle-y text-muted"
+         style="left: 15px;"></i>
+
       </div>
 
       <div class="d-flex align-items-center gap-4">
-        <button class="btn btn-link text-primary p-0">
-          <i class="bi bi-bell fs-5"></i>
-        </button>
+        <app-notification-bell />
 
         <div class="d-flex align-items-center gap-3">
           <div class="rounded-circle bg-navy text-white d-flex align-items-center justify-content-center fw-bold"

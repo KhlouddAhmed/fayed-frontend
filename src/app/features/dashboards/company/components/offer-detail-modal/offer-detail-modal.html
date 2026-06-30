@@ -1,1 +1,84 @@
-<p>offer-detail-modal works!</p>
+<!-- =============================================
+OFFER DETAIL MODAL
+============================================= -->
+<div class="offer-modal" role="dialog" aria-modal="true" aria-labelledby="offer-modal-title">
+
+  <!-- Header -->
+  <header class="offer-modal-header">
+    <h2 id="offer-modal-title" class="offer-modal-title">
+      {{ offer().direction === 'sent' ? 'تفاصيل عرض الشراء' : 'تفاصيل العرض الوارد' }}
+    </h2>
+    <button type="button" class="offer-modal-close-btn" (click)="close.emit()" aria-label="إغلاق">
+      <img src="assets/icons/dashboard/close.svg" alt="" width="42" height="42" />
+    </button>
+  </header>
+
+  <!-- Meta Section -->
+  <div class="offer-modal-meta">
+    <!-- Right: Client Circle -->
+    <div class="offer-modal-client-circle">
+      <!-- {{ offer().clientInitial || 'B' }} -->
+    </div>
+    <span class="offer-modal-client-code">{{ offer().clientCode }}</span>
+
+    <!-- Left: Offer Code + Date -->
+    <div>
+      <div class="offer-modal-code">كود العرض : {{ offer().code }}</div>
+      <div class="offer-modal-date">تاريخ الإرسال: {{ offer().sentAt | date: 'yyyy/MM/dd' }}</div>
+    </div>
+  </div>
+
+  <!-- Section Title -->
+  <h3 class="offer-modal-section-title">تفاصيل العرض</h3>
+  <hr>
+
+  <!-- Details List -->
+  <dl class="offer-modal-details">
+    <div class="offer-modal-detail-row">
+      <dt>المنتج</dt>
+      <dd>{{ offer().productName }}</dd>
+    </div>
+    <div class="offer-modal-detail-row">
+      <dt>الكمية المطلوبة</dt>
+      <dd>{{ offer().requestedQuantity }} {{ offer().unit }}</dd>
+    </div>
+    <div class="offer-modal-detail-row">
+      <dt>سعر العرض</dt>
+      <dd>{{ offer().pricePerUnit }} ج.م / {{ offer().unit }}</dd>
+    </div>
+    <div class="offer-modal-detail-row">
+      <dt>إجمالي القيمة</dt>
+      <dd>{{ offer().totalValue }} ج.م</dd>
+    </div>
+  </dl>
+
+  <!-- Message -->
+  @if (offer().message) {
+    <div>
+      <span class="offer-modal-message-label">
+        {{ offer().direction === 'sent' ? 'رسالة المرسل' : 'رسالتك للمورد' }}
+      </span>
+      <p class="offer-modal-message-box">{{ offer().message }}</p>
+    </div>
+  }
+
+  <!-- Footer -->
+  <footer class="offer-modal-footer">
+    @if (offer().direction === 'received') {
+      <button type="button" class="btn-fayed btn-blue" [disabled]="isSubmitting()" (click)="onAcceptClick()">
+        قبول العرض
+      </button>
+      <button type="button" class="btn-fayed btn-white" [disabled]="isSubmitting()" (click)="onRejectClick()">
+        رفض العرض
+      </button>
+    } @else {
+      <button type="button" class="btn-fayed btn-blue" [disabled]="isSubmitting()" (click)="onEditClick()">
+        تعديل العرض
+      </button>
+      <button type="button" class="btn-fayed btn-white" [disabled]="isSubmitting()" (click)="onWithdrawClick()">
+        سحب العرض
+      </button>
+    }
+  </footer>
+
+</div>

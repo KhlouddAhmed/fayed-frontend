@@ -1,1 +1,31 @@
-<p>offer-row works!</p>
+<!-- =============================================
+ OFFER ROW
+ ============================================= -->
+<div class="offer-row" (click)="onViewDetailsClick()">
+
+  <!-- Offer Code -->
+  <span class="offer-row-cell offer-row-code">
+    {{ offer().code }}
+  </span>
+
+  <!-- Client Code -->
+  <span class="offer-row-cell">
+    {{ offer().clientCode }}
+  </span>
+
+  <!-- Product Name -->
+  <span class="offer-row-cell">
+    {{ offer().productName }}
+  </span>
+
+  <!-- Total Value -->
+  <span class="offer-row-cell offer-row-value">
+    {{ offer().totalValue }} ج.م
+  </span>
+
+  <!-- Status Badge -->
+  <span class="offer-row-cell">
+    <app-status-badge [statusMap]="statusMap" [status]="offer().status" />
+  </span>
+
+</div>

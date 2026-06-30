@@ -92,6 +92,12 @@ export const routes: Routes = [
           title: 'المنتجات المعروضة - فايض',
       },
       {
+        path: 'rfq-offers',
+        loadComponent: () => import('./features/dashboards/company/pages/rfq-offers/rfq-offers')
+          .then(m => m.RfqOffers),
+          title:' العروض وطلبات الاسعار - فايض',
+      },
+      {
         path: 'profile',
         loadComponent: () => import('./features/dashboards/company/pages/profile/profile')
           .then(m => m.Profile),

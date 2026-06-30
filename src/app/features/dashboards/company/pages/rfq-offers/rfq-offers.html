@@ -1,1 +1,72 @@
-<p>rfq-offers works!</p>
+<div class="rfq-offers-page">
+  <header class="rfq-offers-page-header">
+    <h1 class="rfq-offers-page-title">إدارة العروض وطلبات الأسعار (RFQ)</h1>
+    <p class="rfq-offers-page-subtitle">
+      قم بالرد على عروض الأسعار المستلمة من المشترين، أو أرسل عروضك الخاصة لعقود التوريد.
+    </p>
+  </header>
+
+  <div class="rfq-offers-page-tabs" role="tablist">
+    <button
+      type="button"
+      role="tab"
+      class="rfq-offers-page-tab"
+      [class.rfq-offers-page-tab--active]="activeTab() === 'sent'"
+      (click)="onTabChange('sent')"
+    >
+      العروض المرسلة
+    </button>
+    <button
+      type="button"
+      role="tab"
+      class="rfq-offers-page-tab"
+      [class.rfq-offers-page-tab--active]="activeTab() === 'received'"
+      (click)="onTabChange('received')"
+    >
+      العروض المستلمة
+    </button>
+  </div>
+
+  @if (offersResource.isLoading()) {
+    <app-loading-skeleton variant="table" [rows]="5" />
+  } @else if (offersResource.error()) {
+    <app-error-state (retry)="offersResource.reload()" />
+  } @else if (filteredOffers().length === 0) {
+    <app-empty-state
+      title="لا توجد عروض حالياً"
+      description="ستظهر هنا العروض المرسلة والمستلمة فور توافرها"
+    />
+  } @else {
+    <div class="rfq-offers-page-table-wrapper">
+      <div class="rfq-offers-page-row rfq-offers-page-row--head">
+        <span class="rfq-offers-page-col">رقم العرض</span>
+        <span class="rfq-offers-page-col">العميل</span>
+        <span class="rfq-offers-page-col">المنتج</span>
+        <span class="rfq-offers-page-col">القيمة</span>
+        <span class="rfq-offers-page-col">
+          {{ activeTab() === 'received' ? 'تفاصيل العرض' : 'حالة العرض' }}
+        </span>
+      </div>
+
+      @for (offer of filteredOffers(); track offer.id) {
+        <app-offer-row [offer]="offer" (viewDetails)="onViewDetails($event)" />
+      }
+    </div>
+  }
+
+  @if (selectedOffer(); as offer) {
+    <div class="rfq-offers-page-overlay" (click)="closeModal()">
+      <div (click)="$event.stopPropagation()">
+        <app-offer-detail-modal
+          [offer]="offer"
+          [isSubmitting]="isSubmitting()"
+          (close)="closeModal()"
+          (accept)="onAccept($event)"
+          (reject)="onReject($event)"
+          (withdraw)="onWithdraw($event)"
+          (editOffer)="onEditOffer($event)"
+        />
+      </div>
+    </div>
+  }
+</div>

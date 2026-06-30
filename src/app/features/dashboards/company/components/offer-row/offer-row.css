@@ -1,0 +1,43 @@
+/* =============================================
+   OFFER ROW - GRID LAYOUT
+   ============================================= */
+.offer-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  padding-inline: 16px;
+  padding-block: 20px;
+  border-block-end: 1px solid var(--border-light, #f1f3f5);
+  min-width: 600px;
+}
+
+.offer-row:hover {
+  background-color: var(--bg-soft, #f9fafb);
+}
+
+.offer-row:last-child {
+  border-block-end: none;
+}
+
+/* =============================================
+   CELLS
+   ============================================= */
+.offer-row-cell {
+  font-size: 0.875rem;
+  color: var(--text-main, #1d242d);
+  text-align: center;
+  white-space: nowrap;
+  display: flex;
+  justify-content: center;
+}
+
+/* Special Cells */
+.offer-row-code {
+  font-weight: 600;
+}
+
+.offer-row-value {
+  font-weight: 600;
+}
