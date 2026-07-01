@@ -18,6 +18,9 @@ import { MockMaterialsRepository } from './features/dashboards/company/services/
 // RFQ Offers Page: sent/received offers, offer details
 import { RFQ_OFFER_REPOSITORY } from './features/dashboards/company/services/rfq-offer-repository.token';
 import { MockRfqOfferRepository } from './features/dashboards/company/services/mock-rfq-offer-repository';
+// Orders Page: avtive offers, order details
+import { ORDERS_REPOSITORY } from './features/dashboards/company/services/orders-repository.token';
+import { MockOrdersRepository } from './features/dashboards/company/services/mock-orders-repository';
 // =============================================================================
 // APPLICATION CONFIGURATION
 // =============================================================================
@@ -56,5 +59,8 @@ export const appConfig: ApplicationConfig = {
     { provide: MATERIALS_REPOSITORY, useClass: MockMaterialsRepository },
     // RFQ Offers Page: manage sent/received RFQ offers
     { provide: RFQ_OFFER_REPOSITORY, useClass: MockRfqOfferRepository },
+    // Orders Page: avtive offers, order details
+    { provide: ORDERS_REPOSITORY, useClass: MockOrdersRepository },
+
   ],
 };

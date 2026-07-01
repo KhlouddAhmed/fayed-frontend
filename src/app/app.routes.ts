@@ -11,7 +11,7 @@ export const routes: Routes = [
     path: 'home',
     loadComponent: () => import('./features/landing/pages/landing-page/landing-page')
       .then(m => m.LandingPage),
-      title: 'فايض',
+    title: 'فايض',
   },
   {
     path: 'marketplace',
@@ -83,25 +83,32 @@ export const routes: Routes = [
         path: 'overview',
         loadComponent: () => import('./features/dashboards/company/pages/overview/overview')
           .then(m => m.Overview),
-          title: 'الرئيسية - فايض',
+        title: 'الرئيسية - فايض',
       },
       {
         path: 'my-listings',
         loadComponent: () => import('./features/dashboards/company/pages/my-listings/my-listings')
           .then(m => m.MyListings),
-          title: 'المنتجات المعروضة - فايض',
+        title: 'المنتجات المعروضة - فايض',
       },
       {
         path: 'rfq-offers',
         loadComponent: () => import('./features/dashboards/company/pages/rfq-offers/rfq-offers')
           .then(m => m.RfqOffers),
-          title:' العروض وطلبات الاسعار - فايض',
+        title: ' العروض وطلبات الاسعار - فايض',
       },
       {
         path: 'profile',
         loadComponent: () => import('./features/dashboards/company/pages/profile/profile')
           .then(m => m.Profile),
         title: 'الملف الشخصي - فايض',
+      },
+      {
+        path: 'orders',
+        loadComponent: () =>
+          import('./features/dashboards/company/pages/orders/orders')
+            .then((m) => m.Orders),
+        title: 'الطلبات النشطة - فايض',
       },
     ],
   },

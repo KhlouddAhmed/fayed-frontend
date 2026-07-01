@@ -1,1 +1,14 @@
-<p>order-row works!</p>
+<div class="order-row">
+  <span class="order-row-cell order-row-code">{{ order().code }}</span>
+  <span class="order-row-cell">{{ order().supplierCode }}</span>
+  <span class="order-row-cell">{{ order().productName }}</span>
+  <span class="order-row-cell order-row-value">{{ order().totalValue | number }} ج.م</span>
+  <span class="order-row-cell">
+    <app-status-badge [statusMap]="statusMap" [status]="order().status" />
+  </span>
+  <span class="order-row-cell">
+    <button type="button" class="btn-details" (click)="onViewDetailsClick()">
+      عرض التفاصيل
+    </button>
+  </span>
+</div>
