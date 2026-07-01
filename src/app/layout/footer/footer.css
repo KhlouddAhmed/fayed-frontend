@@ -26,6 +26,10 @@
   gap: 40px;
 }
 
+.navbar-logo-img{
+  margin-bottom: 15px;
+}
+
 .footer-column {
   flex: 1;
   min-width: 200px;

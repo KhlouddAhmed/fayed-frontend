@@ -58,6 +58,10 @@
   margin-inline: auto;
 }
 
+.login-logo-img{
+  margin-bottom: 20px;
+}
+
 .promo-img-wrapper {
   flex: 1;
   display: flex;
