@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 
+// 1. واجهة الطلبات (للتاب الأول والثاني)
 interface Order {
   id: string;
   buyer: string;
@@ -10,13 +11,24 @@ interface Order {
   financialStatus: 'held' | 'released' | 'suspended';
 }
 
+// 2. واجهة المعاملات المالية (للتاب الثالث)
 interface Transaction {
   id: string;
   beneficiary: string;
   type: 'profit' | 'refund';
   amount: string;
   gateway: string;
-  isProcessed: boolean; 
+  isProcessed: boolean;
+}
+
+// 3. واجهة سجل المعاملات (للتاب الرابع الجديد)
+interface HistoryRecord {
+  movementId: string;
+  orderId: string;
+  totalValue: string;
+  commission: string;
+  paymentMethod: string;
+  dateTime: string;
 }
 
 @Component({
@@ -26,8 +38,7 @@ interface Transaction {
   styleUrls: ['./orders-payments.css']
 })
 export class OrdersComponent {
-  // خلينا التاب الافتراضي 'refunds' مؤقتاً عشان تشوف التصميم الجديد
-  activeTab = signal<'all' | 'escrow' | 'refunds' | 'history'>('refunds');
+  activeTab = signal<'all' | 'escrow' | 'refunds' | 'history'>('history');
 
 
   orders = signal<Order[]>([
@@ -42,6 +53,14 @@ export class OrdersComponent {
     { id: 'TXN-9021', beneficiary: 'مصنع مصر للبلاستيك', type: 'profit', amount: '24,000 ج.م', gateway: 'كارت ائتمان البنك الأهلي', isProcessed: false },
     { id: 'TXN-9022', beneficiary: 'مصنع مصر للبلاستيك', type: 'refund', amount: '24,000 ج.م', gateway: 'كارت ائتمان البنك الأهلي', isProcessed: false }, 
     { id: 'TXN-9023', beneficiary: 'مصنع مصر للبلاستيك', type: 'profit', amount: '24,000 ج.م', gateway: 'كارت ائتمان البنك الأهلي', isProcessed: false }
+  ]);
+
+
+  historyRecords = signal<HistoryRecord[]>([
+    { movementId: 'PAY-7829-AB', orderId: 'ORD-1042', totalValue: '15,000 ج.م', commission: '750 ج.م (5.0%)', paymentMethod: 'تحويل مباشر', dateTime: '2026-06-02 09:30' },
+    { movementId: 'PAY-7829-AB', orderId: 'ORD-1042', totalValue: '15,000 ج.م', commission: '750 ج.م (5.0%)', paymentMethod: 'تحويل مباشر', dateTime: '2026-06-02 09:30' },
+    { movementId: 'PAY-7829-AB', orderId: 'ORD-1042', totalValue: '15,000 ج.م', commission: '750 ج.م (5.0%)', paymentMethod: 'تحويل مباشر', dateTime: '2026-06-02 09:30' },
+    { movementId: 'PAY-7829-AB', orderId: 'ORD-1042', totalValue: '15,000 ج.م', commission: '750 ج.م (5.0%)', paymentMethod: 'تحويل مباشر', dateTime: '2026-06-02 09:30' }
   ]);
 
   setTab(tab: 'all' | 'escrow' | 'refunds' | 'history') {
@@ -61,7 +80,6 @@ export class OrdersComponent {
   releaseFunds(id: string) {
     this.orders.update(orders => orders.map(o => o.id === id ? { ...o, financialStatus: 'released' } : o));
   }
-
 
   processTransaction(id: string) {
     this.transactions.update(txns => txns.map(t => t.id === id ? { ...t, isProcessed: true } : t));

@@ -57,7 +57,6 @@
                 <th class="py-4 fw-semibold">حالة الحجز</th>
                 <th class="py-4 fw-semibold text-center">إفراج يدوي</th>
               }
-              <!-- عناوين تاب "المستردات والأرباح" -->
               @else if (activeTab() === 'refunds') {
                 <th class="py-4 fw-semibold text-end pe-4">رقم العملية</th>
                 <th class="py-4 fw-semibold">المستفيد</th>
@@ -66,11 +65,20 @@
                 <th class="py-4 fw-semibold">بوابة الصرف</th>
                 <th class="py-4 fw-semibold text-center">إجراء</th>
               }
+              <!-- عناوين تاب "سجل المعاملات" -->
+              @else if (activeTab() === 'history') {
+                <th class="py-4 fw-semibold text-end pe-4">معرف الحركة</th>
+                <th class="py-4 fw-semibold">رقم الطلب</th>
+                <th class="py-4 fw-semibold">القيمة الإجمالية</th>
+                <th class="py-4 fw-semibold">عمولة فايض</th>
+                <th class="py-4 fw-semibold">طريقة السداد</th>
+                <th class="py-4 fw-semibold">التاريخ والتوقيت</th>
+              }
             </tr>
           </thead>
           
           <tbody>
-            <!-- اللوب الأول: خاص بالطلبات (التاب الأول والثاني) -->
+            <!-- اللوب الأول: الطلبات (التاب الأول والثاني) -->
             @if (activeTab() === 'all' || activeTab() === 'escrow') {
               @for (order of orders(); track order.id) {
                 <tr class="border-bottom last-no-border">
@@ -120,14 +128,12 @@
               }
             }
             
-            <!-- اللوب الثاني: خاص بالمعاملات (التاب الثالث) -->
+            <!-- اللوب الثاني: المستردات (التاب الثالث) -->
             @else if (activeTab() === 'refunds') {
               @for (txn of transactions(); track txn.id) {
                 <tr class="border-bottom last-no-border">
                   <td class="py-4 text-muted text-end pe-4" style="font-size: 13px;">{{ txn.id }}</td>
                   <td class="py-4 fw-semibold text-navy" style="font-size: 13px;">{{ txn.beneficiary }}</td>
-                  
-                  <!-- نوع المعاملة -->
                   <td class="py-4">
                     <span class="badge px-3 py-2 rounded-pill fw-bold status-badge" 
                           [class.bg-green]="txn.type === 'profit'" 
@@ -135,10 +141,8 @@
                       {{ txn.type === 'profit' ? 'أرباح بائع' : 'استرداد مشتري' }}
                     </span>
                   </td>
-                  
                   <td class="py-4 fw-bold text-primary" style="font-size: 13px;">{{ txn.amount }}</td>
                   <td class="py-4 text-muted" style="font-size: 13px;">{{ txn.gateway }}</td>
-                  
                   <td class="py-4 text-center">
                     @if (txn.isProcessed) {
                       <span class="text-success fw-semibold" style="font-size: 12px;"><i class="bi bi-check2-circle"></i> تم التنفيذ</span>
@@ -154,6 +158,28 @@
                 </tr>
               } @empty {
                 <tr><td colspan="6" class="text-center py-5 text-muted">لا توجد معاملات مالية</td></tr>
+              }
+            }
+
+            <!-- اللوب الثالث والأخير: سجل المعاملات (التاب الرابع) -->
+            @else if (activeTab() === 'history') {
+              @for (record of historyRecords(); track $index) {
+                <tr class="border-bottom last-no-border">
+                  <!-- معرف الحركة (لون غامق) -->
+                  <td class="py-4 fw-bold text-navy text-end pe-4" style="font-size: 13px;">{{ record.movementId }}</td>
+                  <!-- رقم الطلب (أزرق) -->
+                  <td class="py-4 fw-bold text-primary" style="font-size: 13px;">{{ record.orderId }}</td>
+                  <!-- القيمة الإجمالية (لون غامق) -->
+                  <td class="py-4 fw-bold text-navy" style="font-size: 13px;">{{ record.totalValue }}</td>
+                  <!-- عمولة فايض (أخضر) -->
+                  <td class="py-4 fw-bold text-success" style="font-size: 13px;">{{ record.commission }}</td>
+                  <!-- طريقة السداد (رصاصي) -->
+                  <td class="py-4 text-muted" style="font-size: 13px;">{{ record.paymentMethod }}</td>
+                  <!-- التاريخ (رصاصي) -->
+                  <td class="py-4 text-muted" style="font-size: 13px;">{{ record.dateTime }}</td>
+                </tr>
+              } @empty {
+                <tr><td colspan="6" class="text-center py-5 text-muted">لا توجد حركات مالية مسجلة</td></tr>
               }
             }
           </tbody>

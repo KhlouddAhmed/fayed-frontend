@@ -9,11 +9,9 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./stat-card.css']
 })
 export class StatCardComponent {
-
   title = input.required<string>();
-  value = input.required<string | number>();
-  subtitle = input<string>();
-  subtitleClass = input<string>('text-muted'); 
+  value = input.required<string>();
+  subtitle = input<string>(''); // جملة واحدة بس
   icon = input.required<string>();
-  color = input.required<string>(); 
+  color = input.required<string>();
 }

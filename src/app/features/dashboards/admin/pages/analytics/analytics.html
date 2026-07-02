@@ -1,0 +1,128 @@
+<div class="analytics-container" dir="rtl">
+  
+  <!-- الهيدر -->
+  <div class="page-header mb-4 text-end">
+    <h4 class="fw-bold text-navy mb-1">تحليلات المنصة</h4>
+    <p class="text-muted" style="font-size: 14px;">نظرة شاملة لأداء المنصة ومؤشرات النمو الأساسية</p>
+  </div>
+
+  <!-- التابات -->
+  <div class="d-flex border-bottom mb-4 gap-4">
+    <button class="btn tab-btn px-2 py-3" [class.active]="activeTab() === 'performance'" (click)="setTab('performance')">
+      مؤشرات الأداء
+    </button>
+    <button class="btn tab-btn px-2 py-3" [class.active]="activeTab() === 'sales'" (click)="setTab('sales')">
+      تقارير المبيعات
+    </button>
+    <button class="btn tab-btn px-2 py-3" [class.active]="activeTab() === 'activity'" (click)="setTab('activity')">
+      سجل النشاط
+    </button>
+  </div>
+
+  <!-- ================= تاب مؤشرات الأداء ================= -->
+  @if (activeTab() === 'performance') {
+    <div class="row g-3 mb-4">
+      @for (stat of dashboardData().stats; track stat.title) {
+        <div class="col-12 col-md-6 col-xl-3">
+          <app-stat-card 
+            [title]="stat.title" 
+            [value]="stat.value" 
+            [subtitle]="stat.subtitle" 
+            [icon]="stat.icon" 
+            [color]="stat.color">
+          </app-stat-card>
+        </div>
+      }
+    </div>
+
+    <div class="row g-4">
+      <div class="col-12 col-xl-4">
+        <div class="card p-4 rounded-4 border-0 shadow-sm bg-white h-100">
+          <h6 class="fw-bold text-navy mb-4 text-center">توزيع الإيرادات حسب نوع المادة</h6>
+          <div style="position: relative; height: 350px; width: 100%; display: flex; justify-content: center;">
+            <canvas #pieChart></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-xl-8">
+        <div class="card p-4 rounded-4 border-0 shadow-sm bg-white h-100">
+          <h6 class="fw-bold text-navy mb-4 text-center">نمو الإيرادات الشهري</h6>
+          <div style="position: relative; height: 350px; width: 100%;">
+            <canvas #lineChart></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ================= تاب تقارير المبيعات ================= -->
+  @if (activeTab() === 'sales') {
+    <div class="card border-0 shadow-sm bg-white p-4" style="border-radius: 16px;">
+      
+      <!-- عناوين الأعمدة -->
+      <div class="row text-muted fw-semibold mb-3 px-3 py-3 align-items-center report-header" style="font-size: 13px;">
+        <div class="col-4 text-end">اسم التقرير</div>
+        <div class="col-4 text-center">الفترة الزمنية</div>
+        <div class="col-2 text-center">تنسيق التحميل</div>
+        <div class="col-2 text-center">تصدير</div>
+      </div>
+
+      <!-- صفوف البيانات -->
+      @for (report of dashboardData().salesReports; track $index) {
+        <div class="row align-items-center py-3 px-3 report-row rounded-3">
+          <div class="col-4 fw-bold text-navy text-end" style="font-size: 14px;">
+            {{ report.name }}
+          </div>
+          <div class="col-4 text-center text-muted fw-medium" style="font-size: 13px;">
+            {{ report.period }}
+          </div>
+          <div class="col-2 text-center">
+            <span class="format-badge" dir="ltr">{{ report.format }}</span>
+          </div>
+          <div class="col-2 text-center">
+            <button class="btn btn-export" (click)="exportReport(report)">
+              تصدير البيانات <i class="bi bi-download ms-2"></i>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ================= تاب سجل النشاط ================= -->
+  @if (activeTab() === 'activity') {
+    <div class="card border-0 shadow-sm bg-white p-4" style="border-radius: 16px;">
+      
+      <!-- عناوين الأعمدة -->
+      <div class="row text-muted fw-semibold mb-3 px-3 py-3 align-items-center report-header" style="font-size: 13px;">
+        <div class="col-2 text-end">اسم الكيان</div>
+        <div class="col-3 text-center">نوع العملية</div>
+        <div class="col-3 text-center">المتصفح/الجهاز</div>
+        <div class="col-2 text-center">التاريخ والوقت</div>
+        <div class="col-2 text-center">عنوان IP</div>
+      </div>
+
+      <!-- صفوف البيانات -->
+      @for (log of dashboardData().activityLogs; track $index) {
+        <div class="row align-items-center py-3 px-3 report-row rounded-3">
+          <div class="col-2 fw-bold text-navy text-end" style="font-size: 13px;">
+            {{ log.entityName }}
+          </div>
+          <div class="col-3 text-center text-muted fw-medium" style="font-size: 12px; line-height: 1.6;">
+            {{ log.actionType }}
+          </div>
+          <div class="col-3 text-center text-muted" style="font-size: 12px;" dir="ltr">
+            {{ log.device }}
+          </div>
+          <div class="col-2 text-center text-muted" style="font-size: 12px;" dir="ltr">
+            {{ log.datetime }}
+          </div>
+          <div class="col-2 text-center text-muted fw-medium" style="font-size: 12px;" dir="ltr">
+  {{ log.ipAddress }}
+</div>
+        </div>
+      }
+    </div>
+  }
+
+</div>
