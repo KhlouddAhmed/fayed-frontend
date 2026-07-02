@@ -1,1 +1,117 @@
-<p>notification-center-page works!</p>
+<div class="notif-page" dir="rtl">
+
+  <!-- ── Header ── -->
+  <header class="notif-page-header">
+    <div class="notif-page-header-right">
+      <a routerLink="/dashboard/company/overview" class="notif-page-back" aria-label="رجوع">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </a>
+      <h1 class="notif-page-title">الإشعارات</h1>
+      @if (unreadCount() > 0) {
+        <span class="notif-page-badge">{{ unreadCount() }} جديد</span>
+      }
+    </div>
+  </header>
+
+  <!-- ── Toolbar ── -->
+  <div class="notif-page-toolbar">
+
+    <!-- Search -->
+    <div class="notif-search-wrapper">
+      <svg class="notif-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input
+        type="text"
+        class="notif-search-input"
+        placeholder="البحث في الإشعارات..."
+        [value]="searchQuery()"
+        (input)="onSearch($event)"
+      />
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="notif-filter-tabs">
+      @for (f of filters; track f.value) {
+        <button
+          type="button"
+          class="notif-filter-tab"
+          [class.notif-filter-tab--active]="activeFilter() === f.value"
+          (click)="onFilterChange(f.value)"
+        >
+          {{ f.label }}
+        </button>
+      }
+    </div>
+
+  </div>
+
+  <!-- ── List ── -->
+  <div class="notif-page-list-wrapper">
+
+    <!-- Select All Row -->
+    <div class="notif-list-controls">
+      <label class="notif-checkbox-label">
+        <input type="checkbox" class="notif-checkbox" [checked]="allSelected()" (change)="toggleSelectAll()" />
+        تحديد الكل
+      </label>
+
+      @if (hasSelection()) {
+        <button type="button" class="notif-mark-read-btn" (click)="markAllAsRead()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <path d="M20 6 9 17l-5-5"/>
+          </svg>
+          تحديد الكل كمقروء
+        </button>
+      }
+    </div>
+
+    <!-- Notifications -->
+    <ul class="notif-list">
+      @for (item of filteredNotifications(); track item.id) {
+        <li class="notif-list-item" [class.notif-list-item--unread]="item.isUnread">
+
+          <!-- Type Icon  -->
+          <div class="notif-list-item-icon">
+            <img
+              [src]="'assets/icons/notifications/' + item.type + '.svg'"
+              [alt]="item.type"
+              width="22"
+              height="22"
+            />
+          </div>
+
+          <!-- Content -->
+          <div class="notif-list-item-content">
+            <div class="notif-list-item-header">
+              @if (item.isUnread) {
+                <span class="notif-unread-dot"></span>
+              }
+              <span class="notif-list-item-title">{{ item.title }}</span>
+            </div>
+            <p class="notif-list-item-body">{{ item.body }}</p>
+            <span class="notif-list-item-time">{{ item.timeAgo }}</span>
+          </div>
+
+          <!-- Checkbox -->
+          <input
+            type="checkbox"
+            class="notif-checkbox"
+            [checked]="isSelected(item.id)"
+            (change)="toggleSelect(item.id)"
+          />
+
+        </li>
+      }
+
+      @if (filteredNotifications().length === 0) {
+        <li class="notif-empty">
+          <p>لا توجد إشعارات</p>
+        </li>
+      }
+    </ul>
+
+  </div>
+</div>

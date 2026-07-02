@@ -140,6 +140,12 @@ export const routes: Routes = [
           .then(m => m.Disputes),
         title: 'النزاعات - فايض',
       },
+      {
+        path: 'notifications', 
+        loadComponent: () => import('./features/notifications/pages/notification-center-page/notification-center-page')
+            .then(c => c.NotificationCenterPage),
+        title: 'الإشعارات - فايض' 
+      }
     ],
   },
 
