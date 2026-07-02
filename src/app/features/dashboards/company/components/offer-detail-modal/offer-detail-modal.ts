@@ -18,7 +18,7 @@ const OFFER_STATUS_DISPLAY_MAP: Readonly<Record<string, OfferStatusConfig>> = {
 
 @Component({
   selector: 'app-offer-detail-modal',
-  imports: [StatusBadge, DatePipe],
+  imports: [DatePipe],
   templateUrl: './offer-detail-modal.html',
   styleUrl: './offer-detail-modal.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

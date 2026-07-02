@@ -7,7 +7,7 @@ import { EmptyState } from '../../../../../shared/components/empty-state/empty-s
 
 @Component({
   selector: 'app-dispute-detail-section',
-  imports: [DatePipe, LoadingSkeleton, ErrorState, EmptyState],
+  imports: [ LoadingSkeleton, ErrorState, EmptyState],
   templateUrl: './dispute-detail-section.html',
   styleUrl: './dispute-detail-section.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

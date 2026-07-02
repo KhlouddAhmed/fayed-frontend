@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { Offer } from '../../models/rfq-offer.model';
 import { StatusBadge, StatusBadgeVariant } from '../../../../../shared/components/status-badge/status-badge';
 
@@ -18,7 +17,7 @@ const OFFER_STATUS_DISPLAY_MAP: Readonly<Record<string, OfferStatusConfig>> = {
 
 @Component({
   selector: 'app-offer-row',
-  imports: [StatusBadge, DatePipe],
+  imports: [StatusBadge],
   templateUrl: './offer-row.html',
   styleUrl: './offer-row.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
