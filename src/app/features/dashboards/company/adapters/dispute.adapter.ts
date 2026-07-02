@@ -1,0 +1,119 @@
+import { StatusBadgeVariant } from '../../../../shared/components/status-badge/status-badge';
+import {
+  CreateDisputeRequest,
+  CreateDisputeRequestDto,
+  Dispute,
+  DisputeDto,
+  DisputeReason,
+  DisputeStatus,
+  NegotiationMessage,
+  NegotiationMessageDto,
+  NegotiationSenderType,
+} from '../models/dispute.model';
+
+const DISPUTE_STATUS_MAP: Readonly<Record<string, DisputeStatus>> = {
+  ActiveOpen: 'activeOpen',
+  UnderReview: 'underReview',
+  Resolved: 'resolved',
+};
+
+const DISPUTE_REASON_MAP: Readonly<Record<string, DisputeReason>> = {
+  ProductNotAsDescribed: 'productNotAsDescribed',
+  LateDelivery: 'lateDelivery',
+  QuantityShortfall: 'quantityShortfall',
+};
+
+const NEGOTIATION_SENDER_TYPE_MAP: Readonly<Record<string, NegotiationSenderType>> = {
+  System: 'system',
+  Buyer: 'buyer',
+  Seller: 'seller',
+};
+
+const DISPUTE_REASON_DTO_MAP: Readonly<Record<DisputeReason, string>> = {
+  productNotAsDescribed: 'ProductNotAsDescribed',
+  lateDelivery: 'LateDelivery',
+  quantityShortfall: 'QuantityShortfall',
+};
+
+const DEFAULT_DISPUTE_STATUS: DisputeStatus = 'activeOpen';
+const DEFAULT_DISPUTE_REASON: DisputeReason = 'productNotAsDescribed';
+const DEFAULT_SENDER_TYPE: NegotiationSenderType = 'system';
+
+interface DisputeStatusBadgeConfig {
+  readonly labelKey: string;
+  readonly variant: StatusBadgeVariant;
+}
+
+export const DISPUTE_STATUS_BADGE_MAP: Readonly<Record<DisputeStatus, DisputeStatusBadgeConfig>> = {
+  activeOpen: { labelKey: 'نشط ومفتوح', variant: 'danger' },
+  underReview: { labelKey: 'قيد المراجعة', variant: 'warning' },
+  resolved: { labelKey: 'تم الحل', variant: 'success' },
+};
+
+function adaptDisputeStatus(rawStatus: string | undefined | null): DisputeStatus {
+  if (!rawStatus) {
+    return DEFAULT_DISPUTE_STATUS;
+  }
+
+  return DISPUTE_STATUS_MAP[rawStatus] ?? DEFAULT_DISPUTE_STATUS;
+}
+
+function adaptDisputeReason(rawReason: string | undefined | null): DisputeReason {
+  if (!rawReason) {
+    return DEFAULT_DISPUTE_REASON;
+  }
+
+  return DISPUTE_REASON_MAP[rawReason] ?? DEFAULT_DISPUTE_REASON;
+}
+
+function adaptSenderType(rawSenderType: string | undefined | null): NegotiationSenderType {
+  if (!rawSenderType) {
+    return DEFAULT_SENDER_TYPE;
+  }
+
+  return NEGOTIATION_SENDER_TYPE_MAP[rawSenderType] ?? DEFAULT_SENDER_TYPE;
+}
+
+export function adaptDispute(dto: DisputeDto): Dispute {
+  return {
+    id: dto.Id,
+    code: dto.Code,
+    orderReference: dto.OrderReference,
+    reason: adaptDisputeReason(dto.Reason),
+    reasonLabel: dto.ReasonLabel,
+    description: dto.Description,
+    filedAt: new Date(dto.FiledAt),
+    status: adaptDisputeStatus(dto.Status),
+    arbitrationStatusLabel: dto.ArbitrationStatusLabel ?? null,
+  };
+}
+
+export function adaptDisputes(dtos: readonly DisputeDto[]): readonly Dispute[] {
+  return dtos.map(adaptDispute);
+}
+
+export function adaptNegotiationMessage(dto: NegotiationMessageDto): NegotiationMessage {
+  return {
+    id: dto.Id,
+    senderType: adaptSenderType(dto.SenderType),
+    senderLabel: dto.SenderLabel,
+    content: dto.Content,
+    sentAt: new Date(dto.SentAt),
+  };
+}
+
+export function adaptNegotiationMessages(
+  dtos: readonly NegotiationMessageDto[],
+): readonly NegotiationMessage[] {
+  return dtos.map(adaptNegotiationMessage);
+}
+
+export function adaptCreateDisputeRequest(
+  request: CreateDisputeRequest,
+): CreateDisputeRequestDto {
+  return {
+    OrderReference: request.orderReference,
+    Reason: DISPUTE_REASON_DTO_MAP[request.reason],
+    Description: request.description,
+  };
+}

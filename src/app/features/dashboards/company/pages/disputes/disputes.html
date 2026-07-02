@@ -1,1 +1,78 @@
-<p>disputes works!</p>
+<div class="disputes-page">
+<header class="disputes-page-header">
+  <!-- Title + Subtitle (Right Side) -->
+  <div class="disputes-page-header-content">
+    <h1 class="disputes-page-title">إدارة النزاعات وقضايا الضمان المالي</h1>
+    <p class="disputes-page-subtitle">
+      قم بفتح قضية شكوى على المعاملات أو تابع تقدم التسويات لحفظ حقوقك التجارية.
+    </p>
+          <p class="greeting-date">
+        التاريخ الحالي {{ currentDate | date: 'h:mma, yyyy MMMM d' }}
+      </p>
+  </div>
+
+  <!-- Add Button (Left Side) -->
+  <button 
+    type="button" 
+    class="btn-fayed btn-blue disputes-page-add-btn" 
+    (click)="onOpenCreateModal()"
+  >
+    <img src="assets/icons/dashboard/white-add.svg" alt="" width="24" height="24">
+    إضافة نزاع جديد
+  </button>
+
+</header>
+
+  @if (disputesResource.isLoading()) {
+    <app-loading-skeleton variant="table" [rows]="4" />
+  } @else if (disputesResource.error()) {
+    <app-error-state (retry)="disputesResource.reload()" />
+  } @else if (disputes().length === 0) {
+    <app-empty-state
+      title="لا توجد نزاعات حالياً"
+      description="ستظهر هنا أي نزاعات تفتحها على معاملاتك التجارية"
+      actionLabel="إضافة نزاع جديد"
+      (actionClick)="onOpenCreateModal()"
+    />
+  } @else {
+    <div class="disputes-page-table-wrapper">
+      <div class="disputes-page-row disputes-page-row--head">
+        <span class="disputes-page-col">رقم النزاع</span>
+        <span class="disputes-page-col">رقم الطلب</span>
+        <span class="disputes-page-col">السبب الرئيسي للنزاع</span>
+        <span class="disputes-page-col">تاريخ تقديم القضية</span>
+        <span class="disputes-page-col">حالة النزاع</span>
+        <span class="disputes-page-col">الاجرائات</span>
+      </div>
+
+      @for (dispute of disputes(); track dispute.id) {
+        <app-dispute-row
+          [dispute]="dispute"
+          [isActive]="selectedDisputeId() === dispute.id"
+          (viewDetails)="onToggleDetails($event)"
+        />
+      }
+    </div>
+  }
+
+  @if (selectedDispute(); as dispute) {
+    <app-dispute-detail-section
+      [dispute]="dispute"
+      [negotiationMessages]="negotiationLogResource.value() ?? []"
+      [isLogLoading]="negotiationLogResource.isLoading()"
+      [logError]="!!negotiationLogResource.error()"
+    />
+  }
+
+  @if (isCreateModalOpen()) {
+    <div class="disputes-page-overlay" (click)="onCloseCreateModal()">
+      <div (click)="$event.stopPropagation()">
+        <app-dispute-create-modal
+          [isSubmitting]="isSubmittingDispute()"
+          (close)="onCloseCreateModal()"
+          (submitDispute)="onCreateDispute($event)"
+        />
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,55 @@
+.disputes-page-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.4fr 1fr 1fr 1fr;
+  align-items: center;
+  min-width: 760px;
+  padding-block: 18px;
+  padding-inline: 16px;
+  border-block-end: 1px solid var(--border-light);
+  transition: background-color 0.15s ease;
+}
+
+.disputes-page-row:last-child {
+  border-block-end: none;
+}
+
+.disputes-page-row--active {
+  background-color: var(--primary-light);
+}
+
+.disputes-page-col {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.disputes-page-col--code {
+  font-weight: 700;
+}
+
+.btn-details {
+  background-color: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-details:hover {
+  background-color: var(--primary-light);
+}
+
+.btn-details--active {
+  background-color: var(--primary);
+  color: var(--white);
+}
+
+.btn-details--active:hover {
+  background-color: var(--primary-hover);
+}

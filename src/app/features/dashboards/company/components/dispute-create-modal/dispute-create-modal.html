@@ -1,1 +1,68 @@
-<p>dispute-create-modal works!</p>
+<div class="dispute-create-modal" dir="rtl">
+  <div class="dispute-create-modal-header">
+        <h2 class="dispute-create-modal-title">إضافة نزاع جديد</h2>
+    <button type="button" class="dispute-create-modal-close" (click)="onClose()" aria-label="إغلاق">
+      <img src="assets/icons/dashboard/close.svg" alt="" width="42" height="42" />
+    </button>
+  </div>
+
+  <form class="dispute-create-modal-form" (submit)="onFormSubmit($event)">
+    <div class="dispute-create-modal-field">
+      <label class="dispute-create-modal-label" for="order-reference">رقم مرجع الطلب التجاري</label>
+      <input
+        id="order-reference"
+        type="text"
+        class="dispute-create-modal-input"
+        placeholder="مثال : ORD-301"
+        [formField]="disputeForm.orderReference"
+      />
+      @if (disputeForm.orderReference().touched() && disputeForm.orderReference().invalid()) {
+        @for (error of disputeForm.orderReference().errors(); track error.kind) {
+          <span class="dispute-create-modal-error">{{ error.message }}</span>
+        }
+      }
+    </div>
+
+    <div class="dispute-create-modal-field">
+      <label class="dispute-create-modal-label" for="reason">السبب الرئيسي لفتح الشكوى والطلب</label>
+      <select id="reason" class="dispute-create-modal-select" [formField]="disputeForm.reason">
+        @for (option of reasonOptions; track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="dispute-create-modal-field">
+      <label class="dispute-create-modal-label" for="description">شرح وتفاصيل المشكلة بالكامل</label>
+      <textarea
+        id="description"
+        rows="5"
+        class="dispute-create-modal-textarea"
+        placeholder="يرجي وصف المشكلة بالتفصيل وذكر اي خطوات اتخذتها للتسوية مع المشتري او البائع........................"
+        [formField]="disputeForm.description"
+      ></textarea>
+      @if (disputeForm.description().touched() && disputeForm.description().invalid()) {
+        @for (error of disputeForm.description().errors(); track error.kind) {
+          <span class="dispute-create-modal-error">{{ error.message }}</span>
+        }
+      }
+    </div>
+
+    <div class="dispute-create-modal-field">
+      <span class="dispute-create-modal-label">المرفقات</span>
+      <label class="dispute-create-modal-attachment" for="attachments">
+        <i class="bi bi-paperclip"></i>
+        <span>قم بتحميل ورفع مستندات او صور تثبت صحة كلامك</span>
+      </label>
+      <input id="attachments" type="file" class="dispute-create-modal-attachment-input" multiple />
+    </div>
+
+    <button
+      type="submit"
+      class="btn-fayed btn-blue dispute-create-modal-submit"
+      [disabled]="isSubmitting() || disputeForm().invalid()"
+    >
+      {{ isSubmitting() ? 'جاري الإرسال...' : 'تأكيد وفتح النزاع المالي' }}
+    </button>
+  </form>
+</div>

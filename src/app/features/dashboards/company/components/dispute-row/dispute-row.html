@@ -1,0 +1,19 @@
+<div class="disputes-page-row" [class.disputes-page-row--active]="isActive()">
+  <span class="disputes-page-col disputes-page-col--code">{{ dispute().code }}</span>
+  <span class="disputes-page-col">{{ dispute().orderReference }}</span>
+  <span class="disputes-page-col">{{ dispute().reasonLabel }}</span>
+  <span class="disputes-page-col">{{ dispute().filedAt | date: 'yyyy-MM-dd' }}</span>
+  <span class="disputes-page-col">
+    <app-status-badge [status]="dispute().status" [statusMap]="statusMap" />
+  </span>
+  <span class="disputes-page-col">
+    <button
+      type="button"
+      class="btn-details"
+      [class.btn-details--active]="isActive()"
+      (click)="onViewDetailsClick()"
+    >
+      عرض المفاوضات
+    </button>
+  </span>
+</div>

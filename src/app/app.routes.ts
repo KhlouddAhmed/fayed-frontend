@@ -110,6 +110,12 @@ export const routes: Routes = [
             .then((m) => m.Orders),
         title: 'الطلبات النشطة - فايض',
       },
+      {
+        path: 'disputes',
+        loadComponent: () => import('./features/dashboards/company/pages/disputes/disputes')
+          .then(m => m.Disputes),
+        title: 'النزاعات - فايض',
+      },
     ],
   },
 

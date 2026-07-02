@@ -15,18 +15,23 @@ interface StepDefinition {
   styleUrl: './registration-stepper.css',
 })
 export class RegistrationStepper {
+
+  // INPUTS
   currentStep = input.required<RegistrationStepNumber>();
 
+  // STEPS DEFINITION
   readonly steps: readonly StepDefinition[] = [
     { step: 1, label: 'رفع مستندات الشركه' },
     { step: 2, label: 'تأكيد هوية المالك' },
     { step: 3, label: 'بيانات الحساب' },
   ] as const;
 
+  // COMPUTED STATES
   stepStates = computed<readonly StepVisualState[]>(() =>
     this.steps.map(({ step }) => this.resolveStepState(step))
   );
 
+  // METHODS
   private resolveStepState(step: RegistrationStepNumber): StepVisualState {
     if (step < this.currentStep()) return 'completed';
     if (step === this.currentStep()) return 'active';

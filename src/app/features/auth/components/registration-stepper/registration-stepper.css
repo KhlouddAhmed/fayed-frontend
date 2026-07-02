@@ -1,10 +1,16 @@
+/* =============================================
+   STEPPER CONTAINER
+   ============================================= */
 .stepper-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 0;
 }
 
+/* =============================================
+   STEP ITEM
+   ============================================= */
 .step-item {
   display: flex;
   flex-direction: column;
@@ -40,13 +46,26 @@
   white-space: nowrap;
 }
 
+/* =============================================
+   CONNECTOR
+   ============================================= */
 .step-connector {
   flex: 1;
-  min-width: 60px;
+  min-width: 48px;
   height: 0;
-  border-top: 1px dashed var(--text-main);
-  margin-inline: 4px;
+  border-top: 1.5px solid #D1D5DB;
+  margin-inline: 0;
+  margin-block-end: 24px;
 }
+
+.step-item--completed .step-connector,
+.step-item--active .step-connector {
+  border-color: var(--primary);
+}
+
+/* =============================================
+   STATES
+   ============================================= */
 
 /* Upcoming — not reached yet */
 .step-item--upcoming .step-circle {

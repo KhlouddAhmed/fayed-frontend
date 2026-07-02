@@ -1,0 +1,56 @@
+<div class="dispute-detail-section">
+  <section class="dispute-detail-section-log" aria-label="سجل مفاوضات القضية المكتوب">
+    <h2 class="dispute-detail-section-heading">سجل مفاوضات القضية المكتوب</h2>
+
+    <div class="dispute-detail-section-log-body">
+      @if (isLogLoading()) {
+        <app-loading-skeleton variant="feed" [rows]="3" />
+      } @else if (logError()) {
+        <app-error-state />
+      } @else if (negotiationMessages().length === 0) {
+        <app-empty-state
+          title="لا توجد رسائل بعد"
+          description="ستظهر هنا رسائل التفاوض الخاصة بهذا النزاع"
+        />
+      } @else {
+        @for (message of negotiationMessages(); track message.id) {
+          <div
+            class="negotiation-message"
+            [class.negotiation-message--self]="message.senderType === 'buyer'"
+            [class.negotiation-message--system]="message.senderType === 'system'"
+          >
+            <span class="negotiation-message-sender">{{ message.senderLabel }}</span>
+            <p class="negotiation-message-content">{{ message.content }}</p>
+          </div>
+        }
+      }
+    </div>
+  </section>
+
+  <section class="dispute-detail-section-panel" aria-label="تفاصيل النزاع">
+    <h2 class="dispute-detail-section-heading">
+      تفاصيل النزاع النشط: {{ dispute().code }}
+    </h2>
+
+    <div class="dispute-detail-panel-field">
+      <span class="dispute-detail-panel-label">رقم الطلب المرجعي</span>
+      <p class="dispute-detail-panel-value">{{ dispute().orderReference }}</p>
+    </div>
+
+    <div class="dispute-detail-panel-field">
+      <span class="dispute-detail-panel-label">ملخص موضوع النزاع</span>
+      <p class="dispute-detail-panel-value dispute-detail-panel-value--strong">
+        {{ dispute().reasonLabel }}
+      </p>
+    </div>
+
+    <div class="dispute-detail-panel-field">
+      <span class="dispute-detail-panel-label">حالة التحكيم والوساطة</span>
+      @if (dispute().arbitrationStatusLabel; as arbitrationStatusLabel) {
+        <div class="dispute-detail-panel-arbitration-banner" role="status">
+          {{ arbitrationStatusLabel }}
+        </div>
+      }
+    </div>
+  </section>
+</div>
