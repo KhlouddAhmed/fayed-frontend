@@ -1,1 +1,213 @@
-<p>disputes-management works!</p>
+<div class="disputes-container" dir="rtl" style="font-family: 'Cairo', sans-serif;">
+  
+
+  <div class="page-header mb-4 text-end">
+    <h4 class="fw-bold text-navy mb-1">مركز إدارة النزاعات</h4>
+    <p class="text-muted" style="font-size: 14px;">فحص شكاوى تباين الجودة أو نقص الكميات مع حوار ثلاثي الأطراف</p>
+  </div>
+
+ 
+  <div class="d-flex border-bottom mb-4 gap-2">
+    <button class="btn tab-btn px-4 py-3 d-flex align-items-center gap-2" 
+            [class.active]="activeTab() === 'open'" (click)="setTab('open')">
+      مفتوحة <span class="badge rounded-pill bg-light-blue text-primary px-2 py-1">3</span>
+    </button>
+    <button class="btn tab-btn px-4 py-3 d-flex align-items-center gap-2" 
+            [class.active]="activeTab() === 'investigating'" (click)="setTab('investigating')">
+      قيد التحقيق <span class="badge rounded-pill bg-light text-muted px-2 py-1">2</span>
+    </button>
+    <button class="btn tab-btn px-4 py-3 d-flex align-items-center gap-2" 
+            [class.active]="activeTab() === 'closed'" (click)="setTab('closed')">
+      منتهية <span class="badge rounded-pill bg-light text-muted px-2 py-1">2</span>
+    </button>
+  </div>
+
+
+  @if (activeTab() === 'open') {
+    <div class="row g-4">
+      
+     
+      <div class="col-12 col-xl-4">
+        <h6 class="text-muted fw-semibold mb-3" style="font-size: 12px; padding-right: 8px;">قضايا النزاع الجارية</h6>
+        
+        <div class="d-flex flex-column gap-3">
+          @for (dispute of filteredDisputes(); track dispute.id) {
+            <div class="dispute-card card border p-3 rounded-4 cursor-pointer"
+                 [class.selected-card]="selectedDispute()?.id === dispute.id"
+                 (click)="selectDispute(dispute)">
+              
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="fw-bold text-navy" style="font-size: 13px;">{{ dispute.id }}</span>
+                <span class="badge bg-red-light text-danger rounded-pill px-3 py-1 fw-bold" style="font-size: 11px;">مفتوح</span>
+              </div>
+              
+              <p class="text-muted mb-1" style="font-size: 13px;">{{ dispute.buyerName }} - {{ dispute.sellerName }}</p>
+              <p class="text-navy fw-semibold mb-0" style="font-size: 12px;">{{ dispute.issueSummary }}</p>
+            </div>
+          } @empty {
+            <div class="text-center p-4 text-muted border rounded-4">لا توجد قضايا في هذه الحالة</div>
+          }
+        </div>
+      </div>
+
+     
+      <div class="col-12 col-xl-8">
+        @if (selectedDispute(); as active) {
+          <div class="card shadow-sm border-0 rounded-4 h-100 d-flex flex-column" style="border: 1px solid #E2E8F0 !important;">
+            
+            <div class="card-header bg-white border-bottom p-4 d-flex justify-content-between align-items-center rounded-top-4">
+              <div class="text-end">
+                <h5 class="fw-bold text-navy mb-1" style="font-size: 16px;">وساطة النزاع: {{ active.id }}</h5>
+                <div class="d-flex flex-column gap-1 text-muted" style="font-size: 13px;">
+                  <span>{{ active.issueSummary }} .</span>
+                  <span>الصفقة: {{ active.orderId }} -</span>
+                </div>
+              </div>
+              
+              <div class="d-flex gap-2">
+                <button class="btn btn-primary rounded-3 fw-medium px-4 py-2" style="font-size: 13px; background-color: #2563EB; border: none;">
+                  تعويض المشتري <i class="bi bi-person-x ms-1"></i>
+                </button>
+                <button class="btn btn-outline-primary rounded-3 fw-medium px-4 py-2" style="font-size: 13px; border-color: #2563EB; color: #2563EB;">
+                  صرف للبائع <i class="bi bi-cash ms-1"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="card-body chat-area p-4 d-flex flex-column gap-4" style="overflow-y: auto; max-height: 450px; background-color: #ffffff;">
+              @for (msg of active.messages; track msg.id) {
+                @if (msg.senderRole === 'buyer') {
+                  <div class="d-flex flex-column align-items-start w-75">
+                    <div class="chat-bubble bubble-buyer p-3 mb-1">
+                      <div class="text-muted mb-1" style="font-size: 11px;">{{ msg.senderName }}</div>
+                      <div class="text-navy fw-medium" style="font-size: 14px; line-height: 1.6;">{{ msg.text }}</div>
+                    </div>
+                    <small class="text-muted ms-2" style="font-size: 10px;">{{ msg.time }}</small>
+                  </div>
+                }
+                
+                @if (msg.senderRole === 'seller') {
+                  <div class="d-flex flex-column align-items-end w-75 align-self-end">
+                    <div class="chat-bubble bubble-seller p-3 mb-1">
+                      <div class="text-white-50 mb-1" style="font-size: 11px;">{{ msg.senderName }}</div>
+                      <div class="text-white fw-medium" style="font-size: 14px; line-height: 1.6;">{{ msg.text }}</div>
+                    </div>
+                    <small class="text-muted me-2" style="font-size: 10px;">{{ msg.time }}</small>
+                  </div>
+                }
+              }
+            </div>
+
+            <div class="card-footer bg-white border-top p-4 rounded-bottom-4">
+              <div class="d-flex gap-3">
+                <button class="btn btn-primary rounded-3 px-4 d-flex align-items-center justify-content-center" style="background-color: #2563EB; border: none;">
+                  إرسال <i class="bi bi-send ms-2"></i>
+                </button>
+                <input type="text" class="form-control rounded-3 bg-light border-0 px-3 py-3" placeholder="اكتب رسالتك الرسمية كمحكم للمنصة.." style="font-size: 13px;">
+              </div>
+            </div>
+
+          </div>
+        } @else {
+          <div class="card shadow-sm border d-flex flex-column align-items-center justify-content-center text-center rounded-4 h-100" style="border-color: #E2E8F0 !important; min-height: 500px;">
+            <i class="bi bi-chat-square-text text-muted mb-3" style="font-size: 40px; opacity: 0.5;"></i>
+            <h6 class="fw-bold text-navy">اختر نزاعاً لعرض التفاصيل</h6>
+            <p class="text-muted" style="font-size: 13px;">اضغط على إحدى القضايا من القائمة الجانبية لفتح المحادثة وإصدار القرار.</p>
+          </div>
+        }
+      </div>
+
+    </div>
+  }
+  
+ 
+  @else if (activeTab() === 'investigating') {
+    <div class="card shadow-sm border overflow-hidden rounded-4 mt-2" style="border-color: #E2E8F0 !important;">
+      <div class="table-responsive">
+        <table class="table table-borderless text-center align-middle mb-0">
+          
+          <thead class="text-muted border-bottom" style="font-size: 13px;">
+            <tr>
+              <th class="py-4 fw-semibold text-end pe-4">المعرف</th>
+              <th class="py-4 fw-semibold">الصفقة</th>
+              <th class="py-4 fw-semibold">المشتري</th>
+              <th class="py-4 fw-semibold">البائع</th>
+              <th class="py-4 fw-semibold">سبب النزاع</th>
+              <th class="py-4 fw-semibold text-start ps-4">الحالة</th>
+            </tr>
+          </thead>
+          
+          <tbody>
+            @for (dispute of filteredDisputes(); track $index) {
+              <tr class="border-bottom last-no-border">
+                <td class="py-4 fw-bold text-navy text-end pe-4" style="font-size: 13px;">{{ dispute.id }}</td>
+                <td class="py-4 fw-bold text-navy" style="font-size: 13px;">{{ dispute.orderId }}</td>
+                <td class="py-4 text-muted" style="font-size: 13px;">{{ dispute.buyerName }}</td>
+                <td class="py-4 text-muted" style="font-size: 13px;">{{ dispute.sellerName }}</td>
+                
+                <td class="py-4 text-muted mx-auto" style="font-size: 12px; max-width: 180px;">
+                  {{ dispute.issueSummary }}
+                </td>
+                
+                <td class="py-4 text-start ps-4">
+                  <span class="badge px-3 py-2 rounded-pill fw-bold badge-inspection d-inline-flex align-items-center gap-1">
+                    قيد المعاينة <i class="bi bi-question-circle" style="font-size: 10px;"></i>
+                  </span>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="text-center py-5 text-muted">لا توجد قضايا لعرضها</td>
+              </tr>
+            }
+          </tbody>
+          
+        </table>
+      </div>
+    </div>
+  }
+
+  
+  @else if (activeTab() === 'closed') {
+    <div class="card shadow-sm border overflow-hidden rounded-4 mt-2" style="border-color: #E2E8F0 !important;">
+      <div class="table-responsive">
+        <table class="table table-borderless text-center align-middle mb-0">
+          
+          <thead class="text-muted border-bottom" style="font-size: 13px;">
+            <tr>
+              <th class="py-4 fw-semibold text-end pe-4">المعرف</th>
+              <th class="py-4 fw-semibold">رقم الصفقة</th>
+              <th class="py-4 fw-semibold">القرار النهائي</th>
+              <th class="py-4 fw-semibold">تاريخ التسوية</th>
+              <th class="py-4 fw-semibold text-start ps-4">وسيط الحكم</th>
+            </tr>
+          </thead>
+          
+          <tbody>
+            @for (dispute of filteredDisputes(); track $index) {
+              <tr class="border-bottom last-no-border">
+                <td class="py-4 text-muted text-end pe-4" style="font-size: 13px;">{{ dispute.id }}</td>
+                <td class="py-4 fw-bold text-navy" style="font-size: 13px;">{{ dispute.orderId }}</td>
+                
+                <td class="py-4">
+                  <span class="badge px-3 py-2 rounded-pill fw-bold badge-success-light d-inline-flex align-items-center gap-1">
+                    {{ dispute.finalDecision }} <i class="bi bi-check2-circle" style="font-size: 11px;"></i>
+                  </span>
+                </td>
+                
+                <td class="py-4 text-muted" style="font-size: 13px;">{{ dispute.settlementDate }}</td>
+                <td class="py-4 text-muted text-start ps-4" style="font-size: 13px;">{{ dispute.moderator }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="text-center py-5 text-muted">لا توجد قضايا منتهية لعرضها</td>
+              </tr>
+            }
+          </tbody>
+          
+        </table>
+      </div>
+    </div>
+  }
+
+</div>

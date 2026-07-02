@@ -1,0 +1,71 @@
+.analytics-container {
+  font-family: 'Cairo', sans-serif;
+}
+
+.text-navy { color: #0B1B3D; }
+
+/* ------------------ تنسيقات التابات ------------------ */
+.tab-btn {
+  font-size: 14px;
+  font-weight: 600;
+  border: none !important;
+  background: transparent !important;
+  border-bottom: 3px solid transparent !important;
+  border-radius: 0 !important;
+  color: #64748B;
+  transition: all 0.3s ease;
+  padding-bottom: 12px;
+}
+
+.tab-btn:hover { color: #0B1B3D; }
+.tab-btn:focus, .tab-btn:active { outline: none; box-shadow: none !important; }
+.tab-btn.active { color: #2563EB !important; border-bottom: 3px solid #2563EB !important; }
+
+/* ------------------ تنسيقات القوائم (المبيعات والنشاط) ------------------ */
+.report-header {
+  background-color: #F8FAFC; 
+  border-radius: 10px; 
+}
+
+.report-row {
+  transition: background-color 0.2s ease;
+}
+
+.report-row:hover {
+  background-color: #F8FAFC; 
+}
+
+.format-badge {
+  background-color: #F1F5F9;
+  color: #64748B;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  display: inline-block;
+}
+
+.btn-export {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 8px 16px;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-export i {
+  font-size: 14px;
+}
+
+.btn-export:hover {
+  background-color: #F8FAFC;
+  border-color: #CBD5E1;
+  color: #0F172A;
+}

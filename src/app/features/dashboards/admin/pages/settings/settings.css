@@ -1,0 +1,78 @@
+.settings-container { font-family: 'Cairo', sans-serif; }
+.text-navy { color: #0B1B3D; }
+
+/* ---- التابات ---- */
+.tab-btn { font-size: 14px; font-weight: 600; border: none !important; background: transparent !important; border-bottom: 3px solid transparent !important; border-radius: 0 !important; color: #64748B; transition: all 0.3s ease; padding-bottom: 12px; }
+.tab-btn:hover { color: #0B1B3D; }
+.tab-btn:focus, .tab-btn:active { outline: none; box-shadow: none !important; }
+.tab-btn.active { color: #2563EB !important; border-bottom: 3px solid #2563EB !important; }
+
+/* ---- العمولات والدفع ---- */
+.custom-input { background-color: #F8FAFC !important; border: 1px solid transparent !important; border-radius: 8px !important; height: 48px; color: #0F172A; transition: all 0.2s ease; }
+.custom-input:focus { background-color: #FFFFFF !important; border-color: #93C5FD !important; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1) !important; }
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; }
+.btn-save { background-color: #2563EB; color: #FFFFFF; font-size: 14px; font-weight: 600; border-radius: 8px; border: none; transition: background-color 0.2s; display: inline-flex; align-items: center; }
+.btn-save:hover { background-color: #1D4ED8; color: #FFFFFF; }
+.gateway-card { border-color: #E2E8F0 !important; background-color: #FFFFFF; }
+.custom-switch .form-check-input { width: 3em; height: 1.5em; cursor: pointer; border-color: #CBD5E1; }
+.custom-switch .form-check-input:focus { box-shadow: none; border-color: #CBD5E1; }
+.custom-switch .form-check-input:checked { background-color: #2563EB; border-color: #2563EB; }
+
+/* ------------------ تنسيقات سجل النظام ------------------ */
+
+
+.btn-outline-light-custom {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-outline-light-custom:hover {
+  background-color: #F8FAFC;
+  border-color: #CBD5E1;
+  color: #0F172A;
+}
+
+.btn-outline-light-custom i {
+  font-size: 15px;
+  margin-right: 6px;
+}
+
+
+.terminal-container {
+  background-color: #111827; 
+  font-family: 'Courier New', Courier, monospace; 
+  font-size: 13px;
+  height: 400px;
+  overflow-y: auto;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.log-row {
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.log-row:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+
+.log-time { color: #E06C75; } 
+.log-user { color: #2DD4BF; font-weight: bold; } 
+.log-action { color: #D1D5DB; } 
+.log-ip { color: #4B5563; font-size: 12px; } 
+
+
+.terminal-container::-webkit-scrollbar { width: 8px; }
+.terminal-container::-webkit-scrollbar-track { background: #111827; border-radius: 8px; }
+.terminal-container::-webkit-scrollbar-thumb { background: #374151; border-radius: 8px; }
+.terminal-container::-webkit-scrollbar-thumb:hover { background: #4B5563; }
