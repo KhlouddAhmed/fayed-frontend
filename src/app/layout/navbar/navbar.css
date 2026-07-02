@@ -17,7 +17,6 @@
   justify-content: space-between;
 }
 
-
 /* =============================================
    NAV LINKS 
    ============================================= */
@@ -62,8 +61,6 @@
 .navbar-btn-register:hover {
   background-color: var(--primary-dark);
 }
-
-
 
 /* =============================================
    MOBILE TOGGLER & LOGO
