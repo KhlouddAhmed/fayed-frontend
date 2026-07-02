@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
 import { Material } from '../../models/material.model';
 import { StatusBadge, StatusBadgeVariant } from '../../../../../shared/components/status-badge/status-badge';
 
@@ -16,7 +17,7 @@ const MATERIAL_STATUS_DISPLAY_MAP: Readonly<Record<string, MaterialStatusConfig>
 
 @Component({
   selector: 'app-listing-grid-item',
-  imports: [StatusBadge],
+  imports: [StatusBadge, NgOptimizedImage],
   templateUrl: './listing-grid-item.html',
   styleUrl: './listing-grid-item.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

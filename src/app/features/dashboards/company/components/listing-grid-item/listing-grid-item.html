@@ -1,6 +1,11 @@
 <article class="listing-card">
-  <div class="listing-card-image-placeholder" aria-hidden="true">
-    <i class="lucide-image"></i>
+  <div class="listing-card-image-wrapper">
+    <img
+      [ngSrc]="material().imageUrls[0] ?? '/assets/images/market/plastic-pvc-raw-material.jpg'"
+      [alt]="material().name"
+      fill
+      class="listing-card-image"
+    />
   </div>
 
   <app-status-badge
@@ -11,12 +16,14 @@
 
   <h3 class="listing-card-name">{{ material().name }}</h3>
 
-  <div class="listing-card-meta">
-    <span>{{ material().availableQuantity }} {{ material().unit }}</span>
-    <span class="listing-card-price">
-      {{ material().pricePerUnit }} ج.م /{{ material().unit }}
-    </span>
-  </div>
+<div class="listing-card-meta">
+  <span class="listing-card-price">
+    {{ material().pricePerUnit }} ج.م / <span class="unit">{{ material().unit }}</span>
+  </span>
+  <span class="listing-card-quantity">
+    {{ material().availableQuantity }} <span class="unit">{{ material().unit }}</span>
+  </span>
+</div>
 
   <button
     type="button"

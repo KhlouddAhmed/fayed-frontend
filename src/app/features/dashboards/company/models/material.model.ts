@@ -42,6 +42,9 @@ export interface Material {
   readonly labCertificate: LabCertificate | null;
   readonly publishedAt: Date;
   readonly updatedAt: Date;
+  materialType?: string;
+  condition?: string;
+  maxPricePerUnit?: number;
 }
 
 export interface LabCertificate {
@@ -63,4 +66,10 @@ export interface MaterialFormValue {
   readonly minOrderQuantity: number;
   readonly unit: string;
   readonly pricePerUnit: number;
+  materialType: string;
+  condition: string;
+  maxPricePerUnit: number;
+  imageFiles?: File[];
+  videoFile?: File | null;
+  labCertificateFile?: File | null;
 }

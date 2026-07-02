@@ -1,56 +1,67 @@
 <div class="company-layout-wrapper" dir="rtl">
 
+  <!-- Sidebar -->
   <aside class="sidebar bg-navy">
-    <div class="sidebar-logo-container d-flex align-items-center gap-2 w-100 text-decoration-none"
-      style="height: 50px; padding-right: 20px;">
 
-      <div class="logo-icon ">
+    <!-- Logo -->
+    <div class="sidebar-logo-container d-flex align-items-center gap-2 w-100 text-decoration-none"
+         style="height: 50px; padding-right: 20px;">
+
+      <div class="logo-icon">
         <a [routerLink]="'/'" class="navbar-logo" aria-label="فايض - الصفحة الرئيسية">
-          <img ngSrc="/assets/icons/logo-text.png" alt="فايض" width="40" height="40" 
-            class="navbar-logo-img" />
+          <img ngSrc="/assets/logo/white-logo.svg" alt="فايض" width="40" height="40" 
+               class="navbar-logo-img" />
         </a>
       </div>
 
     </div>
 
+    <!-- Navigation -->
     <nav class="sidebar-nav mt-2">
       <ul class="nav flex-column mb-0">
         @for (item of navItems; track item.route) {
-        <li class="nav-item">
-          <a [routerLink]="item.route" routerLinkActive="active" class="nav-link custom-nav-link py-3 px-4">
-            {{ item.label }}
-          </a>
-        </li>
+          <li class="nav-item">
+            <a [routerLink]="item.route" 
+               routerLinkActive="active" 
+               class="nav-link custom-nav-link py-3 px-4">
+              {{ item.label }}
+            </a>
+          </li>
         }
       </ul>
     </nav>
 
+    <!-- Logout -->
     <div class="sidebar-logout">
       <button type="button" class="logout-btn" (click)="openLogoutModal()">
         <img src="assets/icons/dashboard/logout.svg" alt="" width="20" height="20" />
         تسجيل الخروج
       </button>
     </div>
+
   </aside>
 
+  <!-- Main Content Area -->
   <div class="main-content d-flex flex-column bg-light-gray">
 
+    <!-- Topbar -->
     <header class="topbar bg-white px-4 d-flex align-items-center justify-content-between shadow-sm z-1">
 
+      <!-- Search -->
       <div class="search-box position-relative" style="width: 400px;">
         <input type="text" class="form-control rounded-pill bg-light border-0 py-2 pe-4"
-          placeholder="البحث عن شركات، طلبات، نزاعات..." style="font-size: 13px;">
+               placeholder="البحث عن شركات، طلبات، نزاعات..." style="font-size: 13px;">
         <i class="bi bi-search position-absolute top-50 translate-middle-y text-muted"
-         style="left: 15px;"></i>
-
+           style="left: 15px;"></i>
       </div>
 
+      <!-- Right Side -->
       <div class="d-flex align-items-center gap-4">
         <app-notification-bell />
 
         <div class="d-flex align-items-center gap-3">
           <div class="rounded-circle bg-navy text-white d-flex align-items-center justify-content-center fw-bold"
-            style="width: 45px; height: 45px; font-size: 18px;">
+               style="width: 45px; height: 45px; font-size: 18px;">
             {{ avatarInitial }}
           </div>
           <div class="text-end">
@@ -59,25 +70,28 @@
           </div>
         </div>
       </div>
+
     </header>
 
+    <!-- Page Content -->
     <main class="page-wrapper p-4 overflow-y-auto">
       <router-outlet></router-outlet>
     </main>
 
   </div>
 
+  <!-- Logout Modal -->
   @if (isLogoutModalOpen()) {
-  <div class="modal-overlay">
-    <div class="modal-card">
-      <h4 class="mb-3">تسجيل الخروج</h4>
-      <p class="mb-4 text-muted">هل أنت متأكد أنك ترغب بتسجيل الخروج من لوحة التحكم؟</p>
-      <div class="d-flex gap-2 justify-content-end">
-        <button class="btn btn-danger" (click)="confirmLogout()">نعم، تسجيل الخروج</button>
-        <button class="btn btn-light" (click)="closeLogoutModal()">لا، إلغاء</button>
+    <div class="modal-overlay">
+      <div class="modal-card">
+        <h4 class="mb-3">تسجيل الخروج</h4>
+        <p class="mb-4 text-muted">هل أنت متأكد أنك ترغب بتسجيل الخروج من لوحة التحكم؟</p>
+        <div class="d-flex gap-2 justify-content-end">
+          <button class="btn btn-danger" (click)="confirmLogout()">نعم، تسجيل الخروج</button>
+          <button class="btn btn-light" (click)="closeLogoutModal()">لا، إلغاء</button>
+        </div>
       </div>
     </div>
-  </div>
   }
 
 </div>

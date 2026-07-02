@@ -9,22 +9,25 @@
   position: relative;
 }
 
-.listing-card-image-placeholder {
+.listing-card-image-wrapper {
+  position: relative;
   inline-size: 100%;
   block-size: 140px;
   border-radius: 8px;
+  overflow: hidden;
   background-color: var(--bg-soft);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--slate-faint);
-  font-size: 1.75rem;
+}
+
+.listing-card-image {
+  object-fit: cover;
 }
 
 .listing-card-status {
   position: absolute;
   inset-block-start: 24px;
   inset-inline-start: 24px;
+  background-color: var(--white);
+  border-radius: 999px;
 }
 
 .listing-card-name {
@@ -42,9 +45,19 @@
   color: var(--text-muted);
 }
 
+.listing-card-price,
+.listing-card-quantity {
+  color: #1f2937;
+}
+
 .listing-card-price {
-  color: var(--primary);
-  font-weight: 600;
+  color: #155DFC; 
+  font-weight: 700;
+}
+
+.unit {
+  color: #1f2937; 
+  font-weight: 500;
 }
 
 .listing-card-details-btn {

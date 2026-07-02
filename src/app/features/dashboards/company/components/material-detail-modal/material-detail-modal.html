@@ -1,8 +1,8 @@
 <div class="material-modal" role="dialog" aria-modal="true" aria-labelledby="material-modal-title">
   <header class="material-modal-header">
-    <h2 id="material-modal-title" class="material-modal-title">تفاصيل الخامة</h2>
+        <h2 id="material-modal-title" class="material-modal-title">تفاصيل الخامة</h2>
     <button type="button" class="material-modal-close-btn" (click)="close.emit()" aria-label="إغلاق">
-      <i class="lucide-x"></i>
+      <img src="assets/icons/dashboard/close.svg" alt="" width="42" height="42" />
     </button>
   </header>
 
@@ -14,9 +14,35 @@
 
   <h3 class="material-modal-name">{{ material().name }}</h3>
 
-  <div class="material-modal-image-placeholder" aria-hidden="true">
-    <i class="lucide-image"></i>
+  <div class="material-modal-main-image">
+    @if (material().imageUrls.length > 0) {
+      <img
+        [ngSrc]="material().imageUrls[selectedImageIndex()]"
+        [alt]="material().name"
+        fill
+        class="material-modal-main-image-el"
+      />
+    } @else {
+      <div class="material-modal-image-placeholder" aria-hidden="true">
+        <i class="lucide-image"></i>
+      </div>
+    }
   </div>
+
+  @if (material().imageUrls.length > 1) {
+    <div class="material-modal-thumbnails">
+      @for (image of material().imageUrls; track image; let index = $index) {
+        <button
+          type="button"
+          class="material-modal-thumbnail"
+          [class.material-modal-thumbnail--active]="selectedImageIndex() === index"
+          (click)="selectImage(index)"
+        >
+          <img [ngSrc]="image" [alt]="material().name + ' صورة ' + (index + 1)" fill />
+        </button>
+      }
+    </div>
+  }
 
   <section class="material-modal-section">
     <h4 class="material-modal-section-title">وصف الخامة</h4>
@@ -67,11 +93,11 @@
   }
 
   <footer class="material-modal-footer">
-    <button type="button" class="btn-fayed btn-white" (click)="onDeleteClick()">
-      حذف المادة
-    </button>
     <button type="button" class="btn-fayed btn-blue" (click)="onEditClick()">
       تعديل المادة
+    </button>
+    <button type="button" class="btn-fayed btn-white" (click)="onDeleteClick()">
+      حذف المادة
     </button>
   </footer>
 </div>

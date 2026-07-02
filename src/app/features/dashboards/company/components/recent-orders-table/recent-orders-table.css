@@ -1,12 +1,18 @@
+/* =============================================
+   RECENT ORDERS
+   ============================================= */
 .recent-orders {
   background-color: var(--white);
   border-radius: 12px;
   padding: 20px;
   box-shadow: var(--shadow-card);
   height: 100%;
-  text-align:center ;
+  text-align: center;
 }
 
+/* =============================================
+   HEADER
+   ============================================= */
 .recent-orders-header {
   display: flex;
   align-items: center;
@@ -31,6 +37,9 @@
   text-decoration: underline;
 }
 
+/* =============================================
+   EMPTY STATE
+   ============================================= */
 .recent-orders-empty {
   color: var(--text-muted);
   font-size: 0.875rem;
@@ -38,6 +47,9 @@
   padding: 24px 0;
 }
 
+/* =============================================
+   TABLE
+   ============================================= */
 .recent-orders-table-wrapper {
   overflow-x: auto;
 }
@@ -68,8 +80,21 @@
   border-block-end: none;
 }
 
-@media (max-width: 767.98px) {
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 768px) {
+  .recent-orders {
+    padding: 16px;
+  }
+
   .recent-orders-table {
     min-width: 480px;
+  }
+}
+
+@media (max-width: 480px) {
+  .recent-orders {
+    padding: 12px;
   }
 }

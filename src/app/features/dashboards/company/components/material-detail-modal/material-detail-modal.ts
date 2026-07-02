@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
+import { DatePipe, NgOptimizedImage } from '@angular/common';
 import { Material } from '../../models/material.model';
 import { StatusBadge, StatusBadgeVariant } from '../../../../../shared/components/status-badge/status-badge';
 
@@ -17,7 +17,7 @@ const MATERIAL_STATUS_DISPLAY_MAP: Readonly<Record<string, MaterialStatusConfig>
 
 @Component({
   selector: 'app-material-detail-modal',
-  imports: [StatusBadge, DatePipe],
+  imports: [StatusBadge, DatePipe, NgOptimizedImage],
   templateUrl: './material-detail-modal.html',
   styleUrl: './material-detail-modal.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,6 +30,11 @@ export class MaterialDetailModal {
   readonly delete = output<string>();
 
   protected readonly statusMap = MATERIAL_STATUS_DISPLAY_MAP;
+  protected readonly selectedImageIndex = signal(0);
+
+  protected selectImage(index: number): void {
+    this.selectedImageIndex.set(index);
+  }
 
   protected onEditClick(): void {
     this.edit.emit(this.material().id);

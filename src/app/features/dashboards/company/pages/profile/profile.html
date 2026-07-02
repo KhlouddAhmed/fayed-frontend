@@ -2,7 +2,7 @@
 <div class="profile-page" dir="rtl">
   <header class="profile-page-header">
     <h1 class="profile-page-title">الملف الشخصي</h1>
-    <p class="profile-page-date">التاريخ الحالي {{ currentDate | date: 'h:mma, d MMMM yyyy' }}</p>
+    <p class="profile-page-date"> التاريخ الحالي {{ currentDate | date: 'h:mma, yyyy MMMM d' }}</p>
   </header>
 
   @if (profileResource.isLoading()) {

@@ -60,21 +60,24 @@ export class MyListings {
   }
 
   protected async onSubmitForm(value: MaterialFormValue): Promise<void> {
-    this.isSubmitting.set(true);
+  this.isSubmitting.set(true);
 
+  try {
     const editing = this.selectedMaterial();
     if (editing) {
       await this.repository.update(editing.id, value);
     } else {
       await this.repository.create(value);
     }
-
-    this.isSubmitting.set(false);
     this.activeModal.set(null);
     this.materialsResource.reload();
+  } finally {
+    this.isSubmitting.set(false);
   }
+}
 
-  protected closeModal(): void {
+
+protected closeModal(): void {
     this.activeModal.set(null);
   }
 }

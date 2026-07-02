@@ -1,8 +1,6 @@
 import { ChangeDetectionStrategy, Component, ElementRef, HostListener, inject, signal } from '@angular/core';
 import { NotificationDropdownPanel } from '../notification-dropdown-panel/notification-dropdown-panel';
 
-
-// NOTIFICATION BELL COMPONENT
 @Component({
   selector: 'app-notification-bell',
   templateUrl: './notification-bell.html',

@@ -9,10 +9,10 @@ const COMPANY_NAV_ITEMS: readonly SidebarNavItem[] = [
   { label: 'الرئيسية', route: '/dashboard/company/overview' },
   { label: 'المنتجات المعروضة', route: '/dashboard/company/my-listings' },
   { label: 'العروض وطلبات الأسعار', route: '/dashboard/company/rfq-offers' },
-  { label: 'الطلبات', route: '/dashboard/company/orders' },
+  { label: 'الطلبات النشطة', route: '/dashboard/company/orders' },
   { label: 'الرسائل', route: '/dashboard/company/messages' },
   { label: 'النزاعات', route: '/dashboard/company/disputes' },
-  { label: 'التحليلات والإحصائيات', route: '/dashboard/company/analytics' },
+  // { label: 'التحليلات والإحصائيات', route: '/dashboard/company/analytics' },
   { label: 'الملف الشخصي', route: '/dashboard/company/profile' },
 ];
 

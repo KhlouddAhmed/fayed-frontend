@@ -70,29 +70,29 @@ export const routes: Routes = [
         title: 'الطلبات والمدفوعات - فايض'
       },
       {
-  path: 'disputes',
-  loadComponent: () => import('./features/dashboards/admin/pages/disputes-management/disputes-management')
-    .then(m => m.DisputesComponent),
-  title: 'إدارة النزاعات - فايض'
-},
-{
-  path: 'users',
-  loadComponent: () => import('./features/dashboards/admin/pages/user-management/user-management')
-    .then(m => m.UsersComponent),
-  title: 'إدارة المستخدمين - فايض'
-},
-{
-  path: 'analytics',
-  loadComponent: () => import('./features/dashboards/admin/pages/analytics/analytics')
-    .then(m => m.AnalyticsComponent),
-  title: 'تحليلات المنصة - فايض'
-},
-{
-    path: 'settings',
-    loadComponent: () => import('./features/dashboards/admin/pages/settings/settings')
-      .then(m => m.SettingsComponent),
-    title: 'إعدادات المنصة - فايض'
-  }
+        path: 'disputes',
+        loadComponent: () => import('./features/dashboards/admin/pages/disputes-management/disputes-management')
+          .then(m => m.DisputesComponent),
+        title: 'إدارة النزاعات - فايض'
+      },
+      {
+        path: 'users',
+        loadComponent: () => import('./features/dashboards/admin/pages/user-management/user-management')
+          .then(m => m.UsersComponent),
+        title: 'إدارة المستخدمين - فايض'
+      },
+      {
+        path: 'analytics',
+        loadComponent: () => import('./features/dashboards/admin/pages/analytics/analytics')
+          .then(m => m.AnalyticsComponent),
+        title: 'تحليلات المنصة - فايض'
+      },
+      {
+        path: 'settings',
+        loadComponent: () => import('./features/dashboards/admin/pages/settings/settings')
+          .then(m => m.SettingsComponent),
+        title: 'إعدادات المنصة - فايض'
+      }
     ]
   },
 

@@ -1,16 +1,24 @@
+/* =============================================
+   COMPANY LAYOUT ROOT VARIABLES
+   ============================================= */
 :host {
-  --navy-color: #072158;
+  --navy-color: #02153D;
   --light-gray: #F8FAFC;
   --topbar-height: 80px;
   --sidebar-width: 220px;
 }
 
+/* =============================================
+   LOGO
+   ============================================= */
 .navbar-logo-img {
-margin: 0;
-
   width: auto;
+  margin: 25px 0;
 }
 
+/* =============================================
+   MAIN LAYOUT
+   ============================================= */
 .company-layout-wrapper {
   display: flex;
   height: 100vh;
@@ -31,6 +39,9 @@ margin: 0;
   background-color: var(--light-gray);
 }
 
+/* =============================================
+   SIDEBAR
+   ============================================= */
 .sidebar {
   width: var(--sidebar-width);
   height: 100vh;
@@ -38,6 +49,7 @@ margin: 0;
   position: relative;
 }
 
+/* Nav Links */
 .custom-nav-link {
   color: #FFFFFF;
   font-size: 15px;
@@ -52,6 +64,9 @@ margin: 0;
   color: var(--navy-color) !important;
 }
 
+/* =============================================
+   MAIN CONTENT AREA
+   ============================================= */
 .main-content {
   flex-grow: 1;
   width: calc(100% - var(--sidebar-width));
@@ -67,7 +82,7 @@ margin: 0;
 }
 
 /* =============================================
-   LOG OUT BTN 
+   LOG OUT BUTTON
    ============================================= */
 .sidebar-logout {
   position: absolute;
@@ -99,9 +114,8 @@ margin: 0;
   background: rgba(255, 255, 255, 0.1);
 }
 
-
 /* =============================================
-   Modal Overlay styles
+   MODAL OVERLAY
    ============================================= */
 .modal-overlay {
   position: fixed;
@@ -128,7 +142,7 @@ margin: 0;
 }
 
 /* =============================================
-    Modal btns
+   MODAL BUTTONS
    ============================================= */
 .btn-danger {
   background-color: #EF4444;

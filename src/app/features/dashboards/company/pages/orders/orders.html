@@ -2,7 +2,7 @@
     <header class="orders-page-header">
         <h1 class="orders-page-title">الطلبات النشطة</h1>
         <p class="orders-page-subtitle">الطلبات النشطة، التفاصيل، الضمان، الشحن، والفواتير</p>
-        <p class="overview-page-greeting-date">
+        <p class="orders-page-date">
             التاريخ الحالي {{ currentDate | date: 'h:mma, yyyy MMMM d' }}
         </p>
     </header>
@@ -119,6 +119,10 @@
                     <h3 class="orders-modal-section-title">الإجراءات السريعة</h3>
                     <div class="orders-modal-actions-grid">
                         <button type="button" class="orders-modal-action-card">
+                                <div class="orders-modal-action-text">
+                                <span class="orders-modal-action-title">مراسلة الطرف الآخر</span>
+                                <span class="orders-modal-action-subtitle">متابعة الطلب أو إرسال استفسار</span>
+                            </div>
                             <div class="orders-modal-action-icon orders-modal-action-icon--blue">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#155DFC"
                                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -127,13 +131,14 @@
                                     <polyline points="22,6 12,13 2,6" />
                                 </svg>
                             </div>
-                            <div class="orders-modal-action-text">
-                                <span class="orders-modal-action-title">مراسلة الطرف الآخر</span>
-                                <span class="orders-modal-action-subtitle">متابعة الطلب أو إرسال استفسار</span>
-                            </div>
+
                         </button>
 
                         <button type="button" class="orders-modal-action-card">
+                                <div class="orders-modal-action-text">
+                                <span class="orders-modal-action-title">فتح نزاع</span>
+                                <span class="orders-modal-action-subtitle">الإبلاغ عن مشكلة في الطلب</span>
+                            </div>
                             <div class="orders-modal-action-icon orders-modal-action-icon--red">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EF4444"
                                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -142,10 +147,7 @@
                                     <line x1="12" y1="16" x2="12.01" y2="16" />
                                 </svg>
                             </div>
-                            <div class="orders-modal-action-text">
-                                <span class="orders-modal-action-title">فتح نزاع</span>
-                                <span class="orders-modal-action-subtitle">الإبلاغ عن مشكلة في الطلب</span>
-                            </div>
+
                         </button>
                     </div>
                 </div>

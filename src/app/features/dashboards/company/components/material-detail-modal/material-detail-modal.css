@@ -3,6 +3,8 @@
   border-radius: 14px;
   padding: 24px;
   max-width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
   position: relative;
 }
 
@@ -20,11 +22,17 @@
 }
 
 .material-modal-close-btn {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-size: 1rem;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.material-modal-close-btn:hover {
+    background-color: var(--bg-soft);
 }
 
 .material-modal-status {
@@ -38,17 +46,55 @@
   margin: 0 0 16px;
 }
 
+.material-modal-main-image {
+  position: relative;
+  inline-size: 100%;
+  block-size: 220px;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: var(--bg-soft);
+  margin-block-end: 12px;
+}
+
+.material-modal-main-image-el {
+  object-fit: cover;
+}
+
 .material-modal-image-placeholder {
   inline-size: 100%;
-  block-size: 180px;
-  border-radius: 10px;
-  background-color: var(--bg-soft);
+  block-size: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--slate-faint);
   font-size: 2rem;
+}
+
+.material-modal-thumbnails {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
   margin-block-end: 16px;
+}
+
+.material-modal-thumbnail {
+  position: relative;
+  inline-size: 100%;
+  block-size: 70px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  background: none;
+}
+
+.material-modal-thumbnail img {
+  object-fit: cover;
+}
+
+.material-modal-thumbnail--active {
+  border-color: var(--primary);
 }
 
 .material-modal-section {
