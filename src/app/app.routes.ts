@@ -105,6 +105,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/dashboards/company/pages/overview/overview')
           .then(m => m.Overview),
       },
+      {
+        path: 'payment', 
+        loadComponent: () => import('./features/payment/payment')
+          .then(m => m.PaymentComponent),
+      },
     ],
   },
 
