@@ -1,10 +1,11 @@
 <div class="upload-card"
-  [class.upload-card--uploading]="uploadState() === 'uploading'"
-  [class.upload-card--unsupported]="uploadState() === 'unsupported'"
-  [class.upload-card--success]="uploadState() === 'success'">
+     [class.upload-card--uploading]="uploadState() === 'uploading'"
+     [class.upload-card--unsupported]="uploadState() === 'unsupported'"
+     [class.upload-card--success]="uploadState() === 'success'">
 
   @switch (uploadState()) {
 
+    <!-- IDLE STATE -->
     @case ('idle') {
       <div class="upload-card-icon">
         @if (iconType() === 'document') {
@@ -13,20 +14,25 @@
           <img ngSrc="assets/icons/register-icons/upload-arrow.png" alt="" width="40" height="40" />
         }
       </div>
+
       <span class="upload-card-label">
         {{ label() }}
         @if (required()) {
           <span class="required-mark">*</span>
         }
       </span>
+
       <span class="upload-card-hint">اسحب الملف هنا او</span>
+
       <label class="upload-card-button">
         اختر ملف
         <input type="file" class="upload-card-input" [accept]="acceptAttribute()" (change)="onFileSelected($event)" />
       </label>
+
       <span class="upload-card-constraints">{{ constraintsLabel() }}</span>
     }
 
+    <!-- UPLOADING STATE -->
     @case ('uploading') {
       <span class="upload-card-label">
         {{ label() }}
@@ -34,17 +40,22 @@
           <span class="required-mark">*</span>
         }
       </span>
+
       <div class="upload-card-file-icon">
         <img ngSrc="assets/icons/register-icons/document-outline.png" alt="" width="32" height="32" />
       </div>
+
       <span class="upload-card-filename">{{ selectedFileMeta()?.name }}</span>
       <span class="upload-card-filesize">{{ selectedFileMeta()?.sizeInMb }} MB</span>
+
       <div class="upload-progress-track">
         <div class="upload-progress-fill" [style.width.%]="uploadProgress()"></div>
       </div>
+
       <span class="upload-card-status-text">جار الرفع..</span>
     }
 
+    <!-- UNSUPPORTED STATE -->
     @case ('unsupported') {
       <span class="upload-card-label">
         {{ label() }}
@@ -52,18 +63,23 @@
           <span class="required-mark">*</span>
         }
       </span>
+
       <div class="upload-card-file-icon">
         <img ngSrc="assets/icons/register-icons/document-outline.png" alt="" width="32" height="32" />
       </div>
+
       <span class="upload-card-filename">{{ selectedFileMeta()?.name }}</span>
       <span class="upload-card-filesize">{{ selectedFileMeta()?.sizeInMb }} MB</span>
+
       <span class="upload-card-badge upload-card-badge--error">نوع الملف غير مدعوم</span>
+
       <label class="upload-card-link">
         اختر ملف آخر
         <input type="file" class="upload-card-input" [accept]="acceptAttribute()" (change)="onFileSelected($event)" />
       </label>
     }
 
+    <!-- SUCCESS STATE -->
     @case ('success') {
       <span class="upload-card-label">
         {{ label() }}
@@ -71,14 +87,19 @@
           <span class="required-mark">*</span>
         }
       </span>
+
       <div class="upload-card-file-icon">
         <img ngSrc="assets/icons/register-icons/document-outline.png" alt="" width="32" height="32" />
       </div>
+
       <span class="upload-card-filename">{{ selectedFileMeta()?.name }}</span>
       <span class="upload-card-filesize">{{ selectedFileMeta()?.sizeInMb }} MB</span>
+
       <span class="upload-card-badge upload-card-badge--success">تم الرفع بنجاح</span>
+
       <button type="button" class="upload-card-link" (click)="removeFile()">حذف الملف</button>
     }
 
   }
+
 </div>

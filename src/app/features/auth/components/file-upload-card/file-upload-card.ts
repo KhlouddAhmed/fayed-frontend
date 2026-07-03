@@ -12,19 +12,24 @@ const SIMULATED_UPLOAD_MS = 900;
   styleUrl: './file-upload-card.css',
 })
 export class FileUploadCard {
+
+  // INPUTS
   label = input.required<string>();
   required = input<boolean>(true);
   acceptedExtensions = input<readonly string[]>(['pdf', 'jpg', 'png']);
   maxSizeMb = input<number>(10);
   iconType = input<'document' | 'upload'>('document');
 
+  // OUTPUTS
   readonly fileAccepted = output<File>();
   readonly fileRemoved = output<void>();
 
+  // STATE
   uploadState = signal<FileUploadState>('idle');
   selectedFileMeta = signal<SelectedFileMeta | null>(null);
   uploadProgress = signal(0);
 
+  // COMPUTED
   acceptAttribute = computed(() =>
     this.acceptedExtensions().map((ext) => `.${ext}`).join(',')
   );
@@ -34,6 +39,7 @@ export class FileUploadCard {
     return `الحد الاقصى لكل ملف ${this.maxSizeMb()} MB بصيغة ${types}`;
   });
 
+  // METHODS
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0] ?? null;

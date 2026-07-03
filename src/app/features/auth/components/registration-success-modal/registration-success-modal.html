@@ -1,33 +1,38 @@
 <div class="modal-backdrop">
+
   <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="successModalTitle">
 
-        <div class="modal-icon modal-icon--success">
-       <img ngSrc="/assets/icons/register-icons/success.png"
-        alt="" width="60" height="60" />
+    <!-- Success Icon -->
+    <div class="modal-icon modal-icon--success">
+      <img ngSrc="/assets/icons/register-icons/success.png"
+           alt="" width="60" height="60" />
     </div>
 
+    <!-- Title -->
     <h2 id="successModalTitle" class="modal-title">تم إنشاء حسابك بنجاح</h2>
 
+    <!-- Subtitle -->
     <p class="modal-subtitle">
       تم استلام بياناتك وجاري مراجعتها من فريق التحقق. سنُعلمك بالنتيجة خلال 24 ساعة.
     </p>
 
+    <!-- Data Table -->
     <div class="modal-data-table">
       <div class="modal-data-row">
-                <span class="modal-data-key">اسم الشركة</span>
+        <span class="modal-data-key">اسم الشركة</span>
         <span class="modal-data-value">{{ companyData().companyName }}</span>
-
       </div>
       <div class="modal-data-row">
-                <span class="modal-data-key">اسم المالك</span>
+        <span class="modal-data-key">اسم المالك</span>
         <span class="modal-data-value">{{ companyData().ownerName }}</span>
-
       </div>
     </div>
 
+    <!-- Primary Button -->
     <button type="button" class="modal-btn-primary" (click)="onGoToDashboard()">
       الانتقال إلى لوحة التحكم
     </button>
 
   </div>
+
 </div>

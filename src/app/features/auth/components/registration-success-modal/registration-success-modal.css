@@ -1,3 +1,6 @@
+/* =============================================
+   MODAL BACKDROP
+   ============================================= */
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -9,6 +12,9 @@
   padding: 20px;
 }
 
+/* =============================================
+   MODAL CARD
+   ============================================= */
 .modal-card {
   background-color: var(--white);
   border-radius: 16px;
@@ -22,6 +28,9 @@
   box-shadow: var(--shadow-window);
 }
 
+/* =============================================
+   ICON
+   ============================================= */
 .modal-icon {
   display: flex;
   align-items: center;
@@ -29,13 +38,15 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  /* background-color: var(--accent-green);    icon was replaced with an img */
   color: var(--white);
   font-size: 28px;
   font-weight: 700;
   margin-block-end: 20px;
 }
 
+/* =============================================
+   TEXT
+   ============================================= */
 .modal-title {
   font-family: "Cairo", sans-serif;
   font-size: 22px;
@@ -52,6 +63,9 @@
   margin-block-end: 24px;
 }
 
+/* =============================================
+   DATA TABLE
+   ============================================= */
 .modal-data-table {
   width: 100%;
   border: 1px solid var(--border-light);
@@ -84,6 +98,9 @@
   color: var(--text-muted);
 }
 
+/* =============================================
+   BUTTONS
+   ============================================= */
 .modal-btn-primary {
   width: 100%;
   background-color: var(--primary);

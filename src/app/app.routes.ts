@@ -110,7 +110,6 @@ export const routes: Routes = [
         title: 'الرئيسية - فايض',
       },
       {
-<<<<<<< HEAD
         path: 'my-listings',
         loadComponent: () => import('./features/dashboards/company/pages/my-listings/my-listings')
           .then(m => m.MyListings),
@@ -142,16 +141,16 @@ export const routes: Routes = [
         title: 'النزاعات - فايض',
       },
       {
-        path: 'notifications', 
+        path: 'notifications',
         loadComponent: () => import('./features/notifications/pages/notification-center-page/notification-center-page')
-            .then(c => c.NotificationCenterPage),
-        title: 'الإشعارات - فايض' 
+          .then(c => c.NotificationCenterPage),
+        title: 'الإشعارات - فايض'
       },
-{
-        path: 'payment', 
-        loadComponent: () => import('./features/payment/payment')
-          .then(m => m.PaymentComponent),
-      },
+      //    {
+      //         path: 'payment', 
+      //         loadComponent: () => import('./features/payment/payment')
+      //           .then(m => m.PaymentComponent),
+      //       },
     ],
   },
 

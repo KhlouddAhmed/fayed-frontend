@@ -1,3 +1,6 @@
+/* =============================================
+   UPLOAD CARD
+   ============================================= */
 .upload-card {
   position: relative;
   display: flex;
@@ -12,13 +15,10 @@
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
-.upload-card-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-block-end: 4px;
-}
-
+/* =============================================
+   ICONS
+   ============================================= */
+.upload-card-icon,
 .upload-card-file-icon {
   display: flex;
   align-items: center;
@@ -26,6 +26,9 @@
   margin-block-end: 4px;
 }
 
+/* =============================================
+   TEXT
+   ============================================= */
 .upload-card-label {
   font-family: "Cairo", sans-serif;
   font-size: 15px;
@@ -43,6 +46,9 @@
   color: var(--text-muted);
 }
 
+/* =============================================
+   BUTTONS & LINKS
+   ============================================= */
 .upload-card-button {
   position: relative;
   display: inline-flex;
@@ -76,6 +82,7 @@
   text-decoration: underline;
 }
 
+/* Hidden Input */
 .upload-card-input {
   position: absolute;
   inset: 0;
@@ -85,6 +92,9 @@
   height: 100%;
 }
 
+/* =============================================
+   CONSTRAINTS & FILENAME
+   ============================================= */
 .upload-card-constraints {
   font-family: "Cairo", sans-serif;
   font-size: 11px;
@@ -104,6 +114,9 @@
   color: var(--text-muted);
 }
 
+/* =============================================
+   BADGES & STATUS
+   ============================================= */
 .upload-card-badge {
   display: inline-flex;
   align-items: center;
@@ -133,6 +146,9 @@
   color: var(--primary);
 }
 
+/* =============================================
+   PROGRESS BAR
+   ============================================= */
 .upload-progress-track {
   width: 100%;
   height: 6px;
@@ -147,7 +163,9 @@
   transition: width 0.2s ease;
 }
 
-/* State borders */
+/* =============================================
+   STATES
+   ============================================= */
 .upload-card--uploading {
   border-style: dashed;
   border-color: var(--primary);
