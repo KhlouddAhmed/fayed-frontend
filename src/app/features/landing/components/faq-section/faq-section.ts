@@ -1,5 +1,6 @@
 import { NgOptimizedImage } from '@angular/common';
 import { Component, signal } from '@angular/core';
+import { ChatbotWidget } from '../../../ai/components/chatbot-widget/chatbot-widget';
 
 interface FaqItem {
   readonly question: string;
@@ -9,7 +10,7 @@ interface FaqItem {
 
 @Component({
   selector: 'app-faq-section',
-  imports: [NgOptimizedImage],
+  imports: [NgOptimizedImage, ChatbotWidget],
   templateUrl: './faq-section.html',
   styleUrl: './faq-section.css',
 })
@@ -25,6 +26,11 @@ export class FaqSection {
       isOpen: false
     },
     {
+      question: 'هل التسجيل مجاني؟',
+      answer: 'نعم، التسجيل وإنشاء حساب الشركة في فايض مجاني تماماً، وتحصل المنصة على عمولة فقط من قيمة الصفقات المكتملة بنجاح.',
+      isOpen: false
+    },
+    {
       question: 'من يمكنه التسجيل في فايض؟',
       answer: 'التسجيل مخصص للمصانع والشركات الصناعية المسجلة رسمياً فقط، ويتطلب سجلاً تجارياً وبطاقة ضريبية سارية. كل شركة لها حساب واحد يديره صاحب المصنع، ويُستخدم نفس الحساب للبيع والشراء.',
       isOpen: false
@@ -32,11 +38,6 @@ export class FaqSection {
     {
       question: 'كيف تتم عملية التحقق من الشركة (KYB)؟',
       answer: 'بعد رفع وثائق السجل التجاري والبطاقة الضريبية، يقوم الذكاء الاصطناعي باستخراج البيانات والتحقق منها بشكل أولي، ثم تتم المراجعة النهائية والموافقة من قِبل مسؤول تحقق بشري في المنصة قبل تفعيل الحساب.',
-      isOpen: false
-    },
-    {
-      question: 'هل التسجيل مجاني؟',
-      answer: 'نعم، التسجيل وإنشاء حساب الشركة في فايض مجاني تماماً، وتحصل المنصة على عمولة فقط من قيمة الصفقات المكتملة بنجاح.',
       isOpen: false
     },
     {
@@ -53,5 +54,9 @@ export class FaqSection {
     this.faqs.update(items =>
       items.map((item, i) => i === index ? { ...item, isOpen: !item.isOpen } : item)
     );
+  }
+
+  openEmail() {
+    window.location.href = 'mailto:support@fayed.com';
   }
 }

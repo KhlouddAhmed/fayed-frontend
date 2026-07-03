@@ -110,7 +110,7 @@
 }
 
 .btn-blue:hover {
-  background: var(--primary-hover);
+  background: var(--primary-dark);
   transform: translateY(-5px);
   box-shadow: var(--shadow-primary-strong);
 }
@@ -131,7 +131,7 @@
 /* =============================================
    RESPONSIVE
    ============================================= */
-@media (max-width: 767.98px) {
+@media (max-width: 768px) {
   .faq-container {
     padding: 20px 15px;
   }

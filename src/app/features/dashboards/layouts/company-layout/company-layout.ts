@@ -19,7 +19,7 @@ const COMPANY_NAV_ITEMS: readonly SidebarNavItem[] = [
 @Component({
   selector: 'app-company-layout',
   standalone: true,
-imports: [RouterOutlet, RouterLink, RouterLinkActive, NgOptimizedImage, NotificationBell],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, NgOptimizedImage, NotificationBell],
   templateUrl: './company-layout.html',
   styleUrl: './company-layout.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,12 +28,18 @@ export class CompanyLayout {
   protected readonly navItems = COMPANY_NAV_ITEMS;
   private readonly router = inject(Router);
 
-  // State for logout modal
+  // State for sidebar and modal
+  protected readonly sidebarOpen = signal(false);
   protected readonly isLogoutModalOpen = signal(false);
 
   protected readonly companyName = 'شركة النور';
   protected readonly companyCode = 'FYD-2586';
   protected readonly avatarInitial = 'N';
+
+  // Toggle sidebar
+  protected toggleSidebar(): void {
+    this.sidebarOpen.update(value => !value);
+  }
 
   // Toggle modal visibility
   protected openLogoutModal(): void {

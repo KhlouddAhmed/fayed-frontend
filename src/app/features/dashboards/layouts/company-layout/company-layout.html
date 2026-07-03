@@ -1,19 +1,14 @@
 <div class="company-layout-wrapper" dir="rtl">
 
-  <!-- Sidebar -->
-  <aside class="sidebar bg-navy">
+  <div class="sidebar-overlay" [class.visible]="sidebarOpen()" (click)="toggleSidebar()"></div>
 
-    <!-- Logo -->
-    <div class="sidebar-logo-container d-flex align-items-center gap-2 w-100 text-decoration-none"
-         style="height: 50px; padding-right: 20px;">
+  <aside class="sidebar bg-navy" [class.open]="sidebarOpen()">
 
-      <div class="logo-icon">
-        <a [routerLink]="'/'" class="navbar-logo" aria-label="فايض - الصفحة الرئيسية">
-          <img ngSrc="/assets/logo/white-logo.svg" alt="فايض" width="40" height="40" 
-               class="navbar-logo-img" />
-        </a>
-      </div>
-
+    <div class="sidebar-logo-container d-flex align-items-center gap-2 w-100" 
+    style="height: 80px; padding-right: 20px;">
+      <a [routerLink]="'/'" class="navbar-logo" aria-label="فايض - الصفحة الرئيسية">
+        <img ngSrc="/assets/logo/white-logo.svg" alt="فايض" width="40" height="40" class="navbar-logo-img" />
+      </a>
     </div>
 
     <!-- Navigation -->
@@ -23,6 +18,7 @@
           <li class="nav-item">
             <a [routerLink]="item.route" 
                routerLinkActive="active" 
+               (click)="sidebarOpen.set(false)"
                class="nav-link custom-nav-link py-3 px-4">
               {{ item.label }}
             </a>
@@ -46,38 +42,38 @@
 
     <!-- Topbar -->
     <header class="topbar bg-white px-4 d-flex align-items-center justify-content-between shadow-sm z-1">
+      
+      <button class="sidebar-toggle-btn d-lg-none border-0 bg-transparent p-0" (click)="toggleSidebar()">
+        <img src="assets/icons/navbar-toggler.png" alt="Menu" width="24" height="24" />
+      </button>
 
-      <!-- Search -->
       <div class="search-box position-relative" style="width: 400px;">
         <input type="text" class="form-control rounded-pill bg-light border-0 py-2 pe-4"
                placeholder="البحث عن شركات، طلبات، نزاعات..." style="font-size: 13px;">
-        <i class="bi bi-search position-absolute top-50 translate-middle-y text-muted"
-           style="left: 15px;"></i>
       </div>
 
       <!-- Right Side -->
       <div class="d-flex align-items-center gap-4">
-        <app-notification-bell />
 
+        <app-notification-bell />
+        
         <div class="d-flex align-items-center gap-3">
           <div class="rounded-circle bg-navy text-white d-flex align-items-center justify-content-center fw-bold"
                style="width: 45px; height: 45px; font-size: 18px;">
             {{ avatarInitial }}
           </div>
-          <div class="text-end">
+          <div class="text-end d-none d-md-block">
             <h6 class="mb-0 fw-bold text-navy" style="font-size: 14px;">{{ companyName }}</h6>
             <small class="text-muted" style="font-size: 12px;">{{ companyCode }}</small>
           </div>
         </div>
       </div>
-
     </header>
 
     <!-- Page Content -->
     <main class="page-wrapper p-4 overflow-y-auto">
       <router-outlet></router-outlet>
     </main>
-
   </div>
 
   <!-- Logout Modal -->
@@ -93,5 +89,4 @@
       </div>
     </div>
   }
-
 </div>

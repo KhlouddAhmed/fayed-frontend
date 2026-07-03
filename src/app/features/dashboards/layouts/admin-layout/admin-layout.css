@@ -1,50 +1,158 @@
 :host {
-  --navy-color: #072158; 
-  --light-gray: #F8FAFC; 
+  --navy-color: #02153D;
+  --light-gray: #F8FAFC;
   --topbar-height: 80px;
-  --sidebar-width: 220px; 
+  --sidebar-width: 220px;
 }
 
+/* =============================================
+   WRAPPER
+   ============================================= */
 .admin-layout-wrapper {
   display: flex;
   height: 100vh;
   overflow: hidden;
   background-color: var(--light-gray);
   font-family: 'Cairo', sans-serif;
+  position: relative;
 }
 
-.bg-navy { background-color: var(--navy-color); }
-.text-navy { color: var(--navy-color); }
-.bg-light-gray { background-color: var(--light-gray); }
+/* =============================================
+   UTILITIES
+   ============================================= */
+.bg-navy {
+  background-color: var(--navy-color);
+}
 
+.text-navy {
+  color: var(--navy-color);
+}
+
+.bg-light-gray {
+  background-color: var(--light-gray);
+}
+
+/* =============================================
+   SIDEBAR
+   ============================================= */
 .sidebar {
   width: var(--sidebar-width);
   height: 100vh;
+  background-color: var(--navy-color);
+  z-index: 1050;
+  transition: transform 0.3s ease-in-out;
+  position: relative;
+}
+
+@media (min-width: 992px) {
+  .sidebar {
+    position: relative;
+    transform: none !important;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .sidebar {
+    position: fixed;
+    right: -220px;
+    top: 0;
+  }
+
+  .sidebar.open {
+    right: 0;
+  }
+}
+
+/* =============================================
+   OVERLAY (Mobile Only)
+   ============================================= */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
   z-index: 1040;
+  display: none;
 }
 
-.sidebar-header-space {
-  height: var(--topbar-height);
+.sidebar-overlay.visible {
+  display: block;
 }
 
+/* =============================================
+   NAV LINKS
+   ============================================= */
 .custom-nav-link {
-  color: #FFFFFF; 
+  color: #FFFFFF;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   transition: all 0.2s ease;
   border-right: 4px solid transparent;
+  display: block;
+  text-decoration: none;
 }
 
-
-.custom-nav-link.active, .custom-nav-link:hover {
+.custom-nav-link.active,
+.custom-nav-link:hover {
   background-color: #FFFFFF;
   color: var(--navy-color) !important;
-  font-weight: 700;
 }
 
+/* Logo Image */
+.navbar-logo-img {
+  width: auto;
+  margin: 25px 0;
+  display: block;
+}
+/* =============================================
+   LOGOUT BUTTON
+   ============================================= */
+.sidebar-logout {
+  position: absolute;
+  bottom: 24px;
+  right: 0;
+  left: 0;
+  padding-inline: 16px;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-family: 'Cairo', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* =============================================
+   MAIN CONTENT
+   ============================================= */
 .main-content {
   flex-grow: 1;
   width: calc(100% - var(--sidebar-width));
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 991.98px) {
+  .main-content {
+    width: 100%;
+  }
 }
 
 .topbar {
@@ -54,4 +162,53 @@
 
 .page-wrapper {
   height: calc(100vh - var(--topbar-height));
+  overflow-y: auto;
+}
+
+/* =============================================
+   MODAL
+   ============================================= */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-card {
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  text-align: right;
+  direction: rtl;
+}
+
+/* =============================================
+   MODAL BUTTONS
+   ============================================= */
+.btn-danger {
+  background-color: #EF4444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.btn-light {
+  background-color: #F3F4F6;
+  color: #374151;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
 }

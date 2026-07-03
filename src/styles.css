@@ -125,6 +125,11 @@ body {
   transform: none !important;
 }
 
+.btn-lg {
+  padding: 16px 32px;
+  font-size: 1.05rem;
+}
+
 /* =============================================
    BUTTON — BLUE (PRIMARY)
    ============================================= */
@@ -135,7 +140,7 @@ body {
 }
 
 .btn-blue:hover:not(:disabled) {
-  background-color: var(--primary-hover);
+  background-color: var(--primary-dark);
   border-color: var(--primary-hover);
   /* transform: translateY(-3px); */
   box-shadow: var(--shadow-primary-strong);

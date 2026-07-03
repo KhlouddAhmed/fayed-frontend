@@ -1,11 +1,11 @@
 <div class="admin-layout-wrapper" dir="rtl">
-  
-  <aside class="sidebar bg-navy">
-    
-    <!-- اللوجو ناحية اليمين ونفس محاذاة اللينكات بفضل px-4 -->
-    <a routerLink="/home" class="sidebar-logo d-flex align-items-center w-100 text-decoration-none px-4" style="height: 90px; cursor: pointer;">
-      
-      <!-- اللوجو بحجم أصغر ومتناسق -->
+
+  <div class="sidebar-overlay" [class.visible]="isSidebarOpen()" (click)="toggleSidebar()"></div>
+
+  <aside class="sidebar bg-navy" [class.open]="isSidebarOpen()">
+
+    <!-- Logo -->
+    <a routerLink="/home" class="d-flex align-items-center w-100 text-decoration-none px-4" style="height: 80px; cursor: pointer;">
       <svg width="105" height="50" viewBox="148 40 100 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M154.512 56.8966L156.361 48.6935C156.361 48.6935 157.407 43.7855 163.196 43.2951C168.985 42.8046 188.28 43.2951 188.28 43.2951L188.682 40L197.848 47.0806L186.028 54.8623L186.512 51.7779H163.839L154.514 56.895L154.512 56.8966Z" fill="white"/>
         <path d="M153.306 62.5049L162.15 56.8974H181.365L181.848 54.4434L188.762 60.6829L179.436 67.4821L179.596 65.0988H162.954L151.467 71.9704L153.306 62.5049Z" fill="url(#paint0_linear_2141_3897)"/>
@@ -27,104 +27,85 @@
       </svg>
     </a>
 
+    <!-- Navigation -->
     <nav class="sidebar-nav mt-2">
       <ul class="nav flex-column mb-0">
-        <li class="nav-item">
-          <a routerLink="/admin/overview" routerLinkActive="active" class="nav-link custom-nav-link py-3 px-4 d-flex align-items-center gap-2">
-            <i class="bi bi-house fs-6"></i>
-            <span>الرئيسية</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a routerLink="/admin/kyb" routerLinkActive="active" class="nav-link custom-nav-link py-3 px-4 d-flex align-items-center gap-2">
-            <i class="bi bi-person-check fs-6"></i>
-            <span>التحقق من الهوية</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a routerLink="/admin/moderation" routerLinkActive="active" class="nav-link custom-nav-link py-3 px-4 d-flex align-items-center gap-2">
-            <i class="bi bi-clipboard-check fs-6"></i>
-            <span>إدارة الاعلانات</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a routerLink="/admin/orders" routerLinkActive="active" class="nav-link custom-nav-link py-3 px-4 d-flex align-items-center gap-2">
-            <i class="bi bi-inbox fs-6"></i>
-            <span>الطلبات والمدفوعات</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a routerLink="/admin/disputes" routerLinkActive="active" class="nav-link custom-nav-link py-3 px-4 d-flex align-items-center gap-2">
-            <i class="bi bi-exclamation-triangle fs-6"></i>
-            <span>إدارة النزاعات</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a routerLink="/admin/users" routerLinkActive="active" class="nav-link custom-nav-link py-3 px-4 d-flex align-items-center gap-2">
-            <i class="bi bi-people fs-6"></i>
-            <span>إدارة المستخدمين</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a routerLink="/admin/analytics" routerLinkActive="active" class="nav-link custom-nav-link py-3 px-4 d-flex align-items-center gap-2">
-            <i class="bi bi-bar-chart-line fs-6"></i>
-            <span>التحليلات والإحصائيات</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a routerLink="/admin/settings" routerLinkActive="active" class="nav-link custom-nav-link py-3 px-4 d-flex align-items-center gap-2">
-            <i class="bi bi-gear fs-6"></i>
-            <span>إعدادات المنصة</span>
-          </a>
-        </li>
+        @for (item of navItems; track item.route) {
+          <li class="nav-item">
+            <a [routerLink]="item.route"
+               routerLinkActive="active"
+               (click)="isSidebarOpen.set(false)"
+               class="nav-link custom-nav-link py-3 px-4 d-flex align-items-center gap-2">
+              <i [class]="item.icon + ' fs-6'"></i>
+              <span>{{ item.label }}</span>
+            </a>
+          </li>
+        }
       </ul>
     </nav>
-    <div class="mt-auto p-4">
-      <button (click)="logout()" 
-              class="btn w-100 text-white d-flex align-items-center gap-2 logout-btn p-0">
+
+    <!-- Logout -->
+    <div class="sidebar-logout">
+      <button type="button" class="logout-btn" (click)="openLogoutModal()">
         <i class="bi bi-box-arrow-right fs-6" style="transform: scaleX(-1);"></i>
-        <span class="fw-medium" style="font-size: 14px;">تسجيل الخروج</span>
+        تسجيل الخروج
       </button>
     </div>
+
   </aside>
 
-  <div class="main-content d-flex flex-column bg-light-gray">
-    
+  <!-- Main Content -->
+  <div class="main-content bg-light-gray">
+
     <header class="topbar bg-white px-4 d-flex align-items-center justify-content-between shadow-sm z-1">
-      
-      <!-- مربع البحث -->
+
+      <button class="border-0 bg-transparent p-0 d-lg-none" (click)="toggleSidebar()">
+        <i class="bi bi-list fs-4 text-navy"></i>
+      </button>
+
+      <!-- Search -->
       <div class="search-box position-relative" style="width: 400px;">
-        <input type="text" class="form-control rounded-pill bg-light border-0 py-2 pe-4" placeholder="البحث عن شركات، طلبات، نزاعات..." style="font-size: 13px;">
+        <input type="text" class="form-control rounded-pill bg-light border-0 py-2 pe-4"
+               placeholder="البحث عن شركات، طلبات، نزاعات..." style="font-size: 13px;">
         <i class="bi bi-search position-absolute top-50 translate-middle-y text-muted" style="left: 15px;"></i>
       </div>
 
-      <!-- قسم المستخدم والإشعارات -->
+      <!-- User & Notifications -->
       <div class="d-flex align-items-center gap-4">
-        
-        <!-- أيقونة الإشعارات (تم إضافة border و border-radius لتطابق الصورة) -->
-        <button class="btn bg-white border border-light-subtle d-flex align-items-center justify-content-center p-0" style="width: 40px; height: 40px; border-radius: 10px;">
-          <i class="bi bi-bell text-primary" style="font-size: 18px;"></i>
-        </button>
 
-        <!-- بيانات المستخدم -->
+        <app-notification-bell />
+
         <div class="d-flex align-items-center gap-3">
-          
-          <!-- 1. الصورة هنا بقت الأول عشان تظهر على اليمين في الـ RTL -->
-          <img [src]="currentUser().avatarUrl" alt="User Avatar" class="rounded-circle shadow-sm" width="45" height="45" style="object-fit: cover;">
-          
-          <!-- 2. النص بقى التاني عشان يظهر على الشمال -->
-          <div class="text-end">
+          <img [src]="currentUser().avatarUrl" alt="User Avatar"
+               class="rounded-circle shadow-sm"
+               width="45" height="45"
+               style="object-fit: cover;">
+          <div class="text-end d-none d-md-block">
             <h6 class="mb-0 fw-bold text-navy" style="font-size: 14px;">{{ currentUser().name }}</h6>
             <small class="text-muted" style="font-size: 12px;">{{ currentUser().role }}</small>
           </div>
-          
         </div>
       </div>
     </header>
 
-    <main class="page-wrapper p-4 overflow-y-auto">
+    <main class="page-wrapper p-4">
       <router-outlet></router-outlet>
     </main>
 
   </div>
+
+  <!-- Logout Modal -->
+  @if (isLogoutModalOpen()) {
+    <div class="modal-overlay">
+      <div class="modal-card">
+        <h4 class="mb-3">تسجيل الخروج</h4>
+        <p class="mb-4 text-muted">هل أنت متأكد أنك ترغب بتسجيل الخروج من لوحة التحكم؟</p>
+        <div class="d-flex gap-2 justify-content-end">
+          <button class="btn btn-danger" (click)="confirmLogout()">نعم، تسجيل الخروج</button>
+          <button class="btn btn-light" (click)="closeLogoutModal()">لا، إلغاء</button>
+        </div>
+      </div>
+    </div>
+  }
+
 </div>

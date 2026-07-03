@@ -25,11 +25,17 @@
   <div class="faq-footer">
     <p class="footer-text">لم تجد إجابة لسؤالك؟ تواصل مع فريق الدعم أو أرسل استفسارك مباشرة</p>
     <div class="faq-buttons">
-      <button type="button" class="btn-custom btn-blue">
+
+      <button type="button" class="btn-custom btn-blue" (click)="myChatbot.isOpen.set(true)">
         تواصل مع الدعم
         <img ngSrc="assets/images/landing/support.png" width="20" height="20" alt="">
       </button>
-      <button type="button" class="btn-custom btn-white">إرسال استفسار</button>
+
+      <button type="button" class="btn-custom btn-white" (click)="openEmail()">
+        إرسال استفسار
+      </button>
     </div>
   </div>
+
+  <app-chatbot-widget #myChatbot />
 </section>
