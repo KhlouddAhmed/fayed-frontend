@@ -1,0 +1,270 @@
+<div class="checkout-wrapper" dir="rtl">
+  <div class="container-fluid py-5 px-4 px-md-5" style="max-width: 1300px;">
+
+    <div class="mb-4 pb-2">
+      <button (click)="goBack()" class="btn btn-link text-primary text-decoration-none d-inline-flex align-items-center gap-2 p-0 fw-bold" style="font-size: 15px;">
+        <i class="bi bi-chevron-right" style="font-size: 14px;"></i>
+        الرجوع
+      </button>
+    </div>
+
+    <div class="row g-5 justify-content-center">
+
+      <div class="col-md-10 col-lg-6">
+        <div class="card custom-card border-0 h-100 p-4 p-md-5">
+          <h5 class="text-center fw-bold text-navy mb-5 pb-3">ملخص الطلب</h5>
+          
+          <div class="d-flex justify-content-between align-items-center mb-4 pb-1">
+            <span class="text-navy fw-medium fs-sm">بولي إيثيلين معاد تدويره (PE)</span>
+            <span class="text-muted fs-sm">40 طن</span>
+          </div>
+          
+          <div class="d-flex justify-content-between align-items-center mb-4 pb-1">
+            <span class="text-muted fs-sm">المورد</span>
+            <span class="text-navy fw-medium fs-sm">مصنع النور للبلاستيك</span>
+          </div>
+          
+          <div class="d-flex justify-content-between align-items-center mb-4 pb-1">
+            <span class="text-muted fs-sm">تاريخ التسليم المتوقع</span>
+            <span class="text-navy fw-medium fs-sm">15 يونيو 2025</span>
+          </div>
+          
+          <div class="d-flex justify-content-between align-items-center mb-5 pb-2">
+            <span class="text-muted fs-sm">رقم العقد</span>
+            <span class="text-navy fw-medium fs-sm" dir="ltr">FAID-2025-0784</span>
+          </div>
+          
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <span class="text-muted fs-sm">قيمة الصفقة</span>
+            <span class="text-navy fw-medium fs-sm">245,000 ج.م</span>
+          </div>
+          
+          <div class="d-flex justify-content-between align-items-start mb-4">
+            <div>
+              <div class="text-muted fs-sm mb-1">رسوم المنصة (3%)</div>
+              <small class="text-muted opacity-75" style="font-size: 11px;">مقسمة على الطرفين</small>
+            </div>
+            <span class="text-navy fw-medium fs-sm">7,350 ج.م</span>
+          </div>
+          
+          <hr class="border-secondary opacity-10 my-4">
+          
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="text-muted fw-bold fs-sm">المبلغ الإجمالي</span>
+            <span class="text-navy fw-bold fs-5">252,500 ج.م</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-10 col-lg-6">
+        
+        @if (currentStep() === 'agreement') {
+          <div class="card custom-card border-0 h-100 p-4 p-md-5 d-flex flex-column">
+            <h5 class="fw-bold text-navy mb-4 pb-2">الدفع المضمون عبر فايض</h5>
+            <p class="text-muted lh-lg mb-5" style="font-size: 13px;">
+              لحماية جميع الأطراف، لا يتم تحويل المبلغ إلى المورد مباشرة.
+              <br><br>
+              يقوم المشتري بإيداع قيمة الصفقة في حساب الضمان الخاص بفايض، ويتم الاحتفاظ بالمبلغ حتى استلام الشحنة والتأكد من مطابقتها للشروط المتفق عليها.
+              <br><br>
+              بعد تأكيد الاستلام، يتم تحويل المبلغ إلى المورد بشكل آمن.
+            </p>
+            <div class="payment-steps mb-5 pe-md-3">
+              <div class="d-flex align-items-center gap-3 mb-3 pb-1">
+                <i class="bi bi-credit-card text-primary fs-5"></i>
+                <span class="text-navy fw-medium fs-sm">ادفع بأمان</span>
+              </div>
+              <div class="d-flex align-items-center gap-3 mb-3 pb-1">
+                <i class="bi bi-shield-check text-primary fs-5"></i>
+                <span class="text-navy fw-medium fs-sm">فايض تحجز المبلغ</span>
+              </div>
+              <div class="d-flex align-items-center gap-3 mb-3 pb-1">
+                <i class="bi bi-truck text-primary fs-5"></i>
+                <span class="text-navy fw-medium fs-sm">المورد يشحن</span>
+              </div>
+              <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-check-circle text-primary fs-5"></i>
+                <span class="text-navy fw-medium fs-sm">أنت تستلم وتؤكد</span>
+              </div>
+            </div>
+            <div class="mt-auto">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <input type="checkbox" id="agreementCheck" 
+                       [checked]="isAgreed()" (change)="toggleAgreement($event)"
+                       style="width: 18px; height: 18px; cursor: pointer; margin: 0; accent-color: #2563EB;">
+                <label class="text-navy fw-medium fs-sm mb-0 pt-1" for="agreementCheck" style="cursor: pointer; user-select: none;">
+                  لقد قرأت وفهمت آلية الدفع المضمون
+                </label>
+              </div>
+              <button class="btn w-100 py-3 rounded-3 fw-bold transition-all"
+                      [ngClass]="isAgreed() ? 'btn-primary shadow-sm' : 'btn-disabled'"
+                      [disabled]="!isAgreed()" (click)="proceedToPayment()">
+                المتابعة إلى الدفع
+              </button>
+            </div>
+          </div>
+        }
+
+        @if (currentStep() === 'card') {
+          <div class="card custom-card border-0 h-100 p-4 p-md-5 d-flex flex-column justify-content-center">
+            <form [formGroup]="paymentForm" (ngSubmit)="confirmPayment()">
+              
+              <div class="mb-4">
+                <div class="position-relative d-flex align-items-center custom-input-box p-0" [class.has-error]="isInvalid('cardNumber')" style="height: 55px;">
+                  <div class="position-absolute d-flex align-items-center gap-2" style="left: 15px; z-index: 5;">
+                    <svg width="30" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="10" cy="10" r="10" fill="#EB001B"/>
+                      <circle cx="22" cy="10" r="10" fill="#F79E1B" opacity="0.8"/>
+                    </svg>
+                    <span class="fw-bold" style="color: #1434CB; font-style: italic; font-size: 15px;">VISA</span>
+                  </div>
+                  <input type="text" formControlName="cardNumber" (input)="formatCardNumber($event)" 
+                         maxlength="19" class="w-100 h-100 border-0 bg-transparent text-end pe-3" 
+                         placeholder="رقم البطاقة الائتمانية" dir="ltr" 
+                         style="padding-left: 95px; outline: none; color: #0F172A; font-size: 14.5px;">
+                  @if (isInvalid('cardNumber')) {
+                    <i class="bi bi-exclamation-triangle-fill text-danger fs-5 position-absolute" style="right: auto; left: 85px;"></i>
+                  }
+                </div>
+                @if (isInvalid('cardNumber')) {
+                  <small class="text-danger mt-1 d-block text-start" dir="ltr">Your card number is invalid.</small>
+                }
+              </div>
+
+              <div class="mb-4">
+                <div class="custom-input-box" [class.has-error]="isInvalid('cardHolder')">
+                  <label>اسم حامل البطاقة</label>
+                  <div class="d-flex justify-content-between align-items-center flex-row-reverse" dir="ltr">
+                    <input type="text" formControlName="cardHolder" class="w-100 border-0 bg-transparent text-start card-input-field">
+                  </div>
+                </div>
+              </div>
+
+              <div class="row g-3 mb-5">
+                <div class="col-6">
+                  <div class="custom-input-box" [class.has-error]="isInvalid('expiry')">
+                    <label>تاريخ انتهاء البطاقة MM/YY</label>
+                    <div class="d-flex justify-content-between align-items-center flex-row-reverse" dir="ltr">
+                      <input type="text" formControlName="expiry" (input)="formatExpiry($event)" 
+                             maxlength="5" class="w-100 border-0 bg-transparent text-start card-input-field" placeholder="MM/YY">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="custom-input-box" [class.has-error]="isInvalid('cvv')">
+                    <label>CVV</label>
+                    <div class="d-flex justify-content-between align-items-center flex-row-reverse" dir="ltr">
+                      <input type="text" formControlName="cvv" maxlength="4" class="w-100 border-0 bg-transparent text-start card-input-field" placeholder="CVV">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-2">
+                <button type="submit" class="btn w-100 py-3 rounded-3 fw-bold transition-all"
+                        [ngClass]="paymentForm.valid ? 'btn-primary shadow-sm' : 'btn-disabled'"
+                        [disabled]="!paymentForm.valid">
+                  تأكيد الدفع
+                </button>
+              </div>
+            </form>
+          </div>
+        }
+
+        @if (currentStep() === 'confirm') {
+          <div class="card custom-card border-0 h-100 p-4 p-md-5 d-flex flex-column">
+            
+            <h5 class="fw-bold text-navy text-end mb-4">تأكيد الدفع</h5>
+            
+            <div class="text-center mt-2 mb-4">
+              <p class="text-muted fs-sm mb-2">سيتم إيداع مبلغ</p>
+              <h2 class="fw-bold text-navy mb-2">252,500 ج.م</h2>
+              <p class="text-muted fs-sm">في حساب الضمان الخاص بفايض</p>
+            </div>
+
+            <div class="alert-box mb-4 d-flex align-items-center gap-2">
+              <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+              <span class="text-navy fs-sm fw-medium mb-0">
+                لن يتم تحويل المبلغ للمورد إلا بعد تأكيد استلام الشحنة وفقا للعقد الموقع
+              </span>
+            </div>
+
+            <div class="text-end mb-4 pb-2">
+              <span class="text-muted fs-sm pe-1">رقم العقد</span>
+              <span class="text-navy fw-medium fs-sm" dir="ltr">CTR-2026-00124</span>
+            </div>
+
+            <div class="mt-auto">
+              
+              <div class="d-flex align-items-center justify-content-start gap-2 mb-3">
+                <input type="checkbox" id="dataConfirmCheck" 
+                       [checked]="isDataConfirmed()" (change)="toggleDataConfirm($event)"
+                       style="width: 16px; height: 16px; cursor: pointer; margin: 0; accent-color: #2563EB;">
+                <label class="text-muted fs-sm mb-0 pt-1" for="dataConfirmCheck" style="cursor: pointer; user-select: none;">
+                  أؤكد صحة بيانات الدفع
+                </label>
+              </div>
+
+              <div class="d-flex align-items-center justify-content-start gap-2 mb-4 pb-3">
+                <input type="checkbox" id="termsCheck" 
+                       [checked]="isTermsAgreed()" (change)="toggleTermsAgreed($event)"
+                       style="width: 16px; height: 16px; cursor: pointer; margin: 0; accent-color: #2563EB;">
+                <label class="text-muted fs-sm mb-0 pt-1" for="termsCheck" style="cursor: pointer; user-select: none;">
+                  أوافق على شروط العقد
+                </label>
+              </div>
+
+              <div class="d-flex gap-3">
+                <button class="btn flex-grow-1 py-3 rounded-3 fw-bold transition-all"
+                        [ngClass]="(isDataConfirmed() && isTermsAgreed()) ? 'btn-primary shadow-sm' : 'btn-disabled'"
+                        [disabled]="!(isDataConfirmed() && isTermsAgreed()) || isProcessing()"
+                        (click)="submitFinalDeposit()">
+                  @if (isProcessing()) {
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    جارٍ المعالجة...
+                  } @else {
+                    تأكيد الإيداع
+                  }
+                </button>
+                
+                <button class="btn btn-outline-custom flex-grow-1 py-3 rounded-3 fw-bold transition-all" (click)="cancelPayment()">
+                  إلغاء
+                </button>
+              </div>
+
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (showSuccessModal()) {
+  <div class="custom-modal-overlay d-flex justify-content-center align-items-center" dir="rtl">
+    <div class="custom-modal-box p-4 p-md-5 text-center bg-white rounded-4 shadow-lg mx-3" style="max-width: 500px; width: 100%;">
+      
+<div class="mb-4">
+        <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="35" cy="35" r="35" fill="#59B862"/>
+          <path d="M21 35L31.5 45.5L49 24.5" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <h3 class="fw-bold text-navy mb-3">تم الإيداع بنجاح</h3>
+      <p class="text-muted fs-sm mb-1">تم حجز مبلغ الصفقة في حساب الضمان الخاص بفايض</p>
+      <p class="text-muted fs-sm border-bottom pb-4 mb-4 d-inline-block border-opacity-25" style="border-color: #CBD5E1 !important;">
+        يمكن للمورد الآن بدء تجهيز الشحنة
+      </p>
+
+      <div class="d-flex gap-3 mt-2">
+        <button class="btn btn-primary flex-grow-1 py-3 rounded-3 fw-bold transition-all" (click)="goToOrderDetails()">
+          عرض تفاصيل الطلب
+        </button>
+        <button class="btn btn-outline-custom flex-grow-1 py-3 rounded-3 fw-bold transition-all text-secondary" (click)="returnToChat()">
+          العودة للمحادثة
+        </button>
+      </div>
+
+    </div>
+  </div>
+}
