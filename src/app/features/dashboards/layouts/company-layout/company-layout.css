@@ -122,11 +122,22 @@
   text-decoration: none;
 }
 
+.custom-nav-link img {
+  transition: filter 0.2s ease;
+}
+
 .custom-nav-link.active,
 .custom-nav-link:hover {
   background-color: #FFFFFF;
   color: #02153D !important;
 }
+
+
+.custom-nav-link.active img,
+.custom-nav-link:hover img {
+  filter: brightness(0) saturate(100%) invert(9%) sepia(43%) saturate(5318%) hue-rotate(215deg) brightness(90%) contrast(106%);
+}
+
 
 /* =============================================
    LOGOUT BUTTON (Absolute Positioning)

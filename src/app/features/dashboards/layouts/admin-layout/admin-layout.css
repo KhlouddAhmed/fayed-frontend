@@ -129,7 +129,7 @@
   justify-content: flex-end;
   gap: 10px;
   width: 100%;
-  padding: 12px 20px;
+  padding: 12px 36px;
   background: transparent;
   border: none;
   color: #ffffff;
@@ -144,6 +144,7 @@
 .logout-btn:hover {
   background: rgba(255, 255, 255, 0.1);
 }
+
 
 /* =============================================
    MAIN CONTENT
