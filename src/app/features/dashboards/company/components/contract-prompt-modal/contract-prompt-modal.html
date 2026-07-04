@@ -1,0 +1,17 @@
+<div class="contract-prompt" role="dialog" aria-modal="true">
+  <h2 class="contract-prompt-title">
+    يبدو أنكما توصّلتما إلى اتفاق. هل ترغبون في إنشاء عقد لهذه الصفقة؟
+  </h2>
+  <p class="contract-prompt-desc">
+    سيقوم النظام تلقائياً بإنشاء مسودة عقد جديدة وتعبئة البيانات المتوفرة من المحادثة بهويات مشفرة لحماية خصوصيتكما التجارية.
+  </p>
+  <div class="contract-prompt-actions">
+        <button type="button" class="btn-fayed btn-blue" (click)="confirm.emit()">
+      انشاء عقد
+    </button>
+    <button type="button" class="btn-fayed btn-white" (click)="dismiss.emit()">
+      لاحقا
+    </button>
+
+  </div>
+</div>

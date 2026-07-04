@@ -1,0 +1,34 @@
+.contract-prompt {
+  background-color: var(--white);
+  border-radius: 14px;
+  padding: 40px 32px;
+  max-inline-size: 540px;
+  text-align: center;
+}
+
+.contract-prompt-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+
+.contract-prompt-desc {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  margin: 0 0 32px;
+  line-height: 1.7;
+}
+
+.contract-prompt-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.contract-prompt-actions .btn-fayed {
+  flex: 1;
+  padding: 16px;
+  font-size: 1rem;
+  border-radius: 12px;
+}

@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ContractPreviewPanel } from './contract-preview-panel';
+import { ContractPromptModal } from './contract-prompt-modal';
 
-describe('ContractPreviewPanel', () => {
-  let component: ContractPreviewPanel;
-  let fixture: ComponentFixture<ContractPreviewPanel>;
+describe('ContractPromptModal', () => {
+  let component: ContractPromptModal;
+  let fixture: ComponentFixture<ContractPromptModal>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ContractPreviewPanel],
+      imports: [ContractPromptModal],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ContractPreviewPanel);
+    fixture = TestBed.createComponent(ContractPromptModal);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

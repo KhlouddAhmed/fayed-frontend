@@ -1,0 +1,10 @@
+<div class="status-screen" role="status">
+  <div class="status-screen-icon" aria-hidden="true">
+    <i class="lucide-check"></i>
+  </div>
+  <h2 class="status-screen-title">{{ title() }}</h2>
+  <p class="status-screen-desc">{{ description() }}</p>
+  <button type="button" class="btn-fayed btn-blue status-screen-btn" (click)="actionConfirm.emit()">
+    {{ actionLabel() }}
+  </button>
+</div>

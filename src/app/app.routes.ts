@@ -141,6 +141,11 @@ export const routes: Routes = [
         title: 'النزاعات - فايض',
       },
       {
+        path: 'messages',
+        loadComponent: () => import('./features/dashboards/company/pages/messages/messages')
+          .then(m => m.Messages),
+      },
+      {
         path: 'notifications',
         loadComponent: () => import('./features/notifications/pages/notification-center-page/notification-center-page')
           .then(c => c.NotificationCenterPage),

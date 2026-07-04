@@ -1,0 +1,28 @@
+<ul class="conv-list">
+  @for (conv of conversations(); track conv.id) {
+    <li
+      class="conv-list-item"
+      [class.conv-list-item--active]="activeConversationId() === conv.id"
+      (click)="selectConversation.emit(conv.id)"
+    >
+      <span
+        class="conv-list-avatar"
+        [style.background-color]="conv.participantColor"
+      >
+        {{ conv.participantInitial }}
+      </span>
+
+      <div class="conv-list-body">
+        <span class="conv-list-code">{{ conv.participantCode }}</span>
+        <span class="conv-list-last-msg">{{ conv.lastMessage }}</span>
+      </div>
+
+      <div class="conv-list-meta">
+        <span class="conv-list-time">{{ conv.lastMessageAt | relativeTime }}</span>
+        @if (conv.unreadCount > 0) {
+          <span class="conv-list-badge">{{ conv.unreadCount }}</span>
+        }
+      </div>
+    </li>
+  }
+</ul>

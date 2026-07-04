@@ -26,6 +26,8 @@ import { MockOrdersRepository } from './features/dashboards/company/services/moc
 //Disputes page
 import { DISPUTE_REPOSITORY } from './features/dashboards/company/services/dispute-repository.token';
 import { MockDisputeRepository } from './features/dashboards/company/services/mock-dispute-repository';
+import { MESSAGES_REPOSITORY } from './features/dashboards/company/services/messages-repository.token';
+import { MockMessagesRepository } from './features/dashboards/company/services/mock-messages-repository';
 
 // =============================================================================
 // APPLICATION CONFIGURATION
@@ -80,5 +82,7 @@ export const appConfig: ApplicationConfig = {
     //Disputes page
     { provide: DISPUTE_REPOSITORY, useClass: MockDisputeRepository },
 
+    //Messages Page
+    { provide: MESSAGES_REPOSITORY, useClass: MockMessagesRepository },
   ],
 };

@@ -1,0 +1,63 @@
+<div class="thread">
+  <header class="thread-header">
+    <span
+      class="thread-avatar"
+      [style.background-color]="conversation().participantColor"
+    >
+      {{ conversation().participantInitial }}
+    </span>
+    <div>
+      <span class="thread-participant-code">{{ conversation().participantCode }}</span>
+      <span class="thread-participant-name">{{ conversation().participantName }}</span>
+    </div>
+  </header>
+
+  <div class="thread-messages">
+    @for (message of messages(); track message.id) {
+      @if (message.type === 'ai_suggestion') {
+        <div class="thread-ai-suggestion">
+          <p class="thread-ai-suggestion-text">{{ message.content }}</p>
+          <button
+            type="button"
+            class="btn-fayed btn-blue thread-ai-action-btn"
+            (click)="startContract.emit()"
+          >
+            بدء الاجراءات
+          </button>
+        </div>
+      } @else {
+        <div
+          class="thread-bubble-wrapper"
+          [class.thread-bubble-wrapper--own]="isOwnMessage(message.senderCode)"
+        >
+          <div
+            class="thread-bubble"
+            [class.thread-bubble--own]="isOwnMessage(message.senderCode)"
+          >
+            {{ message.content }}
+          </div>
+        </div>
+      }
+    }
+  </div>
+
+  <footer class="thread-input-area">
+    <textarea
+      class="thread-input"
+      placeholder="اكتب رسالتك هنا ..."
+      rows="1"
+      [value]="inputText()"
+      (input)="inputText.set($any($event.target).value)"
+      (keydown)="onKeydown($event)"
+    ></textarea>
+    <button
+      type="button"
+      class="btn-fayed btn-blue thread-send-btn"
+      [disabled]="!inputText().trim() || isSending()"
+      (click)="onSend()"
+    >
+      <i class="lucide-send-horizontal" aria-hidden="true"></i>
+      إرسال
+    </button>
+  </footer>
+</div>

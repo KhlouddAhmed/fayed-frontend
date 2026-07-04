@@ -1,0 +1,88 @@
+.conv-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.conv-list-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background-color 0.15s ease;
+  margin-block-end: 4px;
+}
+
+.conv-list-item:hover {
+  background-color: var(--bg-soft);
+}
+
+.conv-list-item--active {
+  background-color: var(--primary-light);
+}
+
+.conv-list-avatar {
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: 50%;
+  color: var(--white);
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.conv-list-body {
+  flex: 1;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.conv-list-code {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.conv-list-last-msg {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.conv-list-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.conv-list-time {
+  font-size: 0.75rem;
+  color: var(--slate-faint);
+  white-space: nowrap;
+}
+
+.conv-list-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 20px;
+  block-size: 20px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  color: var(--white);
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
