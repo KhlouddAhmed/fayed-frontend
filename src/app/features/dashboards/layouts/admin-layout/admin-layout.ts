@@ -1,6 +1,7 @@
 import { Component, signal, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { NotificationBell } from '../../../notifications/components/notification-bell/notification-bell';
+import { NgOptimizedImage } from '@angular/common';
 
 interface AdminNavItem {
   readonly label: string;
@@ -22,7 +23,7 @@ const ADMIN_NAV_ITEMS: readonly AdminNavItem[] = [
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, NotificationBell],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, NotificationBell, NgOptimizedImage],
   templateUrl: './admin-layout.html',
   styleUrl: './admin-layout.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

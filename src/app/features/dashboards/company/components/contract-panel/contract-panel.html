@@ -1,9 +1,9 @@
 <div class="contract-panel" role="dialog" aria-modal="true" aria-labelledby="contract-title">
   <header class="contract-panel-header">
+    <span class="contract-panel-header-title">عقد الصفقة</span>
     <button type="button" class="contract-panel-close-btn" (click)="close.emit()" aria-label="إغلاق">
       <img src="assets/icons/dashboard/close.svg" alt="" width="42" height="42" />
     </button>
-    <span class="contract-panel-header-title">عقد الصفقة</span>
   </header>
 
   @switch (currentView()) {
@@ -21,18 +21,18 @@
           </div>
         </div>
         <div class="contract-panel-amendment-actions">
-          <button type="button" class="btn-fayed btn-white" (click)="onAcceptAmendment()">
-            قبول التعديلات
-          </button>
           <button type="button" class="contract-panel-reject-btn" (click)="onRequestAmendment()">
             طلب تعديل
+          </button>
+          <button type="button" class="btn-fayed btn-white" (click)="onAcceptAmendment()">
+            قبول التعديلات
           </button>
         </div>
       </div>
     }
 
     @case ('amendment_requested_success') {
-      <div class="contract-panel-status-wrapper">
+      <div class="contract-panel-success-wrapper">
         <app-contract-status-screen
           title="تم طلب تعديل البنود!"
           description="تم إشعار الطرف الآخر بطلب تعديل البنود وإرجاع العقد للمسودة."
@@ -43,7 +43,7 @@
     }
 
     @case ('terms_accepted_success') {
-      <div class="contract-panel-status-wrapper">
+      <div class="contract-panel-success-wrapper">
         <app-contract-status-screen
           title="تم قبول البنود وتفعيل التوقيع!"
           description="تم نقل العقد بنجاح إلى مرحلة التوقيع الثنائي. يرجى توقيع العقد في الحقل المخصص."
@@ -54,7 +54,7 @@
     }
 
     @case ('signed_buyer_success') {
-      <div class="contract-panel-status-wrapper">
+      <div class="contract-panel-success-wrapper">
         <app-contract-status-screen
           title="تم توقيع العقد بنجاح"
           description="تم توقيع العقد من جميع الأطراف وأصبح جاهزًا للتنفيذ. يرجى إتمام الدفع للانتقال إلى مرحلة تسليم الطلب"
@@ -65,7 +65,7 @@
     }
 
     @case ('signed_seller_success') {
-      <div class="contract-panel-status-wrapper">
+      <div class="contract-panel-success-wrapper">
         <app-contract-status-screen
           title="تم توقيع العقد بنجاح"
           description="تم توقيع العقد من جميع الأطراف. ننتظر حالياً إتمام عملية الدفع من المشتري قبل بدء إجراءات التسليم"
@@ -77,6 +77,67 @@
 
     @default {
       <div class="contract-panel-body">
+
+        <div class="contract-panel-document">
+          <div class="contract-panel-document-header">
+            <span class="contract-panel-document-code">عقد توريد خامات رقم {{ contract().code }}</span>
+            <span class="contract-panel-document-badge">وثيقة معتمدة بنظام فايض</span>
+          </div>
+
+          <h2 class="contract-panel-document-title">عقد بيع وتوريد خامات صناعية</h2>
+
+          <div class="contract-panel-document-section">
+            <h3 class="contract-panel-document-section-title">أولاً: بيانات أطراف الصفقة والتعاقد</h3>
+            <p>الطرف الأول (البائع): {{ contract().sellerName }}</p>
+            <p>الطرف الثاني (المشتري): {{ contract().buyerName }}</p>
+            <p>تاريخ اتفاق الصفقة: {{ contract().dealDate }}</p>
+          </div>
+
+          <div class="contract-panel-document-section">
+            <h3 class="contract-panel-document-section-title">ثانياً: قسم بيانات الصفقة والمادة الخام</h3>
+            <p>المادة الخام المتعاقد عليها: {{ contract().materialName }}</p>
+            <p>الكمية الإجمالية: {{ contract().totalQuantity }} طن</p>
+            <p>سعر الطن المتفق عليه: {{ contract().pricePerTon }} جم</p>
+            <p>إجمالي القيمة: {{ contract().totalValue }} جم</p>
+          </div>
+
+          <div class="contract-panel-document-section">
+            <h3 class="contract-panel-document-section-title">ثالثاً: قسم شروط التسليم والشحن</h3>
+            <p>مكان تسليم البضاعة الفعلي: {{ contract().deliveryLocation }}</p>
+            <p>شروط التوريد ومدة التسليم: {{ contract().deliveryTerms }}</p>
+          </div>
+
+          <div class="contract-panel-document-section">
+            <h3 class="contract-panel-document-section-title">رابعاً: قسم شروط الدفع والضمان المالي (Escrow)</h3>
+            <p>{{ contract().escrowTerms }}</p>
+          </div>
+
+          <div class="contract-panel-document-section">
+            <h3 class="contract-panel-document-section-title">خامساً: قسم الملاحظات والضمانات الخاصة</h3>
+            <p>{{ contract().qualityNotes }}</p>
+          </div>
+
+          <div class="contract-panel-document-section">
+            <h3 class="contract-panel-document-section-title">سادساً: قسم الشروط الإضافية (ملحق العقد)</h3>
+            <p>{{ contract().additionalTerms ?? 'لا توجد شروط إضافية حالياً.' }}</p>
+          </div>
+
+          <div class="contract-panel-signatures">
+            <div>
+              <p class="contract-panel-sig-label">توقيع الطرف الأول (المشتري):</p>
+              <p class="contract-panel-sig-value">
+                {{ contract().buyerSignature ? 'تم التوقيع' : 'بانتظار توقيع المشتري...' }}
+              </p>
+            </div>
+            <div>
+              <p class="contract-panel-sig-label">توقيع الطرف الثاني (البائع):</p>
+              <p class="contract-panel-sig-value">
+                {{ contract().sellerSignature ? 'تم التوقيع' : 'بانتظار توقيع البائع...' }}
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div class="contract-panel-side-panel">
           @if (contract().status === 'pending_amendment' && contract().pendingAmendment) {
             <div class="contract-panel-info-banner">
@@ -189,66 +250,6 @@
               </div>
             }
           }
-        </div>
-
-        <div class="contract-panel-document">
-          <div class="contract-panel-document-header">
-            <span class="contract-panel-document-code">عقد توريد خامات رقم {{ contract().code }}</span>
-            <span class="contract-panel-document-badge">وثيقة معتمدة بنظام فايض</span>
-          </div>
-
-          <h2 class="contract-panel-document-title">عقد بيع وتوريد خامات صناعية</h2>
-
-          <div class="contract-panel-document-section">
-            <h3 class="contract-panel-document-section-title">أولاً: بيانات أطراف الصفقة والتعاقد</h3>
-            <p>الطرف الأول (البائع): {{ contract().sellerName }}</p>
-            <p>الطرف الثاني (المشتري): {{ contract().buyerName }}</p>
-            <p>تاريخ اتفاق الصفقة: {{ contract().dealDate }}</p>
-          </div>
-
-          <div class="contract-panel-document-section">
-            <h3 class="contract-panel-document-section-title">ثانياً: قسم بيانات الصفقة والمادة الخام</h3>
-            <p>المادة الخام المتعاقد عليها: {{ contract().materialName }}</p>
-            <p>الكمية الإجمالية: {{ contract().totalQuantity }} طن</p>
-            <p>سعر الطن المتفق عليه: {{ contract().pricePerTon }} جم</p>
-            <p>إجمالي القيمة: {{ contract().totalValue }} جم</p>
-          </div>
-
-          <div class="contract-panel-document-section">
-            <h3 class="contract-panel-document-section-title">ثالثاً: قسم شروط التسليم والشحن</h3>
-            <p>مكان تسليم البضاعة الفعلي: {{ contract().deliveryLocation }}</p>
-            <p>شروط التوريد ومدة التسليم: {{ contract().deliveryTerms }}</p>
-          </div>
-
-          <div class="contract-panel-document-section">
-            <h3 class="contract-panel-document-section-title">رابعاً: قسم شروط الدفع والضمان المالي (Escrow)</h3>
-            <p>{{ contract().escrowTerms }}</p>
-          </div>
-
-          <div class="contract-panel-document-section">
-            <h3 class="contract-panel-document-section-title">خامساً: قسم الملاحظات والضمانات الخاصة</h3>
-            <p>{{ contract().qualityNotes }}</p>
-          </div>
-
-          <div class="contract-panel-document-section">
-            <h3 class="contract-panel-document-section-title">سادساً: قسم الشروط الإضافية (ملحق العقد)</h3>
-            <p>{{ contract().additionalTerms ?? 'لا توجد شروط إضافية حالياً.' }}</p>
-          </div>
-
-          <div class="contract-panel-signatures">
-            <div>
-              <p class="contract-panel-sig-label">توقيع الطرف الأول (المشتري):</p>
-              <p class="contract-panel-sig-value">
-                {{ contract().buyerSignature ? 'تم التوقيع' : 'بانتظار توقيع المشتري...' }}
-              </p>
-            </div>
-            <div>
-              <p class="contract-panel-sig-label">توقيع الطرف الثاني (البائع):</p>
-              <p class="contract-panel-sig-value">
-                {{ contract().sellerSignature ? 'تم التوقيع' : 'بانتظار توقيع البائع...' }}
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     }

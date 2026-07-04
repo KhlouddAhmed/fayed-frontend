@@ -17,6 +17,12 @@
   position: relative;
 }
 
+/* Logo Image */
+.navbar-logo-img {
+  width: auto;
+  margin: 25px 0;
+  display: block;
+}
 /* =============================================
    UTILITIES
    ============================================= */
