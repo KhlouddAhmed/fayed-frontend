@@ -1,13 +1,39 @@
 export interface Listing {
-  id: string;
-  title: string;
-  category: string;
-  thumbnailUrl: string;
-  price: number;
-  quantity: number;
-  unit: string;
-  location: string;
-  governorate: string;     
-  postedAgo: string;     
-  materialTag: string;    
+  readonly id: string;
+  readonly title: string;
+  readonly category: string | null;
+  readonly thumbnailUrl: string | null;
+  readonly price: number;
+  readonly quantity: number;
+  readonly unit: string;
+  readonly governorate: string;
+  readonly postedAgo: string;
+  readonly materialTag: string;
+}
+
+// DTO shape — matches backend exactly (PascalCase)
+export interface ListingDto {
+  readonly Id: number;
+  readonly Title: string;
+  readonly CategoryName: string | null;
+  readonly MainImageUrl: string | null;
+  readonly PricePerUnit: number;
+  readonly Quantity: number;
+  readonly MeasureUnit: string;
+  readonly FactoryAddress: string;
+  readonly MaterialType: string;
+  readonly CreatedAt: string;
+}
+
+export interface ListingSearchParams {
+  readonly searchTerm?: string;
+  readonly categoryId?: number;
+  readonly location?: string;
+  readonly minQuantity?: number;
+  readonly maxQuantity?: number;
+  readonly minPrice?: number;
+  readonly maxPrice?: number;
+  readonly sortBy?: string;
+  readonly pageNumber?: number;
+  readonly pageSize?: number;
 }

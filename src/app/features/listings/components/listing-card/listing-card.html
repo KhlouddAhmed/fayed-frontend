@@ -4,7 +4,7 @@
   <div class="position-relative img-container flex-shrink-0" [style.height]="viewMode() === 'grid' ? '220px' : '100%'"
     [style.width]="viewMode() === 'list' ? '35%' : '100%'">
 
-    <img [ngSrc]="listing().thumbnailUrl" [alt]="listing().title" fill class="object-fit-cover" ngOptimizedImage />
+    <img [src]="listing.thumbnailUrl ?? ''" [alt]="listing().title" fill class="object-fit-cover" ngOptimizedImage />
     <span class="badge product-badge">{{ listing().materialTag }}</span>
   </div>
 

@@ -1,53 +1,36 @@
 import {
-  ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection,} from '@angular/core';
+  ApplicationConfig,
+  provideBrowserGlobalErrorListeners,
+  provideZonelessChangeDetection,
+} from '@angular/core';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
 
-// =============================================================================
-// COMPANY DASHBOARD — REPOSITORY TOKENS & MOCKS
-// =============================================================================
-// Overview Page: KPI stats, recent activity, recent orders
+import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { errorInterceptor } from './core/interceptors/error.interceptor';
+
+import { AUTH_SERVICE } from './core/tokens/auth.token';
+import { AuthService } from './features/auth/services/auth.service';
+
 import { OVERVIEW_REPOSITORY } from './features/dashboards/company/services/overview-repository.token';
 import { MockOverviewRepository } from './features/dashboards/company/services/mock-overview-repository';
-
-// My Listings Page: company's own materials/products management
 import { MATERIALS_REPOSITORY } from './features/dashboards/company/services/materials-repository.token';
 import { MockMaterialsRepository } from './features/dashboards/company/services/mock-materials-repository';
-
-// RFQ Offers Page: sent/received offers, offer details
 import { RFQ_OFFER_REPOSITORY } from './features/dashboards/company/services/rfq-offer-repository.token';
 import { MockRfqOfferRepository } from './features/dashboards/company/services/mock-rfq-offer-repository';
-
-// Orders Page: avtive offers, order details
 import { ORDERS_REPOSITORY } from './features/dashboards/company/services/orders-repository.token';
 import { MockOrdersRepository } from './features/dashboards/company/services/mock-orders-repository';
-
-//Disputes page
 import { DISPUTE_REPOSITORY } from './features/dashboards/company/services/dispute-repository.token';
 import { MockDisputeRepository } from './features/dashboards/company/services/mock-dispute-repository';
 import { MESSAGES_REPOSITORY } from './features/dashboards/company/services/messages-repository.token';
 import { MockMessagesRepository } from './features/dashboards/company/services/mock-messages-repository';
 
-// =============================================================================
-// APPLICATION CONFIGURATION
-// =============================================================================
 export const appConfig: ApplicationConfig = {
   providers: [
-
-    // -------------------------------------------------------------------------
-    // ANGULAR CORE PROVIDERS
-    // -------------------------------------------------------------------------
-    // Zoneless change detection (Angular 22 default — no Zone.js overhead)
     provideZonelessChangeDetection(),
-
-    // Global error listeners for unhandled errors and promise rejections
     provideBrowserGlobalErrorListeners(),
 
-    // -------------------------------------------------------------------------
-    // ROUTING
-    // -------------------------------------------------------------------------
-    // Router with smooth scrolling behavior for anchor links and navigation
     provideRouter(
       routes,
       withInMemoryScrolling({
@@ -55,34 +38,19 @@ export const appConfig: ApplicationConfig = {
         scrollPositionRestoration: 'enabled',
       })
     ),
-    
-    // -------------------------------------------------------------------------
-    // HTTP CLIENT
-    // -------------------------------------------------------------------------
-    // HttpClient for API calls (interceptors can be added here later)
-    provideHttpClient(),
 
+    provideHttpClient(
+      withInterceptors([authInterceptor, errorInterceptor])
+    ),
 
-    // -------------------------------------------------------------------------
-    // COMPANY DASHBOARD — REPOSITORY PROVIDERS
-    // Swap Mock → Real implementation when .NET 8 backend is ready
-    // -------------------------------------------------------------------------
-    // Overview Page: dashboard summary data (KPIs, activity, orders)
-    { provide: OVERVIEW_REPOSITORY, useClass: MockOverviewRepository },
+    // AUTH_SERVICE token → AuthService (has login() + logout())
+    { provide: AUTH_SERVICE, useExisting: AuthService },
 
-    // My Listings Page: CRUD operations for company's materials
+    { provide: OVERVIEW_REPOSITORY,  useClass: MockOverviewRepository  },
     { provide: MATERIALS_REPOSITORY, useClass: MockMaterialsRepository },
-
-    // RFQ Offers Page: manage sent/received RFQ offers
-    { provide: RFQ_OFFER_REPOSITORY, useClass: MockRfqOfferRepository },
-
-    // Orders Page: avtive offers, order details
-    { provide: ORDERS_REPOSITORY, useClass: MockOrdersRepository },
-
-    //Disputes page
-    { provide: DISPUTE_REPOSITORY, useClass: MockDisputeRepository },
-
-    //Messages Page
-    { provide: MESSAGES_REPOSITORY, useClass: MockMessagesRepository },
+    { provide: RFQ_OFFER_REPOSITORY, useClass: MockRfqOfferRepository  },
+    { provide: ORDERS_REPOSITORY,    useClass: MockOrdersRepository    },
+    { provide: DISPUTE_REPOSITORY,   useClass: MockDisputeRepository   },
+    { provide: MESSAGES_REPOSITORY,  useClass: MockMessagesRepository  },
   ],
 };

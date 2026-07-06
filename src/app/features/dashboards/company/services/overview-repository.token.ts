@@ -1,8 +1,8 @@
 import { InjectionToken } from '@angular/core';
-import { DashboardSummaryDto } from '../models/overview.model';
+import { DashboardSummary } from '../models/overview.model';
 
 export interface OverviewRepository {
-  getSummary(): Promise<DashboardSummaryDto>;
+  getSummary(): Promise<DashboardSummary>;
 }
 
 export const OVERVIEW_REPOSITORY = new InjectionToken<OverviewRepository>(

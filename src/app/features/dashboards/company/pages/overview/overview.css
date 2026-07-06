@@ -124,7 +124,7 @@ QUICK ACTIONS
 /* =============================================
    RESPONSIVE
    ============================================= */
-@media (max-width: 1199.98px) {
+@media (max-width: 1200px) {
   .overview-page-top-row {
     grid-template-columns: 1fr;
   }
@@ -134,13 +134,13 @@ QUICK ACTIONS
   }
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 992px) {
   .overview-page-lower-grid {
     grid-template-columns: 1fr;
   }
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 768px) {
   .overview-page {
     padding: 16px;
   }

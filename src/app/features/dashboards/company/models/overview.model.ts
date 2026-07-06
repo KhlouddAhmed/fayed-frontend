@@ -2,69 +2,58 @@
 // API DTOs (.NET 8 — PascalCase as received from backend)
 // =============================================
 
-export interface DashboardSummaryDto {
-  readonly CompanyName: string;
-  readonly SmartAlertsCount: number;
-  readonly NewOffersCount: number;
-  readonly NewMessagesCount: number;
+export interface DashboardStatsDto {
   readonly OpenDisputesCount: number;
-  readonly RequiresUrgentAction: boolean;
-  readonly RecentActivities: readonly ActivityItemDto[];
-  readonly RecentOrders: readonly OrderSummaryDto[];
+  readonly UnreadMessagesCount: number;
+  readonly NewOffersCount: number;
+  readonly UnreadNotificationsCount: number;
 }
 
-export interface ActivityItemDto {
-  readonly Id: string;
-  readonly TitleKey: string;
-  readonly DescriptionKey: string;
-  readonly RelatedEntityCode: string;
-  readonly OccurredAt: string;
+export interface ActivityLogDto {
+  readonly Title: string;
+  readonly TimeAgo: string;
 }
 
-export interface OrderSummaryDto {
-  readonly OrderCode: string;
-  readonly ClientCode: string;
-  readonly Quantity: number;
-  readonly Unit: string;
+export interface RecentOrderDto {
+  readonly OrderId: number;
+  readonly ClientName: string;
+  readonly Date: string;
+  readonly QuantityWithUnit: string;
   readonly Status: string;
-  readonly RequestDate: string;
+}
+
+export interface DashboardOverviewDto {
+  readonly RecentOrders: readonly RecentOrderDto[];
+  readonly RecentActivities: readonly ActivityLogDto[];
 }
 
 // =============================================
-// UI Models (camelCase, normalized, display-ready)
+// UI Models (camelCase, display-ready)
 // =============================================
-
-export type OrderStatus =
-  | 'pendingWaiting'
-  | 'underReview'
-  | 'shipped'
-  | 'paid'
-  | 'rejected';
 
 export interface ActivityItem {
-  readonly id: string;
-  readonly titleKey: string;
-  readonly descriptionKey: string;
-  readonly relatedEntityCode: string;
-  readonly occurredAt: Date;
+  readonly title: string;
+  readonly timeAgo: string;
 }
 
 export interface OrderSummary {
-  readonly orderCode: string;
-  readonly clientCode: string;
-  readonly quantity: number;
-  readonly unit: string;
-  readonly status: OrderStatus;
-  readonly requestDate: Date;
+  readonly orderId: number;
+  readonly clientName: string;
+  readonly date: string;
+  readonly quantityWithUnit: string;
+  readonly status: string;
+}
+
+export interface DashboardStats {
+  readonly openDisputesCount: number;
+  readonly unreadMessagesCount: number;
+  readonly newOffersCount: number;
+  readonly unreadNotificationsCount: number;
 }
 
 export interface DashboardSummary {
   readonly companyName: string;
-  readonly smartAlertsCount: number;
-  readonly newOffersCount: number;
-  readonly newMessagesCount: number;
-  readonly openDisputesCount: number;
-  readonly requiresUrgentAction: boolean;
+  readonly stats: DashboardStats;
   readonly recentActivities: readonly ActivityItem[];
   readonly recentOrders: readonly OrderSummary[];
 }
