@@ -11,13 +11,14 @@ export interface Listing {
   readonly materialTag: string;
 }
 
-// DTO shape — matches backend exactly (PascalCase)
+// DTO shape
 export interface ListingDto {
   readonly Id: number;
   readonly Title: string;
   readonly CategoryName: string | null;
   readonly MainImageUrl: string | null;
-  readonly PricePerUnit: number;
+  readonly MinPrice: number;
+  readonly MaxPrice: number; 
   readonly Quantity: number;
   readonly MeasureUnit: string;
   readonly FactoryAddress: string;

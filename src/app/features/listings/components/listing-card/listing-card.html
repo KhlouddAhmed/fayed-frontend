@@ -4,7 +4,7 @@
   <div class="position-relative img-container flex-shrink-0" [style.height]="viewMode() === 'grid' ? '220px' : '100%'"
     [style.width]="viewMode() === 'list' ? '35%' : '100%'">
 
-    <img [src]="listing.thumbnailUrl ?? ''" [alt]="listing().title" fill class="object-fit-cover" ngOptimizedImage />
+    <img [src]="listing().thumbnailUrl ?? ''" [alt]="listing().title" fill class="object-fit-cover" ngOptimizedImage />
     <span class="badge product-badge">{{ listing().materialTag }}</span>
   </div>
 
@@ -23,7 +23,7 @@
     </div>
 
     <div class="price-text mb-1 item-price">
-      {{ listing().price | number }} <span class="price-unit"> ج.م &sol; {{ listing().unit }}</span>
+      <span class="fs-6 fw-normal text-muted">بحد أقصى: </span>{{ listing().price | number }} <span class="price-unit"> ج.م &sol; {{ listing().unit }}</span>
     </div>
 
     <div class="posted-text mb-4 item-date">

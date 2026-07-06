@@ -151,22 +151,24 @@
               {{ contract().status === 'pending_signatures' ? 'التوقيع الإلكتروني القانوني (E-Signature)' : 'تخصيص بنود العقد وتعديلها' }}
             </h3>
 
+
             @if (contract().status === 'pending_signatures') {
               <p class="contract-panel-side-desc">
-                بموجب أنظمة المعاملات الإلكترونية B2B، بعد توقيعك واعتمادك لهذه الوثيقة إلكترونياً تصبح ملزماً للطرفين فور إتمام التوقيع الثاني.
+                بموجب أنظمة المعاملات الإلكترونية، بعد توقيعك واعتمادك لهذه الوثيقة إلكترونياً تصبح ملزماً للطرفين فور إتمام التوقيع الثاني.
               </p>
 
-              <label class="contract-panel-label">الاسم الكامل للمفوّض بالتوقيع</label>
-              <input
-                type="text"
-                class="contract-panel-input"
-                placeholder="اكتب اسمك الكامل لاعتماد العقد"
-                [value]="authorizedName()"
-                (input)="authorizedName.set($event.target.value)"
-              />
-
-              <div class="contract-panel-signature-area">
-                <span class="contract-panel-signature-reset">اعادة تعيين التوقيع</span>
+              <!-- التوقيع بنظام الـ Checkbox الجديد -->
+              <div class="contract-panel-signature-checkbox" style="margin: 20px 0; display: flex; align-items: center; gap: 10px;">
+                <input
+                  type="checkbox"
+                  id="signCheckbox"
+                  [checked]="isSignatureChecked()"
+                  (change)="isSignatureChecked.set(!isSignatureChecked())"
+                  style="width: 20px; height: 20px; cursor: pointer; accent-color: #2563EB;"
+                />
+                <label for="signCheckbox" style="cursor: pointer; color: #0F172A; font-weight: 500;">
+                  أقر بموافقتي على جميع بنود العقد وتوقيعه إلكترونياً
+                </label>
               </div>
 
               <div class="contract-panel-signatures-status">
@@ -187,10 +189,10 @@
               <button
                 type="button"
                 class="btn-fayed btn-blue contract-panel-sign-btn"
-                [disabled]="!authorizedName().trim() || isSubmitting()"
+                [disabled]="!isSignatureChecked() || isSubmitting()"
                 (click)="onSign()"
               >
-                اعتماد وتوقيع العقد
+                إنشاء العقد وتوقيعه
               </button>
             } @else {
               <p class="contract-panel-side-desc">

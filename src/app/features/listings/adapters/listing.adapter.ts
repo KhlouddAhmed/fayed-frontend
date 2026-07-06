@@ -6,7 +6,7 @@ export function adaptListing(dto: ListingDto): Listing {
     title: dto.Title,
     category: dto.CategoryName,
     thumbnailUrl: dto.MainImageUrl,
-    price: dto.PricePerUnit,
+    price: dto.MaxPrice,
     quantity: dto.Quantity,
     unit: dto.MeasureUnit,
     governorate: extractGovernorat(dto.FactoryAddress),
@@ -19,7 +19,6 @@ export function adaptListings(dtos: ListingDto[]): Listing[] {
   return dtos.map(adaptListing);
 }
 
-// يستخرج أول جزء من العنوان كمحافظة
 function extractGovernorat(address: string): string {
   return address?.split('،')[0]?.trim() ?? address;
 }

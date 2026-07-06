@@ -185,6 +185,12 @@ export const routes: Routes = [
       //         loadComponent: () => import('./features/payment/payment')
       //           .then(m => m.PaymentComponent),
       //       },
+      {
+        path: 'payment/:contractId',
+        loadComponent: () => import('./features/payment/payment')
+          .then(m => m.PaymentComponent),
+        title: 'إتمام الدفع - فايض'
+      },
     ],
   },
 

@@ -14,6 +14,7 @@ const CURRENT_COMPANY_CODE = 'FYD-2586';
 
 @Component({
   selector: 'app-contract-panel',
+  standalone: true,
   imports: [ContractStatusScreen],
   templateUrl: './contract-panel.html',
   styleUrl: './contract-panel.css',
@@ -30,11 +31,14 @@ export class ContractPanel {
   readonly proceedToPayment = output<void>();
 
   protected readonly currentView = signal<ContractView>('main');
-  protected readonly authorizedName = signal('');
+  
+  // استبدال حقل النص بـ Checkbox
+  protected readonly isSignatureChecked = signal(false); 
   protected readonly newTermsInput = signal('');
 
   protected readonly isBuyerSigned = computed(() => !!this.contract().buyerSignature);
   protected readonly isSellerSigned = computed(() => !!this.contract().sellerSignature);
+  
   protected readonly isFullySigned = computed(
     () => this.isBuyerSigned() && this.isSellerSigned(),
   );
@@ -57,9 +61,12 @@ export class ContractPanel {
   }
 
   protected onSign(): void {
-    if (!this.authorizedName().trim()) return;
+    if (!this.isSignatureChecked()) return;
+
+    this.exportToPdf();
+
     this.signContract.emit({
-      authorizedName: this.authorizedName(),
+      authorizedName: 'موقع إلكترونياً وموافق على الشروط', 
       signatureDataUrl: '',
     });
 
@@ -76,5 +83,9 @@ export class ContractPanel {
 
   protected backToMain(): void {
     this.currentView.set('main');
+  }
+
+  private exportToPdf(): void {
+    window.print(); 
   }
 }
