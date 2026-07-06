@@ -87,7 +87,7 @@ export class LoginPage {
         if (user.kybStatus === 'pending') {
           this.router.navigate(['/auth/kyb-pending']);
         } else {
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/dashboard/company/overview']);
         }
       },
       error: () => {

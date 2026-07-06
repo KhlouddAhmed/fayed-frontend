@@ -75,11 +75,22 @@ export class RegisterPage {
     this.currentStep.set(3);
   }
 
+  // onAccountDetailsCompleted(data: RegisterRequest): void {
+  //   this.registrationService.register(data).subscribe(() => {
+  //     this.showSuccessModal.set(true);
+  //   });
+  // }
+
   onAccountDetailsCompleted(data: RegisterRequest): void {
-    this.registrationService.register(data).subscribe(() => {
+  this.registrationService.register(data).subscribe({
+    next: () => {
       this.showSuccessModal.set(true);
-    });
-  }
+    },
+    error: (err) => {
+      console.error('Register error', err);
+    }
+  });
+}
 
   onSuccessModalClosed(): void {
     this.showSuccessModal.set(false);

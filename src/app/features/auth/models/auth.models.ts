@@ -21,11 +21,30 @@ export interface LoginUser {
   kybStatus: 'pending' | 'verified' | 'rejected';
 }
 
-//sgin up
-export interface RegisterStepOneRequestDto {
+// Register
+export interface RegisterRequestDto {
+  Email: string;
+  PhoneNumber: string;
+  PasswordHash: string;
+}
+
+export interface RegisterResponseDto {
+  Success: boolean;
+  Message: string;
+  CompanyId?: string;
+}
+
+// Normalized UI model
+export interface RegisterRequest {
   email: string;
   phoneNumber: string;
   passwordHash: string;
+}
+
+export interface RegisterResponse {
+  success: boolean;
+  message: string;
+  companyId?: string;
 }
 
 export interface AuthUser {

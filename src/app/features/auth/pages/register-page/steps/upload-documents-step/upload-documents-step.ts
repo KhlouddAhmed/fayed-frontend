@@ -48,23 +48,42 @@ export class UploadDocumentsStep {
     this.taxCardFile.set(null);
   }
 
-  onNext(): void {
-    const registry = this.commercialRegistryFile();
-    const taxCard = this.taxCardFile();
-    if (!registry || !taxCard) return;
+  // onNext(): void {
+  //   const registry = this.commercialRegistryFile();
+  //   const taxCard = this.taxCardFile();
+  //   if (!registry || !taxCard) return;
 
-    this.verificationStatus.set('pending');
+  //   this.verificationStatus.set('pending');
+  //   this.emitState();
+
+  //   this.registrationService.startDocumentVerification(registry, taxCard).subscribe((startedCase) => {
+  //     this.registrationService.verifyDocumentsUntilSettled(startedCase.caseId).subscribe((settledCase) => {
+  //       this.verificationStatus.set(settledCase.status);
+  //       this.extractedData.set(settledCase.extractedData ?? null);
+  //       this.rejectionReasons.set(settledCase.rejectionReasons ?? []);
+  //       this.emitState();
+  //     });
+  //   });
+  // }
+  onNext(): void {
+  const registry = this.commercialRegistryFile();
+  const taxCard = this.taxCardFile();
+  if (!registry || !taxCard) return;
+
+  this.verificationStatus.set('pending');
+  this.emitState();
+
+  this.registrationService.startDocumentVerification(registry, taxCard).subscribe((result) => {
+    this.extractedData.set(result.extractedData ?? null);
+    this.rejectionReasons.set(result.rejectionReasons ?? []);
+    this.verificationStatus.set(result.status);
     this.emitState();
 
-    this.registrationService.startDocumentVerification(registry, taxCard).subscribe((startedCase) => {
-      this.registrationService.verifyDocumentsUntilSettled(startedCase.caseId).subscribe((settledCase) => {
-        this.verificationStatus.set(settledCase.status);
-        this.extractedData.set(settledCase.extractedData ?? null);
-        this.rejectionReasons.set(settledCase.rejectionReasons ?? []);
-        this.emitState();
-      });
-    });
-  }
+    if (result.status === 'success') {
+      this.documentsUploaded.emit(result.extractedData!);
+    }
+  });
+}
 
   onConfirmCorrect(): void {
     const data = this.extractedData();

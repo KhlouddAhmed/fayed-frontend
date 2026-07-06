@@ -18,6 +18,7 @@ import {
   adaptDocumentVerificationCase,
   adaptIdentityVerificationCase,
 } from '../adapters/registration.adapter';
+import { environment } from '../../../environments/environment';
 
 const MOCK_VERIFICATION_DELAY_MS = 5000;
 
@@ -25,25 +26,36 @@ const MOCK_VERIFICATION_DELAY_MS = 5000;
 export class RegistrationService {
   private http = inject(HttpClient);
 
-  register(data: RegisterRequest): Observable<RegisterResponse> {
-    const payload = adaptRegisterRequest(data);
+  // register(data: RegisterRequest): Observable<RegisterResponse> {
+  //   const payload = adaptRegisterRequest(data);
 
     // Switch this to the real call once your .NET API endpoint is ready:
     // return this.http.post<RegisterResponseDto>(`${environment.apiUrl}/auth/register`, payload)
     //   .pipe(map(adaptRegisterResponse));
 
-    const mockResponse: RegisterResponseDto = {
-      Success: true,
-      Message: 'تم التسجيل بنجاح',
-      CompanyId: 'new-company-002',
-    };
+  //   const mockResponse: RegisterResponseDto = {
+  //     Success: true,
+  //     Message: 'تم التسجيل بنجاح',
+  //     CompanyId: 'new-company-002',
+  //   };
 
-    return of(mockResponse).pipe(
-      delay(800),
-      map(adaptRegisterResponse)
-    );
+  //   return of(mockResponse).pipe(
+  //     delay(800),
+  //     map(adaptRegisterResponse)
+  //   );
+  // }
+
+  register(data: RegisterRequest): Observable<RegisterResponse> {
+  const payload = adaptRegisterRequest(data);
+
+  return this.http.post<RegisterResponseDto>(
+    `${environment.apiUrl}/auth/register-factory`,
+    payload
+  ).pipe(
+    map(adaptRegisterResponse)
+  );
   }
-
+  
   // =============================================
   // STEP 1 — KYB DOCUMENT VERIFICATION (FR-07.1 / FR-07.2)
   // =============================================

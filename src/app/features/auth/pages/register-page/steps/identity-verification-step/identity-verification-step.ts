@@ -40,6 +40,21 @@ export class IdentityVerificationStep {
     this.idCardFile.set(null);
   }
 
+  // onNext(): void {
+  //   const selfie = this.selfieFile();
+  //   const idCard = this.idCardFile();
+  //   if (!selfie || !idCard) return;
+
+  //   this.verificationStatus.set('pending');
+
+  //   this.registrationService.startIdentityVerification(selfie, idCard).subscribe((startedCase) => {
+  //     this.registrationService.verifyIdentityUntilSettled(startedCase.caseId).subscribe((settledCase) => {
+  //       this.verificationStatus.set(settledCase.status);
+  //       this.rejectionMessage.set(settledCase.rejectionMessage ?? '');
+  //     });
+  //   });
+  // }
+
   onNext(): void {
     const selfie = this.selfieFile();
     const idCard = this.idCardFile();
@@ -51,6 +66,9 @@ export class IdentityVerificationStep {
       this.registrationService.verifyIdentityUntilSettled(startedCase.caseId).subscribe((settledCase) => {
         this.verificationStatus.set(settledCase.status);
         this.rejectionMessage.set(settledCase.rejectionMessage ?? '');
+        if (settledCase.status === 'success') {
+          this.identityConfirmed.emit();
+        }
       });
     });
   }
