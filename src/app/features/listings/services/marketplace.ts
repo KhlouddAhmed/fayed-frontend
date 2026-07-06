@@ -28,7 +28,10 @@ export class MarketplaceService {
     if (filters.maxQuantity != null) params = params.set('MaxQuantity', filters.maxQuantity.toString());
     if (filters.minPrice != null) params = params.set('MinPrice', filters.minPrice.toString());
     if (filters.maxPrice != null) params = params.set('MaxPrice', filters.maxPrice.toString());
-    if (filters.sortBy) params = params.set('SortDirection', filters.sortBy);
+    if (filters.sortBy) {
+  const direction = filters.sortBy === 'price_asc' ? 'asc' : 'desc';
+  params = params.set('SortDirection', direction);
+}
 
     return this.http
       .get<ApiResponseWithData<PagedResult<ListingDto>>>(this.apiUrl, { params })
@@ -49,4 +52,20 @@ export class MarketplaceService {
         map(res => adaptListingDetails(res.Data!))
       );
   }
+
+  smartSearch(query: string, page: number = 1, pageSize: number = 12): Observable<any> {
+  let params = new HttpParams()
+    .set('Page', page.toString())
+    .set('PageSize', pageSize.toString())
+    .set('query', query);
+
+  return this.http
+    .get<ApiResponseWithData<PagedResult<ListingDto>>>(`${this.apiUrl}/smart-search`, { params })
+    .pipe(
+      map(res => ({
+        items: adaptListings([...(res.Data?.Items ?? [])]),
+        totalCount: res.Data?.TotalCount ?? 0,
+      }))
+    );
+}
 }
