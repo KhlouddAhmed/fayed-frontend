@@ -17,9 +17,6 @@ export interface ListingFiltersValue {
 })
 export class ListingFiltersComponent {
 
-  /* =============================================
-     FILTER STATE
-     ============================================= */
   readonly materialType = signal('');
   readonly governorate = signal('');
   readonly quantityFrom = signal<number | null>(null);
@@ -29,9 +26,6 @@ export class ListingFiltersComponent {
 
   readonly applyFilters = output<ListingFiltersValue>();
 
-  /* =============================================
-     FIELD CHANGE HANDLERS
-     ============================================= */
   onMaterialTypeChange(event: Event): void {
     this.materialType.set((event.target as HTMLSelectElement).value);
   }
@@ -56,9 +50,6 @@ export class ListingFiltersComponent {
     this.priceTo.set(this.parseNumberInput(event));
   }
 
-  /* =============================================
-     ACTIONS
-     ============================================= */
   onClearAll(): void {
     this.materialType.set('');
     this.governorate.set('');
@@ -66,22 +57,24 @@ export class ListingFiltersComponent {
     this.quantityTo.set(null);
     this.priceFrom.set(null);
     this.priceTo.set(null);
+    this.applyFilters.emit(this.getCurrentFilters());
   }
 
   onSubmit(): void {
-    this.applyFilters.emit({
+    this.applyFilters.emit(this.getCurrentFilters());
+  }
+
+  private getCurrentFilters(): ListingFiltersValue {
+    return {
       materialType: this.materialType(),
       governorate: this.governorate(),
       quantityFrom: this.quantityFrom(),
       quantityTo: this.quantityTo(),
       priceFrom: this.priceFrom(),
       priceTo: this.priceTo(),
-    });
+    };
   }
 
-  /* =============================================
-     HELPERS
-     ============================================= */
   private parseNumberInput(event: Event): number | null {
     const value = (event.target as HTMLInputElement).value;
     return value === '' ? null : Number(value);

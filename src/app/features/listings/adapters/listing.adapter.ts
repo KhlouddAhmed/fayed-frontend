@@ -1,4 +1,4 @@
-import { ListingDto, Listing } from '../models/listing.model';
+import { ListingDto, Listing, ListingDetailsDto, ListingMediaDto } from '../models/listing.model';
 
 export function adaptListing(dto: ListingDto): Listing {
   return {
@@ -7,20 +7,58 @@ export function adaptListing(dto: ListingDto): Listing {
     category: dto.CategoryName,
     thumbnailUrl: dto.MainImageUrl,
     price: dto.MaxPrice,
+    minPrice: dto.MinPrice,
     quantity: dto.Quantity,
     unit: dto.MeasureUnit,
-    governorate: extractGovernorat(dto.FactoryAddress),
+    governorate: extractGovernorate(dto.FactoryAddress),
     postedAgo: formatPostedAgo(dto.CreatedAt),
     materialTag: dto.MaterialType,
   };
 }
 
-export function adaptListings(dtos: ListingDto[]): Listing[] {
+export function adaptListings(dtos: readonly ListingDto[]): Listing[] {
   return dtos.map(adaptListing);
 }
 
-function extractGovernorat(address: string): string {
-  return address?.split('،')[0]?.trim() ?? address;
+export function adaptListingDetails(dto: ListingDetailsDto): any {
+  const mainImage = dto.Media.find(m => m.IsMain)?.MediaUrl || dto.MainImageUrl;
+
+  return {
+    id: String(dto.Id),
+    title: dto.Title,
+    price: dto.MaxPrice,
+    quantity: dto.Quantity,
+    unit: dto.MeasureUnit,
+    governorate: extractGovernorate(dto.FactoryAddress),
+    publishedAgo: formatPostedAgo(dto.CreatedAt),
+    description: dto.Description,
+    minOrder: dto.MinOrderQuantity,
+    isNegotiable: dto.IsNegotiable,
+    deliveryType: dto.DeliveryType,
+    images: dto.Media
+      .filter(m => m.MediaType === 'Image')
+      .map(m => m.MediaUrl),
+    mainImage,
+    specs: [
+      { label: 'الحد الأدنى', value: `${dto.MinOrderQuantity} ${dto.MeasureUnit}` },
+      { label: 'قابل للتفاوض', value: dto.IsNegotiable ? 'نعم' : 'لا' },
+      { label: 'طريقة التسليم', value: dto.DeliveryType },
+    ],
+    labFiles: dto.CertificateUrl ? [{
+      name: 'شهادة الجودة',
+      size: 'غير محدد',
+      url: dto.CertificateUrl
+    }] : [],
+    company: {
+      id: 'FYD-XXXX',
+      name: 'الشركة المالكة',
+      rating: 4.5
+    }
+  };
+}
+
+function extractGovernorate(address: string): string {
+  return address?.split('،')[0]?.trim() ?? address ?? 'غير محدد';
 }
 
 function formatPostedAgo(createdAt: string): string {

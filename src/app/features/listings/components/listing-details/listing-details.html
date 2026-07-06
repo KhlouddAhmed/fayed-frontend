@@ -131,7 +131,7 @@
 
      @if (isPopupOpen()) {
         <app-offer-popup 
-            [listing]="getPopupListing(item)"
+            [listing]="listing()"
             (closeModal)="onClosePopup()"
             (submitOffer)="onSubmitOffer($event)">
         </app-offer-popup>
