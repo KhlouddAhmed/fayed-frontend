@@ -7,17 +7,11 @@ import { AccountDetailsStep } from './steps/account-details-step/account-details
 import { UploadDocumentsStep, DocumentVerificationState } from './steps/upload-documents-step/upload-documents-step';
 import { IdentityVerificationStep } from './steps/identity-verification-step/identity-verification-step';
 import { VerificationOverlay } from '../../components/verification-overlay/verification-overlay';
+import { RegistrationService } from '../../services/registration';
+import { ExtractedCompanyData, RegisterRequest, VerificationStatus } from '../../models/registration.models';
 import { RegistrationSuccessModal } from '../../components/registration-success-modal/registration-success-modal';
-import { RegistrationService } from '../../services/registration.service';
-import {
-  ExtractedCompanyData,
-  KybExtractedData,
-  RegisterRequestDto,
-  VerificationStatus,
-} from '../../models/registration.models';
 
 @Component({
-  selector: 'app-register-page',
   imports: [
     RouterLink,
     NgOptimizedImage,
@@ -32,17 +26,18 @@ import {
   styleUrl: './register-page.css',
 })
 export class RegisterPage {
-  private readonly router = inject(Router);
-  private readonly registrationService = inject(RegistrationService);
+  private router = inject(Router);
+  private registrationService = inject(RegistrationService);
 
-  currentStep      = signal<RegistrationStepNumber>(1);
-  kybData          = signal<KybExtractedData | null>(null);
+  currentStep = signal<RegistrationStepNumber>(1);
+  companyData = signal<ExtractedCompanyData | null>(null);
   showSuccessModal = signal(false);
-  companyData      = signal<ExtractedCompanyData | null>(null);
 
-  // DOCUMENT VERIFICATION STATE
+  /* =============================================
+     DOCUMENT VERIFICATION STATE — للـ modal
+     ============================================= */
   docVerificationStatus = signal<VerificationStatus>('idle');
-  docExtractedData      = signal<KybExtractedData | null>(null);
+  docExtractedData      = signal<ExtractedCompanyData | null>(null);
   docRejectionReasons   = signal<readonly string[]>([]);
 
   onVerificationStateChanged(state: DocumentVerificationState): void {
@@ -54,7 +49,7 @@ export class RegisterPage {
   onDocConfirmCorrect(): void {
     const data = this.docExtractedData();
     if (data) {
-      this.kybData.set(data);
+      this.companyData.set(data);
       this.docVerificationStatus.set('idle');
       this.currentStep.set(2);
     }
@@ -68,9 +63,11 @@ export class RegisterPage {
     this.docVerificationStatus.set('idle');
   }
 
-  // STEP NAVIGATION
-  onDocumentsUploaded(extractedData: KybExtractedData): void {
-    this.kybData.set(extractedData);
+  /* =============================================
+     STEP NAVIGATION
+     ============================================= */
+  onDocumentsUploaded(extractedData: ExtractedCompanyData): void {
+    this.companyData.set(extractedData);
     this.currentStep.set(2);
   }
 
@@ -78,25 +75,14 @@ export class RegisterPage {
     this.currentStep.set(3);
   }
 
-  onAccountDetailsCompleted(request: RegisterRequestDto): void {
-    this.registrationService.registerFactory(request).subscribe({
-      next: () => {
-        // بناء companyData من الـ request لعرضها في الـ modal
-        this.companyData.set({
-          companyName: request.FactoryName,
-          ownerName: request.Name,
-        });
-        this.showSuccessModal.set(true);
-      },
-      error: () => {
-        // error state handled inside AccountDetailsStep
-      },
+  onAccountDetailsCompleted(data: RegisterRequest): void {
+    this.registrationService.register(data).subscribe(() => {
+      this.showSuccessModal.set(true);
     });
   }
 
   onSuccessModalClosed(): void {
     this.showSuccessModal.set(false);
-    this.router.navigate(['/auth/login']);
   }
 
   goBack(): void {
@@ -104,6 +90,6 @@ export class RegisterPage {
       this.router.navigate(['/']);
       return;
     }
-    this.currentStep.update(step => (step - 1) as RegistrationStepNumber);
+    this.currentStep.update((step) => (step - 1) as RegistrationStepNumber);
   }
 }

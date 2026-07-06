@@ -2,7 +2,7 @@ import { Component, inject, signal, computed, HostListener } from '@angular/core
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgOptimizedImage } from '@angular/common';
 import { AuthStateService } from '../../core/services/auth-state.service';
-import { AuthService } from '../../features/auth/services/auth.service';
+import { AuthService } from '../../features/auth/services/auth';
 import { ROUTES } from '../../core/constants/routes';
 import { NotificationBell } from '../../features/notifications/components/notification-bell/notification-bell';
 

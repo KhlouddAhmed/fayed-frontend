@@ -1,28 +1,39 @@
-// DTO shapes — match backend exactly (PascalCase)
-export interface LoginRequestDto {
-  readonly Email: string;
-  readonly Password: string;
-}
-
-export interface LoginResponseDto {
-  readonly Token: string;
-  readonly ExpiresOn: string;
-  readonly UserName: string;
-  readonly Email: string;
-}
-
-// UI model — camelCase, used in components
-export interface AuthUser {
-  readonly id: string;
-  readonly email: string;
-  readonly name: string;
-  readonly factoryId: string;
-  readonly logoUrl: string;
-  readonly role: 'Admin' | 'Factory';
-  readonly expiresOn: Date;
-}
-
+// DTOs mirror the .NET backend shape (PascalCase comes in, adapter normalizes it)
 export interface LoginRequest {
-  readonly email: string;
-  readonly password: string;
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
+
+// Raw shape from .NET backend — PascalCase as .NET sends it by default
+export interface LoginResponseDto {
+  Token: string;
+  CompanyId: string;
+  CompanyName: string;
+  KybStatus: 'Pending' | 'Verified' | 'Rejected';
+}
+
+// Normalized UI model used inside the app
+export interface LoginUser {
+  token: string;
+  companyId: string;
+  companyName: string;
+  kybStatus: 'pending' | 'verified' | 'rejected';
+}
+
+//sgin up
+export interface RegisterStepOneRequestDto {
+  email: string;
+  phoneNumber: string;
+  passwordHash: string;
+}
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  name: string;
+  factoryId: string;
+  logoUrl: string;
+  role: 'Admin' | 'Factory';
+  expiresOn: Date;
 }

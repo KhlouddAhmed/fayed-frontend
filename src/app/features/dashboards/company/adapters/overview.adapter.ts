@@ -1,49 +1,61 @@
 import {
-  ActivityLogDto,
   ActivityItem,
-  RecentOrderDto,
-  OrderSummary,
-  DashboardStatsDto,
-  DashboardOverviewDto,
-  DashboardStats,
+  ActivityItemDto,
   DashboardSummary,
+  DashboardSummaryDto,
+  OrderStatus,
+  OrderSummary,
+  OrderSummaryDto,
 } from '../models/overview.model';
 
-export function adaptActivityLog(dto: ActivityLogDto): ActivityItem {
+const ORDER_STATUS_MAP: Readonly<Record<string, OrderStatus>> = {
+  PendingWaiting: 'pendingWaiting',
+  UnderReview: 'underReview',
+  Shipped: 'shipped',
+  Paid: 'paid',
+  Rejected: 'rejected',
+};
+
+const DEFAULT_ORDER_STATUS: OrderStatus = 'pendingWaiting';
+
+function adaptOrderStatus(rawStatus: string | undefined | null): OrderStatus {
+  if (!rawStatus) {
+    return DEFAULT_ORDER_STATUS;
+  }
+
+  return ORDER_STATUS_MAP[rawStatus] ?? DEFAULT_ORDER_STATUS;
+}
+
+function adaptActivityItem(dto: ActivityItemDto): ActivityItem {
   return {
-    title: dto.Title,
-    timeAgo: dto.TimeAgo,
+    id: dto.Id,
+    titleKey: dto.TitleKey,
+    descriptionKey: dto.DescriptionKey,
+    relatedEntityCode: dto.RelatedEntityCode,
+    occurredAt: new Date(dto.OccurredAt),
   };
 }
 
-export function adaptRecentOrder(dto: RecentOrderDto): OrderSummary {
+function adaptOrderSummary(dto: OrderSummaryDto): OrderSummary {
   return {
-    orderId: dto.OrderId,
-    clientName: dto.ClientName,
-    date: dto.Date,
-    quantityWithUnit: dto.QuantityWithUnit,
-    status: dto.Status,
+    orderCode: dto.OrderCode,
+    clientCode: dto.ClientCode,
+    quantity: dto.Quantity,
+    unit: dto.Unit,
+    status: adaptOrderStatus(dto.Status),
+    requestDate: new Date(dto.RequestDate),
   };
 }
 
-export function adaptDashboardStats(dto: DashboardStatsDto): DashboardStats {
+export function adaptDashboardSummary(dto: DashboardSummaryDto): DashboardSummary {
   return {
-    openDisputesCount: dto.OpenDisputesCount,
-    unreadMessagesCount: dto.UnreadMessagesCount,
-    newOffersCount: dto.NewOffersCount,
-    unreadNotificationsCount: dto.UnreadNotificationsCount,
-  };
-}
-
-export function adaptDashboardSummary(
-  companyName: string,
-  stats: DashboardStatsDto,
-  overview: DashboardOverviewDto
-): DashboardSummary {
-  return {
-    companyName,
-    stats: adaptDashboardStats(stats),
-    recentActivities: overview.RecentActivities.map(adaptActivityLog),
-    recentOrders: overview.RecentOrders.map(adaptRecentOrder),
+    companyName: dto.CompanyName,
+    smartAlertsCount: dto.SmartAlertsCount ?? 0,
+    newOffersCount: dto.NewOffersCount ?? 0,
+    newMessagesCount: dto.NewMessagesCount ?? 0,
+    openDisputesCount: dto.OpenDisputesCount ?? 0,
+    requiresUrgentAction: dto.RequiresUrgentAction ?? false,
+    recentActivities: (dto.RecentActivities ?? []).map(adaptActivityItem),
+    recentOrders: (dto.RecentOrders ?? []).map(adaptOrderSummary),
   };
 }

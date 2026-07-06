@@ -11,7 +11,7 @@ import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 
 import { AUTH_SERVICE } from './core/tokens/auth.token';
-import { AuthService } from './features/auth/services/auth.service';
+import { AuthService } from './features/auth/services/auth';
 
 import { OVERVIEW_REPOSITORY } from './features/dashboards/company/services/overview-repository.token';
 import { MockOverviewRepository } from './features/dashboards/company/services/mock-overview-repository';
