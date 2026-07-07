@@ -1,16 +1,12 @@
-import { Component, signal, ViewChild, ElementRef, AfterViewInit, OnInit, inject } from '@angular/core';
+import { Component, signal, ViewChild, ElementRef, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Chart, registerables } from 'chart.js';
-
-// نفس مسار الكارت بتاعك الأصلي بالظبط
 import { StatCardComponent } from '../../../../../shared/components/stat-card/stat-card';
-
-// استدعاء الخدمات الخاصة بالـ APIs
 import { AnalyticsService } from './analytics.service';
-import { SettingsService } from '../settings/settings.service';
+import { SettingsService } from '../settings/settings.service'; // تأكد من مسار السيرفيس
 
 Chart.register(...registerables);
 
-// ------------- واجهات البيانات (نفسها الأصلية بتاعتك بدون أي تعديل) -------------
 interface StatCard {
   title: string;
   value: string;
@@ -43,25 +39,22 @@ interface DashboardData {
 
 type TabType = 'performance' | 'sales' | 'activity';
 
-// ------------- مكون الصفحة -------------
 @Component({
   selector: 'app-analytics',
   standalone: true,
-  imports: [StatCardComponent], 
+  imports: [CommonModule, StatCardComponent], 
   templateUrl: './analytics.html',
   styleUrls: ['./analytics.css']
 })
-export class AnalyticsComponent implements AfterViewInit, OnInit {
+export class AnalyticsComponent implements OnInit {
   @ViewChild('lineChart') lineChartRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('pieChart') pieChartRef!: ElementRef<HTMLCanvasElement>;
 
-  // حقن الخدمات
   private analyticsService = inject(AnalyticsService);
   private settingsService = inject(SettingsService);
 
-  activeTab = signal<TabType>('performance' as TabType);
-
-  // إعداد المتغير الأصلي بتاعك فارغاً لحين وصول بيانات الـ API
+  activeTab = signal<TabType>('performance');
+  
   dashboardData = signal<DashboardData>({
     stats: [],
     revenueGrowthChart: { labels: [], data: [] },
@@ -70,26 +63,21 @@ export class AnalyticsComponent implements AfterViewInit, OnInit {
     activityLogs: []
   });
 
-  // مراجع للرسوم البيانية لتفادي خطأ الـ Canvas عند التنقل بين التابات
   private lineChartInstance: Chart | null = null;
   private pieChartInstance: Chart | null = null;
 
   ngOnInit() {
-    // جلب بيانات مؤشرات الأداء عند فتح الشاشة
     this.fetchPerformanceStats();
-  }
-
-  ngAfterViewInit() {
-    // الرسم بيتم بعد وصول الداتا
   }
 
   setTab(tab: TabType) {
     this.activeTab.set(tab);
     
-    // Lazy Loading لجلب البيانات فقط عند الحاجة
+    // Lazy Loading للبيانات
     if (tab === 'performance') {
-      if (this.dashboardData().stats.length === 0) this.fetchPerformanceStats();
-      else {
+      if (this.dashboardData().stats.length === 0) {
+        this.fetchPerformanceStats();
+      } else {
         setTimeout(() => {
           this.renderLineChart();
           this.renderPieChart();
@@ -102,26 +90,30 @@ export class AnalyticsComponent implements AfterViewInit, OnInit {
     }
   }
 
-  // 1. جلب مؤشرات الأداء وتسكينها في المتغيرات الأصلية
   fetchPerformanceStats() {
     this.analyticsService.getPerformanceStats().subscribe({
       next: (res: any) => {
-        if (res.isSuccess && res.data) {
+        const isSuccess = res.IsSuccess ?? res.isSuccess;
+        const data = res.Data ?? res.data;
+        if (isSuccess && data) {
           this.dashboardData.update(current => {
             current.stats = [
-              { title: 'العقود النشطة', value: res.data.activeContracts?.valueText || '0', subtitle: res.data.activeContracts?.growthText || '', icon: 'bi-file-earmark-text', color: '#F59E0B' },
-              { title: 'إجمالي المعاملات', value: res.data.totalTransactions?.valueText || '0', subtitle: res.data.totalTransactions?.growthText || '', icon: 'bi-arrow-left-right', color: '#8B5CF6' },
-              { title: 'المستخدمون النشطون', value: res.data.activeUsers?.valueText || '0', subtitle: res.data.activeUsers?.growthText || '', icon: 'bi-people', color: '#3B82F6' },
-              { title: 'إجمالي الإيرادات', value: res.data.totalRevenue?.valueText || '0', subtitle: res.data.totalRevenue?.growthText || '', icon: 'bi-currency-dollar', color: '#10B981' }
+              { title: 'العقود النشطة', value: data.activeContracts?.valueText || '0', subtitle: data.activeContracts?.growthText || '', icon: 'bi-file-earmark-text', color: '#F59E0B' },
+              { title: 'إجمالي المعاملات', value: data.totalTransactions?.valueText || '0', subtitle: data.totalTransactions?.growthText || '', icon: 'bi-arrow-left-right', color: '#8B5CF6' },
+              { title: 'المستخدمون النشطون', value: data.activeUsers?.valueText || '0', subtitle: data.activeUsers?.growthText || '', icon: 'bi-people', color: '#3B82F6' },
+              { title: 'إجمالي الإيرادات', value: data.totalRevenue?.valueText || '0', subtitle: data.totalRevenue?.growthText || '', icon: 'bi-currency-dollar', color: '#10B981' }
             ];
+            
             current.revenueGrowthChart = {
-              labels: res.data.monthlyRevenueChart?.map((x: any) => x.month) || [],
-              data: res.data.monthlyRevenueChart?.map((x: any) => x.revenue) || []
+              labels: data.monthlyRevenueChart?.map((x: any) => x.month) || [],
+              data: data.monthlyRevenueChart?.map((x: any) => x.revenue) || []
             };
+            
             current.revenueDistributionChart = {
-              labels: res.data.revenueByCategoryChart?.map((x: any) => x.categoryName) || [],
-              data: res.data.revenueByCategoryChart?.map((x: any) => x.percentage) || []
+              labels: data.revenueByCategoryChart?.map((x: any) => x.categoryName) || [],
+              data: data.revenueByCategoryChart?.map((x: any) => x.percentage) || []
             };
+            
             return current;
           });
           
@@ -130,17 +122,19 @@ export class AnalyticsComponent implements AfterViewInit, OnInit {
             this.renderPieChart();
           }, 0);
         }
-      }
+      },
+      error: (err) => console.error('خطأ في جلب مؤشرات الأداء:', err)
     });
   }
 
-  // 2. جلب تقارير المبيعات وتسكينها في المتغيرات الأصلية
   fetchSalesReports() {
     this.analyticsService.getSalesReports().subscribe({
       next: (res: any) => {
-        if (res.isSuccess && res.data) {
+        const isSuccess = res.IsSuccess ?? res.isSuccess;
+        const data = res.Data ?? res.data;
+        if (isSuccess && data) {
           this.dashboardData.update(current => {
-            current.salesReports = res.data.map((r: any) => ({
+            current.salesReports = data.map((r: any) => ({
               name: r.reportName,
               period: r.period,
               format: r.formats
@@ -148,35 +142,39 @@ export class AnalyticsComponent implements AfterViewInit, OnInit {
             return current;
           });
         }
-      }
+      },
+      error: (err) => console.error('خطأ في جلب التقارير:', err)
     });
   }
 
-  // 3. جلب سجل النشاط وتسكينه في المتغيرات الأصلية
   fetchActivityLogs() {
     this.settingsService.getSystemLogs().subscribe({
       next: (res: any) => {
-        if (res.isSuccess && res.data) {
+        const isSuccess = res.IsSuccess ?? res.isSuccess;
+        const data = res.Data ?? res.data;
+        if (isSuccess && data) {
           this.dashboardData.update(current => {
-            current.activityLogs = res.data.map((l: any) => ({
+            current.activityLogs = data.map((l: any) => ({
               entityName: l.targetEntity,
               actionType: l.action,
-              device: '—', // الجهاز غير متوفر في الـ API فتم وضع شرطة كما في الـ Mock
+              device: '—', // بناءً على التصميم
               datetime: l.time,
               ipAddress: l.ipAddress
             }));
             return current;
           });
         }
-      }
+      },
+      error: (err) => console.error('خطأ في جلب سجل النشاط:', err)
     });
   }
 
-  // دالة تحميل التقرير (CSV مؤقتاً) - نفسها الأصلية بدون تعديل
   exportReport(report: SalesReport) {
     const csvHeader = "اسم التقرير,الفترة الزمنية,تنسيق التحميل\n";
     const csvRow = `${report.name},${report.period},${report.format}\n`;
     const csvData = csvHeader + csvRow;
+    
+    // إضافة BOM لدعم اللغة العربية في الإكسيل
     const blob = new Blob(['\uFEFF' + csvData], { type: 'text/csv;charset=utf-8;' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -188,14 +186,13 @@ export class AnalyticsComponent implements AfterViewInit, OnInit {
     window.URL.revokeObjectURL(url);
   }
 
-  // دوال الرسم - نفسها الأصلية مع إضافة التدمير (destroy) لمنع تداخل الرسوم
   renderLineChart() {
     if (!this.lineChartRef) return;
     const ctx = this.lineChartRef.nativeElement.getContext('2d');
     if (!ctx) return;
     
     if (this.lineChartInstance) this.lineChartInstance.destroy();
-
+    
     this.lineChartInstance = new Chart(ctx, {
       type: 'line',
       data: {
@@ -220,7 +217,6 @@ export class AnalyticsComponent implements AfterViewInit, OnInit {
         scales: {
           y: {
             beginAtZero: true,
-            max: 3.5, // يفضل أن تجعلها ديناميكية لاحقاً
             ticks: { callback: (value: number | string) => 'M ' + value, font: { family: 'Cairo' } },
             border: { dash: [5, 5] },
             grid: { color: '#F1F5F9' }
@@ -237,7 +233,7 @@ export class AnalyticsComponent implements AfterViewInit, OnInit {
     if (!ctx) return;
 
     if (this.pieChartInstance) this.pieChartInstance.destroy();
-
+    
     this.pieChartInstance = new Chart(ctx, {
       type: 'pie',
       data: {

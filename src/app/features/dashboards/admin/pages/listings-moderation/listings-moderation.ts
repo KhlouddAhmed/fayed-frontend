@@ -1,10 +1,11 @@
 import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ModerationService } from './moderation.service';
+import { ModerationService, ApiAdListing } from './moderation.service';
 
-export interface AdListing {
-  id: number;
-  listingIdentifier: string;
+// الواجهة اللي الـ HTML هيقرا منها
+export interface AdListingUI {
+  dbId: number;          // الـ ID الرقمي للباك إند
+  displayId: string;     // المعرف النصي للعرض (زي ORD-123)
   title: string;
   seller: string;
   category: string;
@@ -27,11 +28,12 @@ export class ModerationComponent implements OnInit {
   searchQuery = signal<string>('');
   isLoading = signal<boolean>(true);
 
-  adListings = signal<AdListing[]>([]);
+  adListings = signal<AdListingUI[]>([]);
 
-  // حساب عدد الإعلانات المعلقة بشكل ديناميكي للبادج
+  // حساب عدد الإعلانات المعلقة للبادج
   pendingCount = computed(() => this.adListings().filter(ad => ad.status === 'pending').length);
 
+  // الفلترة الديناميكية
   filteredAds = computed(() => {
     const tab = this.activeTab();
     const query = this.searchQuery().toLowerCase().trim();
@@ -41,7 +43,8 @@ export class ModerationComponent implements OnInit {
       const matchesTab = tab === 'all' || ad.status === tab;
       const matchesSearch = !query || 
                             ad.title.toLowerCase().includes(query) || 
-                            ad.seller.toLowerCase().includes(query);
+                            ad.seller.toLowerCase().includes(query) ||
+                            ad.displayId.toLowerCase().includes(query);
       return matchesTab && matchesSearch;
     });
   });
@@ -53,18 +56,20 @@ export class ModerationComponent implements OnInit {
   fetchPendingAds() {
     this.isLoading.set(true);
     this.moderationService.getPendingListings().subscribe({
-      next: (res) => {
-        if (res.IsSuccess && res.Data) {
-          // تحويل الـ JSON اللي راجع من السيرفر ليتطابق مع واجهة الشاشة
-          const mappedData: AdListing[] = res.Data.map(item => ({
-            id: item.listingId,
-            listingIdentifier: item.listingIdentifier,
+      next: (res: any) => {
+        const isSuccess = res.IsSuccess ?? res.isSuccess;
+        const data = res.Data ?? res.data;
+
+        if (isSuccess && data) {
+          const mappedData: AdListingUI[] = data.map((item: ApiAdListing) => ({
+            dbId: item.listingId,
+            displayId: item.listingIdentifier, // المعرف النصي
             title: item.title,
             seller: item.sellerName,
             category: item.categoryName,
             quantity: item.quantityText,
             price: item.priceText,
-            status: 'pending' // كل اللي راجع من الـ API ده بيكون معلق
+            status: 'pending' 
           }));
           this.adListings.set(mappedData);
         }
@@ -87,16 +92,23 @@ export class ModerationComponent implements OnInit {
     this.searchQuery.set(input);
   }
 
-  // دالة لتعديل الحالة وإرسال القرار للسيرفر
-  changeAdStatus(id: number, newStatus: 'active' | 'rejected') {
-    const isApproved = newStatus === 'active';
+  // دالة القرار شغالة مع الزراير ومع الـ Select Dropdown
+  changeAdStatus(dbId: number, newStatus: 'active' | 'rejected', event?: Event) {
+    if (event) {
+      const selectElement = event.target as HTMLSelectElement;
+      newStatus = selectElement.value as 'active' | 'rejected';
+    }
 
-    this.moderationService.decideListing(id, isApproved).subscribe({
-      next: (res) => {
-        if (res.IsSuccess) {
-          // تحديث الحالة في الواجهة فوراً بعد نجاح الطلب
+    const isApproved = newStatus === 'active';
+    const payload = { isApproved: isApproved };
+
+    this.moderationService.decideListing(dbId, payload).subscribe({
+      next: (res: any) => {
+        const isSuccess = res.IsSuccess ?? res.isSuccess;
+        if (isSuccess) {
+          // تحديث الحالة في الواجهة فوراً
           this.adListings.update(ads => 
-            ads.map(ad => ad.id === id ? { ...ad, status: newStatus } : ad)
+            ads.map(ad => ad.dbId === dbId ? { ...ad, status: newStatus } : ad)
           );
         }
       },

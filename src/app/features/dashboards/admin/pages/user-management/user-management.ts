@@ -1,18 +1,15 @@
 import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../../environments/environment';
-import { ApiResponseWithData } from '../../../../../core/models/api-response.model';
+import { UsersService, ApiAdminUser } from './users.service';
 
-// الهيكل الفعلي للداتا بناءً على الـ JSON من السيرفر
-export interface AdminUser {
-  userId: number; // المعرف الرقمي اللي هنبعته في الـ POST
-  userIdentifier: string; // المعرف النصي (مثال: USR-201)
-  userName: string;
-  factoryName: string;
+// الواجهة اللي الـ HTML بيقرا منها عشان منغيرش تصميمه
+export interface UserUI {
+  dbId: number;
+  id: string;
+  adminName: string;
+  company: string;
   email: string;
-  isSuspended: boolean;
-  statusText: string;
+  status: 'active' | 'suspended';
   registrationDate: string;
 }
 
@@ -24,62 +21,75 @@ export interface AdminUser {
   styleUrls: ['./user-management.css']
 })
 export class UsersComponent implements OnInit {
-  private http = inject(HttpClient);
+  private usersService = inject(UsersService);
 
   activeTab = signal<'all' | 'suspended'>('all');
   searchQuery = signal<string>('');
   
   // الإشارات الأساسية
-  users = signal<AdminUser[]>([]);
+  rawUsers = signal<ApiAdminUser[]>([]);
   isLoading = signal<boolean>(true);
-  isTogglingId = signal<number | null>(null); // عشان نشغل Spinner على الزرار اللي بيتداس بس
+  isTogglingId = signal<number | null>(null);
 
-  // إحصائيات التابات ديناميكياً
-  allUsersCount = computed(() => this.users().length);
-  suspendedUsersCount = computed(() => this.users().filter(u => u.isSuspended).length);
+  // 1. ترجمة الداتا من الـ API لشكل الواجهة (Mapping)
+  mappedUsers = computed<UserUI[]>(() => {
+    return this.rawUsers().map(u => ({
+      dbId: u.userId,
+      id: u.userIdentifier,
+      adminName: u.userName,
+      company: u.factoryName,
+      email: u.email,
+      status: u.isSuspended ? 'suspended' : 'active',
+      registrationDate: u.registrationDate
+    }));
+  });
 
-  ngOnInit(): void {
-    this.fetchUsers();
-  }
-
-  // 1. جلب كل المستخدمين
-  fetchUsers(): void {
-    this.isLoading.set(true);
-    this.http.get<ApiResponseWithData<AdminUser[]>>(`${environment.apiUrl}/Admin/users`)
-      .subscribe({
-        next: (res) => {
-          if (res.IsSuccess && res.Data) {
-            this.users.set(res.Data);
-          }
-          this.isLoading.set(false);
-        },
-        error: (err) => {
-          console.error('خطأ في جلب المستخدمين:', err);
-          this.isLoading.set(false);
-        }
-      });
-  }
+  // إحصائيات التابات ديناميكياً (هتتربط بالبادجات في الـ HTML)
+  allCount = computed(() => this.mappedUsers().length);
+  suspendedCount = computed(() => this.mappedUsers().filter(u => u.status === 'suspended').length);
 
   // 2. فلترة المستخدمين بناءً على التابة والبحث
   filteredUsers = computed(() => {
-    let result = this.users();
+    let result = this.mappedUsers();
 
     if (this.activeTab() === 'suspended') {
-      result = result.filter(user => user.isSuspended);
+      result = result.filter(user => user.status === 'suspended');
     }
 
     const query = this.searchQuery().trim().toLowerCase();
     if (query && this.activeTab() === 'all') { 
       result = result.filter(user => 
-        (user.userName && user.userName.toLowerCase().includes(query)) ||
-        (user.factoryName && user.factoryName.toLowerCase().includes(query)) ||
+        (user.adminName && user.adminName.toLowerCase().includes(query)) ||
+        (user.company && user.company.toLowerCase().includes(query)) ||
         (user.email && user.email.toLowerCase().includes(query)) ||
-        (user.userIdentifier && user.userIdentifier.toLowerCase().includes(query))
+        (user.id && user.id.toLowerCase().includes(query))
       );
     }
 
     return result;
   });
+
+  ngOnInit(): void {
+    this.fetchUsers();
+  }
+
+  fetchUsers(): void {
+    this.isLoading.set(true);
+    this.usersService.getUsers().subscribe({
+      next: (res: any) => {
+        const isSuccess = res.IsSuccess ?? res.isSuccess;
+        const data = res.Data ?? res.data;
+        if (isSuccess && data) {
+          this.rawUsers.set(data);
+        }
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('خطأ في جلب المستخدمين:', err);
+        this.isLoading.set(false);
+      }
+    });
+  }
 
   setTab(tab: 'all' | 'suspended') {
     this.activeTab.set(tab);
@@ -92,26 +102,21 @@ export class UsersComponent implements OnInit {
   }
 
   // 3. تغيير حالة المستخدم (حظر / فك حظر)
-  toggleUserStatus(userId: number, currentSuspensionStatus: boolean) {
-    this.isTogglingId.set(userId); // تشغيل حالة التحميل للزرار
+  toggleUserStatus(dbId: number) {
+    this.isTogglingId.set(dbId);
 
-    this.http.post(`${environment.apiUrl}/Admin/toggle-suspension/${userId}`, {})
-      .subscribe({
-        next: () => {
-          // تحديث الجدول محلياً بدون ما نعمل ريفريش كامل عشان الأداء يكون سريع
-          this.users.update(currentUsers => 
-            currentUsers.map(user => 
-              user.userId === userId 
-                ? { ...user, isSuspended: !currentSuspensionStatus } 
-                : user
-            )
-          );
-          this.isTogglingId.set(null); // إيقاف التحميل
-        },
-        error: (err) => {
-          console.error('خطأ في تغيير حالة المستخدم:', err);
-          this.isTogglingId.set(null);
-        }
-      });
+    this.usersService.toggleSuspension(dbId).subscribe({
+      next: () => {
+        // تحديث الداتا محلياً بدون ريفريش، وهتنعكس فوراً في الجدول والبادجات
+        this.rawUsers.update(users => 
+          users.map(u => u.userId === dbId ? { ...u, isSuspended: !u.isSuspended } : u)
+        );
+        this.isTogglingId.set(null);
+      },
+      error: (err) => {
+        console.error('خطأ في تغيير حالة المستخدم:', err);
+        this.isTogglingId.set(null);
+      }
+    });
   }
 }

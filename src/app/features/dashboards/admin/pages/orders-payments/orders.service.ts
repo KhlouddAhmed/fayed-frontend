@@ -1,11 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../../environments/environment';
-import { ApiResponseWithData } from '../../../../../core/models/api-response.model';
+import { environment } from '../../../../../environments/environment'; 
+import { ApiResponseWithData } from '../../../../../core/models/api-response.model'; 
 
-// 1. هيكل بيانات الطلبات والضمان
-export interface EscrowOrder {
+// 1. واجهة الطلبات والحساب الضامن [cite: 1]
+export interface ApiEscrowOrder {
   orderId: number;
   orderIdentifier: string;
   buyerCompanyName: string;
@@ -16,8 +16,8 @@ export interface EscrowOrder {
   escrowStatus: string;
 }
 
-// 2. هيكل بيانات المستردات والأرباح
-export interface RefundProfitTransaction {
+// 2. واجهة المستردات والأرباح [cite: 2]
+export interface ApiRefundTransaction {
   transactionId: number;
   transactionIdentifier: string;
   beneficiaryName: string;
@@ -26,8 +26,8 @@ export interface RefundProfitTransaction {
   paymentGateway: string;
 }
 
-// 3. هيكل بيانات سجل المعاملات (دفتر الأستاذ)
-export interface LedgerRecord {
+// 3. واجهة سجل المعاملات [cite: 3]
+export interface ApiLedgerRecord {
   transactionIdentifier: string;
   orderIdentifier: string;
   totalValueText: string;
@@ -41,24 +41,24 @@ export interface LedgerRecord {
 })
 export class OrdersService {
   private http = inject(HttpClient);
-  
-  // جلب الطلبات (للتاب الأول والثاني)
-  getEscrowOrders(): Observable<ApiResponseWithData<EscrowOrder[]>> {
-    return this.http.get<ApiResponseWithData<EscrowOrder[]>>(`${environment.apiUrl}/Admin/orders-escrow`);
+
+  getEscrowOrders(): Observable<ApiResponseWithData<ApiEscrowOrder[]>> {
+    return this.http.get<ApiResponseWithData<ApiEscrowOrder[]>>(`${environment.apiUrl}/Admin/orders-escrow`);
   }
 
-  // جلب المستردات والأرباح
-  getRefundsProfits(): Observable<ApiResponseWithData<RefundProfitTransaction[]>> {
-    return this.http.get<ApiResponseWithData<RefundProfitTransaction[]>>(`${environment.apiUrl}/Admin/finance/refunds-profits`);
+  getRefundsProfits(): Observable<ApiResponseWithData<ApiRefundTransaction[]>> {
+    return this.http.get<ApiResponseWithData<ApiRefundTransaction[]>>(`${environment.apiUrl}/Admin/finance/refunds-profits`);
   }
 
-  // جلب سجل المعاملات
-  getLedger(): Observable<ApiResponseWithData<LedgerRecord[]>> {
-    return this.http.get<ApiResponseWithData<LedgerRecord[]>>(`${environment.apiUrl}/Admin/finance/ledger`);
+  getLedger(): Observable<ApiResponseWithData<ApiLedgerRecord[]>> {
+    return this.http.get<ApiResponseWithData<ApiLedgerRecord[]>>(`${environment.apiUrl}/Admin/finance/ledger`);
   }
 
-  // الإفراج عن الفلوس للبائع (بياخد الـ ID في الرابط بس زي ما قولت)
-  releaseEscrow(orderId: number): Observable<ApiResponseWithData<boolean>> {
-    return this.http.post<ApiResponseWithData<boolean>>(`${environment.apiUrl}/Admin/finance/escrow/${orderId}/release`, null);
+  releaseEscrow(orderId: number): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/Admin/release-escrow/${orderId}`, {});
+  }
+
+  processRefund(transactionId: number): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/Admin/process-transaction/${transactionId}`, {});
   }
 }

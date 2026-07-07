@@ -5,7 +5,7 @@ import { environment } from '../../../../../environments/environment';
 import { ApiResponseWithData } from '../../../../../core/models/api-response.model';
 
 // 1. هيكل بيانات النزاع في القائمة
-export interface DisputeListItem {
+export interface ApiDisputeListItem {
   disputeId: number;
   disputeIdentifier: string;
   orderIdentifier: string;
@@ -20,7 +20,7 @@ export interface DisputeListItem {
 }
 
 // 2. هيكل بيانات الرسائل
-export interface ChatMessage {
+export interface ApiChatMessage {
   senderName: string;
   senderRole: string; // 'buyer' | 'seller' | 'admin'
   messageText: string;
@@ -28,7 +28,7 @@ export interface ChatMessage {
 }
 
 // 3. هيكل تفاصيل النزاع (عند الفتح)
-export interface DisputeDetails {
+export interface ApiDisputeDetails {
   disputeId: number;
   disputeIdentifier: string;
   orderIdentifier: string;
@@ -36,7 +36,7 @@ export interface DisputeDetails {
   sellerName: string;
   description: string;
   status: string;
-  chatMessages: ChatMessage[];
+  chatMessages: ApiChatMessage[];
 }
 
 @Injectable({
@@ -44,31 +44,30 @@ export interface DisputeDetails {
 })
 export class DisputesService {
   private http = inject(HttpClient);
+  
+  // التعديل الأول: إضافة /api للمسار الأساسي
   private baseUrl = `${environment.apiUrl}/Admin/disputes`;
 
   // جلب كل النزاعات
-  getAllDisputes(): Observable<ApiResponseWithData<DisputeListItem[]>> {
-    return this.http.get<ApiResponseWithData<DisputeListItem[]>>(this.baseUrl);
+  getAllDisputes(): Observable<ApiResponseWithData<ApiDisputeListItem[]>> {
+    return this.http.get<ApiResponseWithData<ApiDisputeListItem[]>>(this.baseUrl);
   }
 
   // جلب تفاصيل نزاع ومحادثاته
-  getDisputeDetails(disputeId: number): Observable<ApiResponseWithData<DisputeDetails>> {
-    return this.http.get<ApiResponseWithData<DisputeDetails>>(`${this.baseUrl}/${disputeId}`);
+  getDisputeDetails(disputeId: number): Observable<ApiResponseWithData<ApiDisputeDetails>> {
+    return this.http.get<ApiResponseWithData<ApiDisputeDetails>>(`${this.baseUrl}/${disputeId}`);
   }
 
   // إرسال قرار حل النزاع
-  resolveDispute(disputeId: number, action: string, notes: string): Observable<ApiResponseWithData<boolean>> {
-    // تم تعديل أسماء المتغيرات لتتطابق 100% مع الـ JSON الخاص بالسواجر
-    const payload = { 
-      resolutionAction: action, 
-      notes: notes 
-    };
-    return this.http.post<ApiResponseWithData<boolean>>(`${this.baseUrl}/${disputeId}/resolve`, payload);
+  resolveDispute(disputeId: number, action: string, notes: string): Observable<any> {
+    const payload = { resolutionAction: action, notes: notes };
+    return this.http.post(`${this.baseUrl}/${disputeId}/resolve`, payload);
   }
 
   // إرسال رسالة في الشات الخاص بالنزاع
-  sendMessage(disputeId: number, text: string): Observable<ApiResponseWithData<boolean>> {
+  sendMessage(disputeId: number, text: string): Observable<any> {
     const payload = { messageText: text };
-    return this.http.post<ApiResponseWithData<boolean>>(`${this.baseUrl}/${disputeId}/message`, payload);
+    // التعديل الثاني: تغيير message إلى messages لتطابق السواجر
+    return this.http.post(`${this.baseUrl}/${disputeId}/messages`, payload);
   }
 }

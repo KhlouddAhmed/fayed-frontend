@@ -1,6 +1,20 @@
 import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DisputesService, DisputeListItem, DisputeDetails } from './disputes.service';
+import { DisputesService, ApiDisputeListItem, ApiDisputeDetails } from './disputes.service';
+
+// الواجهة اللي الـ HTML بيقرا منها عشان مابنغيرش تصميمه
+export interface DisputeUI {
+  dbId: number;
+  id: string;
+  orderId: string;
+  buyerName: string;
+  sellerName: string;
+  issueSummary: string;
+  status: string;
+  finalDecision: string;
+  settlementDate: string;
+  moderator: string;
+}
 
 @Component({
   selector: 'app-disputes',
@@ -11,33 +25,67 @@ import { DisputesService, DisputeListItem, DisputeDetails } from './disputes.ser
 })
 export class DisputesComponent implements OnInit {
   private disputesService = inject(DisputesService);
-
   activeTab = signal<'open' | 'investigating' | 'closed'>('open');
   
-  // الإشارات الخاصة بالبيانات
-  allDisputes = signal<DisputeListItem[]>([]);
-  selectedDispute = signal<DisputeDetails | null>(null);
+  // الإشارات الخام من الـ API
+  private rawDisputes = signal<ApiDisputeListItem[]>([]);
+  private rawSelectedDispute = signal<ApiDisputeDetails | null>(null);
 
-  // حالات التحميل
+  // إشارات التحميل والنوافذ
   isLoadingList = signal<boolean>(true);
   isLoadingDetails = signal<boolean>(false);
   isResolving = signal<boolean>(false);
   isSendingMessage = signal<boolean>(false);
 
-  // إشارات للتحكم في نافذة إنهاء النزاع (Modal)
   showResolveModal = signal<boolean>(false);
   resolveNotesText = signal<string>('');
   pendingDecision = signal<string>('');
 
-  // حساب عدد القضايا لكل تابة ديناميكياً
-  openCount = computed(() => this.allDisputes().filter(d => d.status.toLowerCase() === 'open').length);
-  investigatingCount = computed(() => this.allDisputes().filter(d => d.status.toLowerCase() === 'investigating').length);
-  closedCount = computed(() => this.allDisputes().filter(d => d.status.toLowerCase() === 'closed').length);
-
-  // فلترة القضايا المعروضة بناءً على التابة النشطة
-  filteredDisputes = computed(() => {
-    return this.allDisputes().filter(d => d.status.toLowerCase() === this.activeTab());
+  // 1. إعادة تشكيل الداتا (Mapping) لـ List النزاعات
+  mappedDisputes = computed(() => {
+    return this.rawDisputes().map(d => ({
+      dbId: d.disputeId,
+      id: d.disputeIdentifier,
+      orderId: d.orderIdentifier,
+      buyerName: d.buyerName,
+      sellerName: d.sellerName,
+      issueSummary: d.reason,
+      status: d.status,
+      finalDecision: d.resolutionDecision,
+      settlementDate: d.resolutionDate,
+      moderator: d.mediatorName
+    }));
   });
+
+  // فلترة حسب التابة النشطة
+  filteredDisputes = computed(() => {
+    return this.mappedDisputes().filter(d => d.status.toLowerCase() === this.activeTab());
+  });
+
+  // 2. إعادة تشكيل تفاصيل النزاع المختار (Chat & Details)
+  selectedDispute = computed(() => {
+    const details = this.rawSelectedDispute();
+    if (!details) return null;
+    
+    return {
+      dbId: details.disputeId,
+      id: details.disputeIdentifier,
+      orderId: details.orderIdentifier,
+      issueSummary: details.description,
+      messages: details.chatMessages.map((m, index) => ({
+        id: index, 
+        senderName: m.senderName,
+        senderRole: m.senderRole,
+        text: m.messageText,
+        time: m.time
+      }))
+    };
+  });
+
+  // حساب أرقام البادجات ديناميكياً
+  openCount = computed(() => this.mappedDisputes().filter(d => d.status.toLowerCase() === 'open').length);
+  investigatingCount = computed(() => this.mappedDisputes().filter(d => d.status.toLowerCase() === 'investigating').length);
+  closedCount = computed(() => this.mappedDisputes().filter(d => d.status.toLowerCase() === 'closed').length);
 
   ngOnInit(): void {
     this.fetchDisputes();
@@ -46,9 +94,11 @@ export class DisputesComponent implements OnInit {
   fetchDisputes(): void {
     this.isLoadingList.set(true);
     this.disputesService.getAllDisputes().subscribe({
-      next: (res) => {
-        if (res.IsSuccess && res.Data) {
-          this.allDisputes.set(res.Data);
+      next: (res: any) => {
+        const isSuccess = res.IsSuccess ?? res.isSuccess;
+        const data = res.Data ?? res.data;
+        if (isSuccess && data) {
+          this.rawDisputes.set(data);
         }
         this.isLoadingList.set(false);
       },
@@ -61,17 +111,18 @@ export class DisputesComponent implements OnInit {
 
   setTab(tab: 'open' | 'investigating' | 'closed') {
     this.activeTab.set(tab);
-    this.selectedDispute.set(null); // تفريغ الشات عند تغيير التاب
+    this.rawSelectedDispute.set(null); // قفل الشات عند تغيير التاب
   }
 
-  selectDispute(disputeId: number) {
+  selectDispute(dbId: number) {
     this.isLoadingDetails.set(true);
-    this.selectedDispute.set(null);
-
-    this.disputesService.getDisputeDetails(disputeId).subscribe({
-      next: (res) => {
-        if (res.IsSuccess && res.Data) {
-          this.selectedDispute.set(res.Data);
+    this.rawSelectedDispute.set(null);
+    this.disputesService.getDisputeDetails(dbId).subscribe({
+      next: (res: any) => {
+        const isSuccess = res.IsSuccess ?? res.isSuccess;
+        const data = res.Data ?? res.data;
+        if (isSuccess && data) {
+          this.rawSelectedDispute.set(data);
         }
         this.isLoadingDetails.set(false);
       },
@@ -82,11 +133,6 @@ export class DisputesComponent implements OnInit {
     });
   }
 
-  // -----------------------------------------------------
-  // دوال إنهاء النزاع (Modal Logic)
-  // -----------------------------------------------------
-
-  // الدالة اللي الزرار بيناديها لفتح المودال وتخزين القرار مؤقتاً
   submitResolution(decision: string) {
     const active = this.selectedDispute();
     if (!active) return;
@@ -96,37 +142,31 @@ export class DisputesComponent implements OnInit {
     this.showResolveModal.set(true);
   }
 
-  // تحديث الملاحظات أثناء الكتابة
   updateNotes(event: Event) {
     const input = event.target as HTMLTextAreaElement;
     this.resolveNotesText.set(input.value);
   }
 
-  // قفل المودال
   closeResolveModal() {
     this.showResolveModal.set(false);
     this.pendingDecision.set('');
     this.resolveNotesText.set('');
   }
 
-  // تأكيد القرار من داخل المودال والاتصال بالخادم
   confirmResolution() {
     const active = this.selectedDispute();
     const decision = this.pendingDecision();
     if (!active || !decision) return;
 
-    // لو الأدمن مكتبش ملاحظات، نبعت جملة افتراضية عشان الباك إند ميزعلش
     const notes = this.resolveNotesText().trim() || 'تم إنهاء النزاع بناءً على مراجعة الإدارة بدون ملاحظات إضافية.';
 
     this.isResolving.set(true);
-    
-    // إرسال القرار والملاحظات للسيرفر
-    this.disputesService.resolveDispute(active.disputeId, decision, notes).subscribe({
+    this.disputesService.resolveDispute(active.dbId, decision, notes).subscribe({
       next: () => {
         this.isResolving.set(false);
-        this.closeResolveModal(); // قفل المودال
-        this.fetchDisputes();     // تحديث الجدول
-        this.setTab('closed');    // نقل الأدمن لتابة المنتهية
+        this.closeResolveModal();
+        this.fetchDisputes(); 
+        this.setTab('closed'); 
       },
       error: (err) => {
         console.error('فشل اتخاذ القرار:', err);
@@ -136,10 +176,6 @@ export class DisputesComponent implements OnInit {
     });
   }
 
-  // -----------------------------------------------------
-  // دالة إرسال رسالة في الشات
-  // -----------------------------------------------------
-
   sendMessage(inputElement: HTMLInputElement) {
     const text = inputElement.value.trim();
     const active = this.selectedDispute();
@@ -147,14 +183,11 @@ export class DisputesComponent implements OnInit {
     if (!text || !active) return;
 
     this.isSendingMessage.set(true);
-    this.disputesService.sendMessage(active.disputeId, text).subscribe({
+    this.disputesService.sendMessage(active.dbId, text).subscribe({
       next: () => {
-        // تفريغ مربع النص بعد الإرسال بنجاح
         inputElement.value = '';
         this.isSendingMessage.set(false);
-        
-        // إعادة جلب تفاصيل النزاع عشان الشات يتعمل له Refresh وتظهر رسالتك الجديدة فوراً
-        this.selectDispute(active.disputeId); 
+        this.selectDispute(active.dbId); // ريفريش للشات
       },
       error: (err) => {
         console.error('فشل إرسال الرسالة:', err);

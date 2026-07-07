@@ -1,32 +1,10 @@
 import { Component, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { StatCardComponent } from '../../../../../shared/components/stat-card/stat-card';
-import { environment } from '../../../../../environments/environment';
-import { ApiResponseWithData } from '../../../../../core/models/api-response.model';
+// تأكد من مسار الكارت حسب مشروعك
+import { StatCardComponent } from '../../../../../shared/components/stat-card/stat-card'; 
 
-export interface CategoryStat {
-  categoryName: string;
-  percentage: number;
-  color?: string; // للتحكم في لون المؤشر في الواجهة
-}
-
-export interface RecentEvent {
-  adminName: string;
-  actionDescription: string;
-  targetEntity: string;
-  time: string;
-}
-
-export interface DashboardStatsData {
-  totalTradingVolume: number;
-  volumeGrowthPercentage: number;
-  pendingCompanies: number;
-  totalUsers: number;
-  openDisputes: number;
-  categoryStats: CategoryStat[];
-  recentEvents: RecentEvent[];
-}
+// استدعاء السيرفيس والواجهات اللي لسه عاملينها
+import { OverviewService, DashboardStatsData, CategoryStat, RecentEvent } from './overview.service';
 
 @Component({
   selector: 'app-overview',
@@ -36,8 +14,9 @@ export interface DashboardStatsData {
   styleUrls: ['./overview.css']
 })
 export class OverviewComponent implements OnInit {
-  private http = inject(HttpClient);
+  private overviewService = inject(OverviewService);
 
+  // المتغيرات اللي الـ HTML بتاعك بيقرأ منها زي ما هي بالضبط
   dashboardStats = signal<any[]>([]);
   recentEvents = signal<RecentEvent[]>([]);
   categoryStats = signal<CategoryStat[]>([]);
@@ -50,23 +29,28 @@ export class OverviewComponent implements OnInit {
 
   fetchDashboardData(): void {
     this.isLoading.set(true);
-    this.http.get<ApiResponseWithData<DashboardStatsData>>(`${environment.apiUrl}/Admin/dashboard`)
-      .subscribe({
-        next: (response) => {
-          if (response.IsSuccess && response.Data) {
-            this.mapDataToCards(response.Data);
-          }
-          this.isLoading.set(false);
-        },
-        error: (err) => {
-          console.error('خطأ في جلب بيانات الداشبورد:', err);
-          this.isLoading.set(false);
+    this.overviewService.getDashboardStats().subscribe({
+      next: (response: any) => {
+        // حماية للكود: قراءة الداتا سواء الباك إند بعتها كابيتال أو سمول
+        const isSuccess = response.IsSuccess ?? response.isSuccess;
+        const data = response.Data ?? response.data;
+
+        if (isSuccess && data) {
+          this.mapDataToCards(data);
         }
-      });
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('خطأ في جلب بيانات الداشبورد:', err);
+        this.isLoading.set(false);
+      }
+    });
   }
 
+  // الدالة دي بتشكل الداتا وتظبط الألوان والنصوص عشان الـ HTML يعرضها صح
   private mapDataToCards(data: DashboardStatsData): void {
-    // 1. تظبيط الكروت العلوية
+    
+    // 1. تظبيط الكروت العلوية والنصوص
     const volumeText = data.totalTradingVolume >= 1000000
       ? (data.totalTradingVolume / 1000000).toFixed(2) + ' مليون ج.م'
       : data.totalTradingVolume.toLocaleString() + ' ج.م';
@@ -116,13 +100,13 @@ export class OverviewComponent implements OnInit {
     // 2. ربط آخر الأحداث
     this.recentEvents.set(data.recentEvents || []);
 
-    // 3. ربط الفئات مع توزيع ألوان متناسقة للديزاين
+    // 3. ربط الفئات مع توزيع ألوان متناسقة للديزاين بتاعك
     const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
     const mappedCategories = (data.categoryStats || []).map((cat, index) => ({
       ...cat,
       color: colors[index % colors.length]
     }));
-    
+
     this.categoryStats.set(mappedCategories);
   }
 }

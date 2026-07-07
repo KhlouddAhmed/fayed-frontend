@@ -66,9 +66,26 @@ export class MarketplacePageComponent implements OnInit {
     this.loadListings();
   }
 
+  // onSmartSearch(query: string): void {
+  //   console.log('Smart Search query:', query);
+  // }
+
   onSmartSearch(query: string): void {
-    console.log('Smart Search query:', query);
-  }
+  if (!query) return;
+
+  this.isLoading.set(true);
+  this.marketplaceService.smartSearch(query, this.currentPage()).subscribe({
+    next: (response) => {
+      this.listings.set(response.items || []);
+      this.totalCount.set(response.totalCount || 0);
+      this.isLoading.set(false);
+    },
+    error: (err) => {
+      console.error(err);
+      this.isLoading.set(false);
+    }
+  });
+}
 
   private loadListings(): void {
     this.isLoading.set(true);

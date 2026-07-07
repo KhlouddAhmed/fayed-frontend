@@ -1,10 +1,10 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../../environments/environment';
-import { ApiResponseWithData } from '../../../../../core/models/api-response.model';
+import { environment } from '../../../../../environments/environment'; // تأكد من المسار
+import { ApiResponseWithData } from '../../../../../core/models/api-response.model'; // تأكد من المسار
 
-export interface PendingListing {
+export interface ApiAdListing {
   listingId: number;
   listingIdentifier: string;
   title: string;
@@ -19,18 +19,14 @@ export interface PendingListing {
 })
 export class ModerationService {
   private http = inject(HttpClient);
-  
-  // جلب الإعلانات المعلقة
-  getPendingListings(): Observable<ApiResponseWithData<PendingListing[]>> {
-    return this.http.get<ApiResponseWithData<PendingListing[]>>(`${environment.apiUrl}/Admin/pending-listings`);
+
+  // 1. جلب الإعلانات المعلقة (GET)
+  getPendingListings(): Observable<ApiResponseWithData<ApiAdListing[]>> {
+    return this.http.get<ApiResponseWithData<ApiAdListing[]>>(`${environment.apiUrl}/Admin/pending-listings`);
   }
 
-  // اتخاذ قرار (قبول أو رفض)
-  decideListing(listingId: number, isApproved: boolean): Observable<ApiResponseWithData<boolean>> {
-    // السواجر طالب الـ isApproved كـ Query Parameter
-    const params = new HttpParams().set('isApproved', isApproved.toString());
-    
-    // بنبعت null في الـ body لأن الـ API مش طالب Payload
-    return this.http.post<ApiResponseWithData<boolean>>(`${environment.apiUrl}/Admin/listings/${listingId}/decide`, null, { params });
+  // 2. إرسال قرار القبول أو الرفض (POST)
+  decideListing(listingId: number, payload: { isApproved: boolean }): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/Admin/listings/${listingId}/decide`, payload);
   }
 }

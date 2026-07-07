@@ -1,16 +1,27 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  OnInit,
   computed,
   inject,
   resource,
   signal,
 } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { Router } from '@angular/router'; 
-import { Contract, Conversation, ContractSignatureFormValue, Message } from '../../models/messages.model';
-import { adaptContract, adaptConversations, adaptMessages } from '../../adapters/messages.adapter';
-import { MESSAGES_REPOSITORY } from '../../services/messages-repository.token';
+import { ActivatedRoute } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
+import {
+  Contract,
+  Conversation,
+  ContractSignatureFormValue,
+  Message,
+} from '../../models/messages.model';
+import {
+  adaptContract,
+  adaptConversation,
+  adaptMessages,
+} from '../../adapters/messages.adapter';
+import { ChatService } from '../../services/chat.service';
 import { ConversationList } from '../../components/conversation-list/conversation-list';
 import { MessageThread } from '../../components/message-thread/message-thread';
 import { ContractPromptModal } from '../../components/contract-prompt-modal/contract-prompt-modal';
@@ -37,15 +48,17 @@ type ActiveModal = 'contract_prompt' | 'contract_panel' | null;
   styleUrl: './messages.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Messages {
-  private readonly repository = inject(MESSAGES_REPOSITORY);
-
-  private readonly router = inject(Router); 
+export class Messages implements OnInit {
+  private readonly chatService = inject(ChatService);
+  private readonly route = inject(ActivatedRoute);
 
   protected readonly currentDate = new Date();
 
   protected readonly conversationsResource = resource({
-    loader: async () => adaptConversations(await this.repository.getConversations()),
+    loader: async () => {
+      const dtos = await firstValueFrom(this.chatService.getConversations());
+      return dtos.map(adaptConversation);
+    },
   });
 
   protected readonly activeConversationId = signal<string | null>(null);
@@ -56,27 +69,36 @@ export class Messages {
   protected readonly isContractSubmitting = signal(false);
 
   protected readonly messagesResource = resource<readonly Message[], string | null>({
-  params: this.activeConversationId,
-  loader: async ({ params: id }): Promise<readonly Message[]> => {
-    if (!id) return [];
-    return adaptMessages(await this.repository.getMessages(id));
-  },
-});
+    params: this.activeConversationId,
+    loader: async ({ params: id }): Promise<readonly Message[]> => {
+      if (!id) return [];
+      const dtos = await firstValueFrom(this.chatService.getMessages(id));
+      return adaptMessages(dtos);
+    },
+  });
 
   protected readonly activeConversation = computed<Conversation | null>(() => {
     const id = this.activeConversationId();
     return this.conversationsResource.value()?.find((c) => c.id === id) ?? null;
   });
 
-  protected async onSelectConversation(id: string): Promise<void> {
+  ngOnInit(): void {
+    const chatId = this.route.snapshot.queryParamMap.get('chatId');
+    if (chatId) {
+      this.onSelectConversation(chatId);
+    }
+  }
+
+  protected onSelectConversation(id: string): void {
     this.activeConversationId.set(id);
+    this.chatService.markAsRead(id).subscribe();
   }
 
   protected async onSendMessage(content: string): Promise<void> {
     const id = this.activeConversationId();
     if (!id) return;
     this.isSending.set(true);
-    await this.repository.sendMessage(id, content);
+    await firstValueFrom(this.chatService.sendMessage(id, content));
     this.isSending.set(false);
     this.messagesResource.reload();
   }
@@ -89,7 +111,7 @@ export class Messages {
     const id = this.activeConversationId();
     if (!id) return;
     this.isContractLoading.set(true);
-    const dto = await this.repository.createContract(id);
+    const dto = await firstValueFrom(this.chatService.createContract(id));
     this.activeContract.set(adaptContract(dto));
     this.isContractLoading.set(false);
     this.activeModal.set('contract_panel');
@@ -105,29 +127,26 @@ export class Messages {
 
   protected async onAcceptAmendment(contractId: string): Promise<void> {
     this.isContractSubmitting.set(true);
-    const dto = await this.repository.acceptAmendment(contractId);
+    const dto = await firstValueFrom(this.chatService.acceptAmendment(contractId));
     this.activeContract.set(adaptContract(dto));
     this.isContractSubmitting.set(false);
   }
 
-  protected async onRequestAmendment(event: { contractId: string; newTerms: string }): Promise<void> {
+  protected async onRequestAmendment(event: {
+    contractId: string;
+    newTerms: string;
+  }): Promise<void> {
     this.isContractSubmitting.set(true);
-    const dto = await this.repository.requestAmendment(event.contractId, event.newTerms);
+    const dto = await firstValueFrom(this.chatService.declineAmendment(event.contractId));
     this.activeContract.set(adaptContract(dto));
     this.isContractSubmitting.set(false);
   }
 
-  protected async onSignContract(value: ContractSignatureFormValue): Promise<void> {
-    const contract = this.activeContract();
-    if (!contract) return;
-    this.isContractSubmitting.set(true);
-    const dto = await this.repository.signContract(contract.id, value.authorizedName);
-    this.activeContract.set(adaptContract(dto));
-    this.isContractSubmitting.set(false);
+  protected onSignContract(_value: ContractSignatureFormValue): void {
+    // TODO: wire when backend confirms sign endpoint
   }
 
-  protected onProceedToPayment(contractId: string): void {
-    this.router.navigate(['/payment'], { queryParams: { contractId: contractId } });
-    this.activeModal.set(null); 
-  }
+  protected onProceedToPayment(_contractId: string): void {
+  this.activeModal.set(null);
+}
 }

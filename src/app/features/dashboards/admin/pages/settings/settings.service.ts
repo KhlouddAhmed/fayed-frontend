@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { ApiResponseWithData } from '../../../../../core/models/api-response.model';
 
-// واجهة بوابات الدفع
+// واجهة بوابات الدفع (تطابق الـ API)
 export interface PaymentSettings {
   isFawryEnabled: boolean;
   fawryMerchantId: string;
@@ -14,7 +14,7 @@ export interface PaymentSettings {
   bankIban: string;
 }
 
-// واجهة سجل النظام
+// واجهة سجل النظام (تطابق الـ API)
 export interface SystemLog {
   logId: number;
   adminName: string;
@@ -29,7 +29,7 @@ export interface SystemLog {
 })
 export class SettingsService {
   private http = inject(HttpClient);
-  
+
   // -- دوال بوابات الدفع --
   getPaymentSettings(): Observable<ApiResponseWithData<PaymentSettings>> {
     return this.http.get<ApiResponseWithData<PaymentSettings>>(`${environment.apiUrl}/Admin/payment-settings`);
@@ -49,7 +49,6 @@ export class SettingsService {
   }
 
   downloadSystemLogs(): Observable<Blob> {
-    // استخدمنا responseType: 'blob' لأن الباك إند هيرجع ملف مش JSON
     return this.http.get(`${environment.apiUrl}/Admin/system-logs/download`, { responseType: 'blob' });
   }
 }

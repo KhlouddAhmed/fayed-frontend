@@ -1,35 +1,42 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, of, delay } from 'rxjs';
-import { map } from 'rxjs/operators';
-
-import { LoginRequest, LoginResponseDto, LoginUser } from '../models/auth.models';
+import { Observable, tap, map } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { ApiResponseWithData } from '../../../core/models/api-response.model';
+import { AuthUser, LoginRequest, LoginRequestDto, LoginResponseDto } from '../models/auth.models';
 import { adaptLoginResponse } from '../adapters/auth.adapter';
 import { AuthStateService } from '../../../core/services/auth-state.service';
+import { ROUTES } from '../../../core/constants/routes';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private http = inject(HttpClient);
-  private authState = inject(AuthStateService);
-  private router = inject(Router);             
+  private readonly http = inject(HttpClient);
+  private readonly authState = inject(AuthStateService);
+  private readonly router = inject(Router);
 
-  login(credentials: LoginRequest): Observable<LoginUser> {
-    const mockResponse: LoginResponseDto = {
-      Token: 'mock-jwt-token-12345',
-      CompanyId: 'company-001',
-      CompanyName: 'مصنع النيل للبلاستيك',
-      KybStatus: 'Verified',
+ login(request: LoginRequest): Observable<AuthUser | null> {
+    const body: LoginRequestDto = {
+      Email: request.email,
+      Password: request.password,
     };
 
-    return of(mockResponse).pipe(
-      delay(800),
-      map(adaptLoginResponse)
-    );
+    return this.http
+      .post<any>(`${environment.apiUrl}/auth/login`, body)
+      .pipe(
+        tap(response => {
+          const token = response.data?.token; 
+          const user = adaptLoginResponse(response);
+          if (token && user) {
+            this.authState.setSession(token, user);
+          }
+        }),
+        map(response => adaptLoginResponse(response))
+      );
   }
 
   logout(): void {
     this.authState.logout();
-    this.router.navigate(['/']); 
+    this.router.navigateByUrl(`/${ROUTES.AUTH.LOGIN}`);
   }
 }

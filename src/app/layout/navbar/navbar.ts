@@ -14,12 +14,13 @@ interface NavLink {
 
 @Component({
   selector: 'app-navbar',
+  standalone: true, // تأكد إنها standalone لو بتستدعيها عل طول
   imports: [RouterLink, RouterLinkActive, NgOptimizedImage, NotificationBell],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
 export class NavbarComponent {
-  private readonly authState = inject(AuthStateService);
+  protected readonly authState = inject(AuthStateService); // غيرناها لـ protected عشان نصل للـ role في الـ HTML
   private readonly authService = inject(AuthService);
 
   protected readonly routes = ROUTES;
@@ -34,6 +35,13 @@ export class NavbarComponent {
   protected readonly factoryId = computed(() => {
     const id = this.authState.currentUser()?.factoryId;
     return id ? `FYD-${id}` : '';
+  });
+
+  // dashboard role
+  protected readonly dashboardLink = computed(() => {
+    const user = this.authState.currentUser();
+    if (!user) return '/';
+    return user.role === 'Admin' ? '/admin' : '/dashboard/company';
   });
 
   protected readonly navLinks: readonly NavLink[] = [

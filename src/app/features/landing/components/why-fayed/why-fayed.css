@@ -54,8 +54,8 @@
    ICON WRAPPER 
    ============================================= */
 .icon-wrapper {
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -67,8 +67,8 @@
 }
 
 .icon-wrapper img {
-  width: 28px;
-  height: 28px;
+  /* width: 28px;
+  height: 28px; */
   object-fit: contain;
 }
 

@@ -1,105 +1,165 @@
 <div class="account-details-step">
   <h2 class="step-title">إنشاء حساب الدخول</h2>
-  <p class="step-subtitle">أكمل بياناتك لإنشاء حساب لك والبدء في استخدام منصة فايض</p>
+  <p class="step-subtitle">أكمل بياناتك لإنشاء حساب والبدء في استخدام منصة فايض</p>
 
   <form (submit)="$event.preventDefault(); onSubmit()" class="account-details-form">
-
     <div class="fields-grid">
 
-      <!-- Email Field -->
+      <!-- Full Name -->
       <div class="field-group">
-        <label for="email" class="field-label">
-          البريد الإلكتروني <span class="required-mark">*</span>
-        </label>
-        <input
-          id="email"
-          type="email"
-          class="field-input"
+        <label for="name" class="field-label">الاسم الكامل <span class="required-mark">*</span></label>
+        <input id="name" type="text" class="field-input"
+          [class.field-input--error]="nameTouched() && !isNameValid()"
+          placeholder="الاسم الكامل للمسؤول"
+          [value]="name()"
+          (input)="name.set($any($event.target).value)"
+          (blur)="nameTouched.set(true)" />
+        @if (nameTouched() && !isNameValid()) {
+          <span class="field-error">يجب إدخال الاسم (3 أحرف على الأقل)</span>
+        }
+      </div>
+
+      <!-- Email -->
+      <div class="field-group">
+        <label for="email" class="field-label">البريد الإلكتروني <span class="required-mark">*</span></label>
+        <input id="email" type="email" class="field-input"
           [class.field-input--error]="emailTouched() && !isEmailValid()"
-          placeholder="0000000000"
+          placeholder="example@company.com"
           [value]="email()"
           (input)="email.set($any($event.target).value)"
           (blur)="emailTouched.set(true)"
-          autocomplete="email"
-          aria-label="البريد الإلكتروني"
-        />
+          autocomplete="email" />
         @if (emailTouched() && !isEmailValid()) {
-          <span class="field-error">يجب ان يحتوي البريد الالكتروني على @</span>
+          <span class="field-error">يجب أن يحتوي البريد الإلكتروني على @</span>
         }
       </div>
 
-      <!-- Phone Field -->
+      <!-- National ID -->
       <div class="field-group">
-        <label for="phoneNumber" class="field-label">
-          رقم الهاتف <span class="required-mark">*</span>
-        </label>
-        <div class="phone-wrapper" [class.phone-wrapper--error]="phoneTouched() && !isPhoneValid()">
-          <input
-            id="phoneNumber"
-            type="tel"
-            class="field-input phone-input"
-            placeholder="00000000"
-            [value]="phoneNumber()"
-            (input)="phoneNumber.set($any($event.target).value)"
-            (blur)="phoneTouched.set(true)"
-            aria-label="رقم الهاتف"
-          />
-          <span class="phone-prefix">+20</span>
-        </div>
-        @if (phoneTouched() && !isPhoneValid()) {
-          <span class="field-error">ادخل رقم الهاتف المكون من 11 رقم</span>
+        <label for="nationalId" class="field-label">رقم بطاقة الهوية <span class="required-mark">*</span></label>
+        <input id="nationalId" type="text" class="field-input"
+          [class.field-input--error]="nationalIdTouched() && !isNationalIdValid()"
+          placeholder="14 رقماً"
+          [value]="nationalId()"
+          (input)="nationalId.set($any($event.target).value)"
+          (blur)="nationalIdTouched.set(true)"
+          maxlength="14" />
+        @if (nationalIdTouched() && !isNationalIdValid()) {
+          <span class="field-error">يجب إدخال رقم الهوية (14 رقماً)</span>
         }
       </div>
 
-      <!-- Password Field -->
+      <!-- Factory Name -->
       <div class="field-group">
-        <label for="password" class="field-label">
-          كلمة المرور <span class="required-mark">*</span>
-        </label>
+        <label for="factoryName" class="field-label">اسم المصنع / الشركة <span class="required-mark">*</span></label>
+        <input id="factoryName" type="text" class="field-input"
+          [class.field-input--error]="factoryNameTouched() && !isFactoryNameValid()"
+          placeholder="الاسم القانوني للشركة"
+          [value]="factoryName()"
+          (input)="factoryName.set($any($event.target).value)"
+          (blur)="factoryNameTouched.set(true)" />
+        @if (factoryNameTouched() && !isFactoryNameValid()) {
+          <span class="field-error">يجب إدخال اسم الشركة</span>
+        }
+      </div>
+
+      <!-- Commercial Registry No -->
+      <div class="field-group">
+        <label for="commercialRegistryNo" class="field-label">رقم السجل التجاري <span class="required-mark">*</span></label>
+        <input id="commercialRegistryNo" type="text" class="field-input"
+          [class.field-input--error]="commercialRegistryNoTouched() && !isCommercialRegistryNoValid()"
+          placeholder="رقم السجل التجاري"
+          [value]="commercialRegistryNo()"
+          (input)="commercialRegistryNo.set($any($event.target).value)"
+          (blur)="commercialRegistryNoTouched.set(true)" />
+        @if (commercialRegistryNoTouched() && !isCommercialRegistryNoValid()) {
+          <span class="field-error">يجب إدخال رقم السجل التجاري</span>
+        }
+      </div>
+
+      <!-- Tax Card No -->
+      <div class="field-group">
+        <label for="taxCardNo" class="field-label">رقم البطاقة الضريبية <span class="required-mark">*</span></label>
+        <input id="taxCardNo" type="text" class="field-input"
+          [class.field-input--error]="taxCardNoTouched() && !isTaxCardNoValid()"
+          placeholder="رقم البطاقة الضريبية"
+          [value]="taxCardNo()"
+          (input)="taxCardNo.set($any($event.target).value)"
+          (blur)="taxCardNoTouched.set(true)" />
+        @if (taxCardNoTouched() && !isTaxCardNoValid()) {
+          <span class="field-error">يجب إدخال رقم البطاقة الضريبية</span>
+        }
+      </div>
+
+      <!-- Sector -->
+      <div class="field-group">
+        <label for="sector" class="field-label">القطاع الصناعي <span class="required-mark">*</span></label>
+        <input id="sector" type="text" class="field-input"
+          [class.field-input--error]="sectorTouched() && !isSectorValid()"
+          placeholder="مثال: بلاستيك، نسيج، معادن"
+          [value]="sector()"
+          (input)="sector.set($any($event.target).value)"
+          (blur)="sectorTouched.set(true)" />
+        @if (sectorTouched() && !isSectorValid()) {
+          <span class="field-error">يجب إدخال القطاع الصناعي</span>
+        }
+      </div>
+
+      <!-- Address -->
+      <div class="field-group">
+        <label for="address" class="field-label">عنوان المصنع <span class="required-mark">*</span></label>
+        <input id="address" type="text" class="field-input"
+          [class.field-input--error]="addressTouched() && !isAddressValid()"
+          placeholder="المحافظة، المنطقة الصناعية"
+          [value]="address()"
+          (input)="address.set($any($event.target).value)"
+          (blur)="addressTouched.set(true)" />
+        @if (addressTouched() && !isAddressValid()) {
+          <span class="field-error">يجب إدخال عنوان المصنع</span>
+        }
+      </div>
+
+      <!-- Password -->
+      <div class="field-group">
+        <label for="password" class="field-label">كلمة المرور <span class="required-mark">*</span></label>
         <div class="password-wrapper" [class.password-wrapper--error]="passwordTouched() && !isPasswordValid()">
-          <input
-            id="password"
+          <input id="password"
             [type]="showPassword() ? 'text' : 'password'"
             class="field-input password-input"
-            placeholder="00000000"
+            placeholder="8 أحرف على الأقل"
             [value]="password()"
             (input)="password.set($any($event.target).value)"
             (blur)="passwordTouched.set(true)"
-            autocomplete="new-password"
-            aria-label="كلمة المرور"
-          />
-          <button type="button" class="eye-btn" (click)="showPassword.set(!showPassword())" aria-label="إظهار كلمة المرور">
-            <img [src]="showPassword() ? 'assets/icons/login-icons/eye-open-inactive.png' : 'assets/icons/login-icons/eye-closed-inactive.png'"
-                 alt="" width="20" height="20" />
+            autocomplete="new-password" />
+          <button type="button" class="eye-btn" (click)="showPassword.set(!showPassword())">
+            <img
+              [src]="showPassword() ? 'assets/icons/login-icons/eye-open-inactive.png' : 'assets/icons/login-icons/eye-closed-inactive.png'"
+              alt="" width="20" height="20" />
           </button>
         </div>
         @if (passwordTouched() && !isPasswordValid()) {
-          <span class="field-error">يجب ان تكون كلمة المرور 8 أحرف على الأقل وتحتوي على حرف كبير ورقم</span>
+          <span class="field-error">8 أحرف على الأقل، حرف كبير ورقم</span>
         } @else {
-          <span class="field-hint">يجب ان تكون كلمة المرور 8 أحرف على الأقل وتحتوي على حرف كبير ورقم</span>
+          <span class="field-hint">8 أحرف على الأقل، حرف كبير ورقم</span>
         }
       </div>
 
-      <!-- Confirm Password Field -->
+      <!-- Confirm Password -->
       <div class="field-group">
-        <label for="confirmPassword" class="field-label">
-          تأكيد كلمة المرور <span class="required-mark">*</span>
-        </label>
+        <label for="confirmPassword" class="field-label">تأكيد كلمة المرور <span class="required-mark">*</span></label>
         <div class="password-wrapper" [class.password-wrapper--error]="confirmPasswordTouched() && !isPasswordMatch()">
-          <input
-            id="confirmPassword"
+          <input id="confirmPassword"
             [type]="showConfirmPassword() ? 'text' : 'password'"
             class="field-input password-input"
-            placeholder="00000000"
+            placeholder="أعد كتابة كلمة المرور"
             [value]="confirmPassword()"
             (input)="confirmPassword.set($any($event.target).value)"
             (blur)="confirmPasswordTouched.set(true)"
-            autocomplete="new-password"
-            aria-label="تأكيد كلمة المرور"
-          />
-          <button type="button" class="eye-btn" (click)="showConfirmPassword.set(!showConfirmPassword())" aria-label="إظهار تأكيد كلمة المرور">
-            <img [src]="showConfirmPassword() ? 'assets/icons/login-icons/eye-open-inactive.png' : 'assets/icons/login-icons/eye-closed-inactive.png'"
-                 alt="" width="20" height="20" />
+            autocomplete="new-password" />
+          <button type="button" class="eye-btn" (click)="showConfirmPassword.set(!showConfirmPassword())">
+            <img
+              [src]="showConfirmPassword() ? 'assets/icons/login-icons/eye-open-inactive.png' : 'assets/icons/login-icons/eye-closed-inactive.png'"
+              alt="" width="20" height="20" />
           </button>
         </div>
         @if (confirmPasswordTouched() && !isPasswordMatch()) {
@@ -109,16 +169,13 @@
 
     </div>
 
-    <!-- Submit -->
-    <button type="submit" class="submit-btn" [disabled]="!isFormValid()" aria-label="التالي">
-      التالي
+    <button type="submit" class="submit-btn" [disabled]="!isFormValid()">
+      إنشاء الحساب
     </button>
 
-    <!-- Login link -->
     <p class="login-link-row">
-      هل لديك حساب بالفعل ؟
+      هل لديك حساب بالفعل؟
       <a routerLink="/auth/login" class="login-link">تسجيل الدخول</a>
     </p>
-
   </form>
 </div>

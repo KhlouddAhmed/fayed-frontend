@@ -8,122 +8,111 @@
   <div class="d-flex border-bottom mb-4 gap-2">
     <button class="btn tab-btn px-4 py-3 d-flex align-items-center gap-2" 
             [class.active]="activeTab() === 'all'" (click)="setTab('all')">
-      جميع المستخدمين <span class="badge rounded-pill bg-light-blue text-primary px-2 py-1">{{ allUsersCount() }}</span>
+      جميع المستخدمين <span class="badge rounded-pill bg-light-blue text-primary px-2 py-1">{{ allCount() }}</span>
     </button>
     <button class="btn tab-btn px-4 py-3 d-flex align-items-center gap-2" 
             [class.active]="activeTab() === 'suspended'" (click)="setTab('suspended')">
-      حسابات موقوفة <span class="badge rounded-pill bg-light-blue text-primary px-2 py-1">{{ suspendedUsersCount() }}</span>
+      حسابات موقوفة <span class="badge rounded-pill bg-light-blue text-primary px-2 py-1">{{ suspendedCount() }}</span>
     </button>
   </div>
 
   <div class="card shadow-sm border rounded-4 bg-white" style="border-color: #E2E8F0 !important;">
     
-    @if (isLoading()) {
-      <div class="d-flex justify-content-center align-items-center py-5">
-        <div class="spinner-border text-primary" role="status"></div>
+    <!-- تابة جميع المستخدمين -->
+    @if (activeTab() === 'all') {
+      <div class="p-4 border-bottom d-flex justify-content-start">
+        <div class="position-relative" style="width: 350px;">
+          <input type="text" class="form-control bg-light border-0 rounded-3 py-2 pe-5" 
+                 placeholder="ابحث بالاسم أو الشركة أو البريد..." style="font-size: 13px;"
+                 (input)="updateSearch($event)" [value]="searchQuery()">
+          <i class="bi bi-search position-absolute text-muted" style="top: 50%; transform: translateY(-50%); right: 15px; font-size: 14px;"></i>
+        </div>
       </div>
-    } @else {
-      @if (activeTab() === 'all') {
-        <div class="p-4 border-bottom d-flex justify-content-center">
-          <div class="position-relative" style="width: 50%;">
-            <input type="text" class="form-control bg-light border-0 rounded-3 py-2 pe-5" 
-                   placeholder="ابحث بالاسم أو الشركة أو البريد..." style="font-size: 13px;"
-                   (input)="updateSearch($event)" [value]="searchQuery()">
-            <i class="bi bi-search position-absolute text-muted" style="top: 50%; transform: translateY(-50%); right: 15px; font-size: 14px;"></i>
-          </div>
-        </div>
 
-        <div class="table-responsive">
-          <table class="table table-borderless text-center align-middle mb-0">
-            <thead class="text-muted border-bottom" style="font-size: 13px;">
-              <tr>
-                <th class="py-4 fw-semibold text-end pe-4">المعرف</th>
-                <th class="py-4 fw-semibold">اسم المسؤول</th>
-                <th class="py-4 fw-semibold">المنشأة</th>
-                <th class="py-4 fw-semibold">البريد الإلكتروني</th>
-                <th class="py-4 fw-semibold">الحالة</th>
-                <th class="py-4 fw-semibold text-start ps-4">التحكم</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (user of filteredUsers(); track user.userId) {
-                <tr class="border-bottom last-no-border">
-                  <td class="py-4 fw-bold text-navy text-end pe-4" style="font-size: 13px;">{{ user.userIdentifier }}</td>
-                  <td class="py-4 fw-semibold text-navy" style="font-size: 13px;">{{ user.userName }}</td>
-                  <td class="py-4 text-muted" style="font-size: 13px;"><span class="d-inline-block text-truncate" style="max-width: 120px;">{{ user.factoryName }}</span></td>
-                  <td class="py-4 text-muted" style="font-size: 12px; opacity: 0.7; max-width: 140px;">
-                    <span class="d-inline-block text-truncate w-100" dir="ltr">{{ user.email }}</span>
-                  </td>
-                  <td class="py-4">
-                    @if (!user.isSuspended) {
-                      <span class="badge px-4 py-2 rounded-pill fw-bold bg-green-light text-success" style="font-size: 11px;">نشط</span>
-                    } @else {
-                      <span class="badge px-4 py-2 rounded-pill fw-bold bg-red-light text-danger" style="font-size: 11px;">موقوف</span>
-                    }
-                  </td>
-                  <td class="py-4 text-start ps-4">
-                    @if (!user.isSuspended) {
-                      <button class="btn btn-sm text-white rounded-3 fw-medium d-inline-flex align-items-center justify-content-center gap-2 px-4 py-2 action-btn bg-red" 
-                              [disabled]="isTogglingId() === user.userId"
-                              (click)="toggleUserStatus(user.userId, user.isSuspended)">
-                        @if (isTogglingId() === user.userId) { <span class="spinner-border spinner-border-sm"></span> }
-                        @else { حظر <i class="bi bi-lock"></i> }
-                      </button>
-                    } @else {
-                      <button class="btn btn-sm text-white rounded-3 fw-medium d-inline-flex align-items-center justify-content-center gap-2 px-4 py-2 action-btn bg-blue" 
-                              [disabled]="isTogglingId() === user.userId"
-                              (click)="toggleUserStatus(user.userId, user.isSuspended)">
-                        @if (isTogglingId() === user.userId) { <span class="spinner-border spinner-border-sm"></span> }
-                        @else { تنشيط <i class="bi bi-unlock"></i> }
-                      </button>
-                    }
-                  </td>
-                </tr>
-              } @empty {
-                <tr><td colspan="6" class="text-center py-5 text-muted">لا يوجد مستخدمين لعرضهم</td></tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      }
-
-      @else if (activeTab() === 'suspended') {
-        <div class="table-responsive">
-          <table class="table table-borderless text-center align-middle mb-0 mt-2">
-            <thead class="text-muted border-bottom" style="font-size: 13px;">
-              <tr>
-                <th class="py-4 fw-semibold text-end pe-4">المعرف</th>
-                <th class="py-4 fw-semibold">اسم الشركة</th>
-                <th class="py-4 fw-semibold">تاريخ التسجيل</th>
-                <th class="py-4 fw-semibold">حالة الحساب</th>
-                <th class="py-4 fw-semibold text-start ps-4">إلغاء الحظر</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (user of filteredUsers(); track user.userId) {
-                <tr class="border-bottom last-no-border">
-                  <td class="py-4 fw-bold text-navy text-end pe-4" style="font-size: 13px;">{{ user.userIdentifier }}</td>
-                  <td class="py-4 text-muted" style="font-size: 13px;">{{ user.factoryName }}</td>
-                  <td class="py-4 text-muted" style="font-size: 13px;" dir="ltr">{{ user.registrationDate }}</td>
-                  <td class="py-4">
-                    <span class="badge px-4 py-2 rounded-pill fw-bold bg-red-light text-danger" style="font-size: 11px;">موقوف مؤقتاً</span>
-                  </td>
-                  <td class="py-4 text-start ps-4">
-                    <button class="btn btn-sm text-white rounded-3 fw-medium d-inline-flex align-items-center justify-content-center gap-2 px-4 py-2 action-btn bg-blue"
-                            [disabled]="isTogglingId() === user.userId"
-                            (click)="toggleUserStatus(user.userId, user.isSuspended)">
-                      @if (isTogglingId() === user.userId) { <span class="spinner-border spinner-border-sm"></span> }
-                      @else { إلغاء الحظر <i class="bi bi-unlock"></i> }
+      <div class="table-responsive">
+        <table class="table table-borderless text-center align-middle mb-0">
+          <thead class="text-muted border-bottom" style="font-size: 13px;">
+            <tr>
+              <th class="py-4 fw-semibold text-end pe-4">المعرف</th>
+              <th class="py-4 fw-semibold">اسم المسؤول</th>
+              <th class="py-4 fw-semibold">المنشأة</th>
+              <th class="py-4 fw-semibold">البريد الإلكتروني</th>
+              <th class="py-4 fw-semibold">الحالة</th>
+              <th class="py-4 fw-semibold text-start ps-4">التحكم</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of filteredUsers(); track user.dbId) {
+              <tr class="border-bottom last-no-border">
+                <td class="py-4 fw-bold text-navy text-end pe-4" style="font-size: 13px;">{{ user.id }}</td>
+                <td class="py-4 fw-semibold text-navy" style="font-size: 13px;">{{ user.adminName }}</td>
+                <td class="py-4 text-muted" style="font-size: 13px;"><span class="d-inline-block text-truncate" style="max-width: 120px;">{{ user.company }}</span></td>
+                <td class="py-4 text-muted" style="font-size: 12px; opacity: 0.7; max-width: 140px;"><span class="d-inline-block text-truncate w-100" dir="ltr">{{ user.email }}</span></td>
+                <td class="py-4">
+                  @if (user.status === 'active') {
+                    <span class="badge px-4 py-2 rounded-pill fw-bold bg-green-light text-success" style="font-size: 11px;">نشط</span>
+                  } @else {
+                    <span class="badge px-4 py-2 rounded-pill fw-bold bg-red-light text-danger" style="font-size: 11px;">موقوف</span>
+                  }
+                </td>
+                <td class="py-4 text-start ps-4">
+                  @if (user.status === 'active') {
+                    <button class="btn btn-sm text-white rounded-3 fw-medium d-inline-flex align-items-center justify-content-center gap-2 px-4 py-2 action-btn bg-red" 
+                            (click)="toggleUserStatus(user.dbId)" [disabled]="isTogglingId() === user.dbId">
+                      {{ isTogglingId() === user.dbId ? 'جاري...' : 'حظر' }} <i class="bi bi-lock"></i>
                     </button>
-                  </td>
-                </tr>
-              } @empty {
-                <tr><td colspan="5" class="text-center py-5 text-muted">لا توجد حسابات موقوفة</td></tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      }
+                  } @else {
+                    <button class="btn btn-sm text-white rounded-3 fw-medium d-inline-flex align-items-center justify-content-center gap-2 px-4 py-2 action-btn bg-blue" 
+                            (click)="toggleUserStatus(user.dbId)" [disabled]="isTogglingId() === user.dbId">
+                      {{ isTogglingId() === user.dbId ? 'جاري...' : 'تنشيط' }} <i class="bi bi-unlock"></i>
+                    </button>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="6" class="text-center py-5 text-muted">لا يوجد مستخدمين لعرضهم</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
     }
+
+    <!-- تابة الحسابات الموقوفة -->
+    @else if (activeTab() === 'suspended') {
+      <div class="table-responsive">
+        <table class="table table-borderless text-center align-middle mb-0 mt-2">
+          <thead class="text-muted border-bottom" style="font-size: 13px;">
+            <tr>
+              <th class="py-4 fw-semibold text-end pe-4">المعرف</th>
+              <th class="py-4 fw-semibold">اسم الشركة</th>
+              <th class="py-4 fw-semibold">تاريخ التسجيل</th>
+              <th class="py-4 fw-semibold">حالة الحساب</th>
+              <th class="py-4 fw-semibold text-start ps-4">إلغاء الحظر</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of filteredUsers(); track user.dbId) {
+              <tr class="border-bottom last-no-border">
+                <td class="py-4 fw-bold text-navy text-end pe-4" style="font-size: 13px;">{{ user.id }}</td>
+                <td class="py-4 text-muted" style="font-size: 13px;">{{ user.company }}</td>
+                <td class="py-4 text-muted" style="font-size: 13px;">{{ user.registrationDate }}</td>
+                <td class="py-4">
+                  <span class="badge px-4 py-2 rounded-pill fw-bold bg-red-light text-danger" style="font-size: 11px;">موقوف مؤقتاً</span>
+                </td>
+                <td class="py-4 text-start ps-4">
+                  <button class="btn btn-sm text-white rounded-3 fw-medium d-inline-flex align-items-center justify-content-center gap-2 px-4 py-2 action-btn bg-blue"
+                          (click)="toggleUserStatus(user.dbId)" [disabled]="isTogglingId() === user.dbId">
+                    {{ isTogglingId() === user.dbId ? 'جاري...' : 'إلغاء الحظر' }} <i class="bi bi-unlock"></i>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="5" class="text-center py-5 text-muted">لا توجد حسابات موقوفة</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
   </div>
 </div>

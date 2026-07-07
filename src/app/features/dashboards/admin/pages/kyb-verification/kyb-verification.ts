@@ -1,32 +1,6 @@
-import { Component, signal, OnInit, inject } from '@angular/core';
+import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../../environments/environment';
-import { ApiResponseWithData } from '../../../../../core/models/api-response.model';
-
-// 1. الداتا الخاصة بالجدول
-export interface PendingKybData {
-  caseId: number;
-  requestNumber: string;
-  companyName: string;
-  commercialRegistryNo: string;
-  taxCardNo: string;
-  submittedDate: string;
-}
-
-// 2. الداتا الخاصة بالتفاصيل (اللي بتتعرض جوه المراجعة)
-export interface KybDetailsData {
-  caseId: number;
-  companyName: string;
-  commercialRegistryNo: string;
-  taxCardNo: string;
-  address: string;
-  sector: string;
-  documents: { documentType: string; fileUrl: string }[];
-  aiConfidenceScore: number;
-  aiRecommendation: string;
-  aiMismatches: string;
-}
+import { KybService, ApiPendingKyb, ApiKybDetails } from './kyb.service';
 
 @Component({
   selector: 'app-kyb',
@@ -36,140 +10,140 @@ export interface KybDetailsData {
   styleUrls: ['./kyb-verification.css']
 })
 export class KybComponent implements OnInit {
-  private http = inject(HttpClient);
-
+  private kybService = inject(KybService);
+  
   activeTab = signal<'pending' | 'reviewed'>('pending');
   
-  // الإشارات الخاصة بالبيانات
-  kybRequests = signal<PendingKybData[]>([]);
-  selectedDetails = signal<KybDetailsData | null>(null);
-  
-  // الإشارات الخاصة بحالة التحميل
+  private rawKybRequests = signal<ApiPendingKyb[]>([]);
+  private rawSelectedDetails = signal<ApiKybDetails | null>(null);
+
   isLoadingTable = signal<boolean>(true);
   isLoadingDetails = signal<boolean>(false);
   isSubmitting = signal<boolean>(false);
-  hasError = signal<boolean>(false);
+
+  // إعداد بيانات الجدول
+  kybRequests = computed(() => {
+    return this.rawKybRequests().map(req => ({
+      id: req.requestNumber,
+      caseId: req.caseId,
+      companyName: req.companyName,
+      commercialRecord: req.commercialRegistryNo,
+      taxNumber: req.taxCardNo,
+      submissionDate: req.submittedDate
+    }));
+  });
+
+  // إعداد بيانات التفاصيل (المراجعة)
+  selectedRequest = computed(() => {
+    const details = this.rawSelectedDetails();
+    if (!details) return null;
+    
+    return {
+      caseId: details.caseId,
+      companyName: details.companyName,
+      commercialRecord: details.commercialRegistryNo,
+      taxNumber: details.taxCardNo,
+      aiConfidenceScore: details.aiConfidenceScore,
+      aiMismatches: details.aiMismatches, 
+      documents: details.documents
+    };
+  });
 
   ngOnInit(): void {
     this.fetchPendingRequests();
   }
 
-  // جلب طلبات الجدول
   fetchPendingRequests(): void {
     this.isLoadingTable.set(true);
-    this.hasError.set(false);
-
-    this.http.get<ApiResponseWithData<PendingKybData[]>>(`${environment.apiUrl}/Admin/pending-kyb`)
-      .subscribe({
-        next: (response) => {
-          if (response.IsSuccess && response.Data) {
-            this.kybRequests.set(response.Data);
-          } else {
-            this.hasError.set(true);
-          }
-          this.isLoadingTable.set(false);
-        },
-        error: (err) => {
-          console.error('فشل في جلب الطلبات:', err);
-          this.kybRequests.set([]);
-          this.hasError.set(true);
-          this.isLoadingTable.set(false);
+    this.kybService.getPendingKyb().subscribe({
+      next: (response: any) => {
+        const isSuccess = response.IsSuccess ?? response.isSuccess;
+        const data = response.Data ?? response.data;
+        if (isSuccess && data) {
+          this.rawKybRequests.set(data);
         }
-      });
+        this.isLoadingTable.set(false);
+      },
+      error: (err) => {
+        console.error('فشل في جلب الطلبات:', err);
+        this.rawKybRequests.set([]);
+        this.isLoadingTable.set(false);
+      }
+    });
   }
 
-  // فتح تابة المراجعة وجلب التفاصيل الحقيقية
-  reviewRequest(caseId: number) {
+  reviewRequest(request: any) {
     this.activeTab.set('reviewed');
     this.isLoadingDetails.set(true);
     
-    this.http.get<ApiResponseWithData<KybDetailsData>>(`${environment.apiUrl}/Admin/kyb-details/${caseId}`)
-      .subscribe({
-        next: (response) => {
-          if (response.IsSuccess && response.Data) {
-            this.selectedDetails.set(response.Data);
-          }
-          this.isLoadingDetails.set(false);
-        },
-        error: (err) => {
-          console.error('فشل في جلب التفاصيل:', err);
-          this.isLoadingDetails.set(false);
+    this.kybService.getKybDetails(request.caseId).subscribe({
+      next: (response: any) => {
+        const isSuccess = response.IsSuccess ?? response.isSuccess;
+        const data = response.Data ?? response.data;
+        if (isSuccess && data) {
+          this.rawSelectedDetails.set(data);
         }
-      });
+        this.isLoadingDetails.set(false);
+      },
+      error: (err) => {
+        console.error('فشل في جلب التفاصيل:', err);
+        this.isLoadingDetails.set(false);
+      }
+    });
   }
 
-  // التنقل بين التابات
   setTab(tab: 'pending' | 'reviewed') {
     this.activeTab.set(tab);
     if (tab === 'pending') {
-      this.selectedDetails.set(null); // تفريغ الشاشة عند الرجوع للجدول
+      this.rawSelectedDetails.set(null);
     }
   }
 
-  // إرسال قرار الأدمن (POST)
-// إشارات للتحكم في النافذة المنبثقة للرفض
-  showRejectModal = signal<boolean>(false);
-  rejectReasonText = signal<string>('');
+  // دالة تحميل المستند
+  downloadDocument(fileUrl: string) {
+    if (!fileUrl) {
+      alert('رابط الملف غير متوفر');
+      return;
+    }
+    window.open(fileUrl, '_blank');
+  }
 
-  // 1. الدالة اللي الزرار بيناديها من الشاشة الرئيسية
+  // دالة إرسال القرار (القبول أو الرفض)
   submitDecision(isApproved: boolean) {
-    const details = this.selectedDetails();
+    const details = this.selectedRequest();
     if (!details) return;
 
+    let rejectionReason = "";
+
+    // لو القرار رفض، بنطلب من الأدمن يدخل السبب
     if (!isApproved) {
-      // لو رفض، نفتح المودال ونوقف التنفيذ هنا
-      this.rejectReasonText.set('');
-      this.showRejectModal.set(true);
-      return;
+      const reasonInput = prompt('يرجى إدخال سبب الرفض:');
+      if (reasonInput === null) return; // لو داس Cancel نوقف العملية
+      if (reasonInput.trim() === '') {
+        alert('يجب كتابة سبب الرفض لتوضيحه للمستخدم.');
+        return;
+      }
+      rejectionReason = reasonInput.trim();
     }
-
-    // لو قبول، نكمل للباك إند علطول (بدون سبب رفض)
-    this.executeDecision(true, '');
-  }
-
-  // 2. تحديث نص الرفض أثناء الكتابة
-  updateReason(event: Event) {
-    const input = event.target as HTMLTextAreaElement;
-    this.rejectReasonText.set(input.value);
-  }
-
-  // 3. قفل المودال
-  closeRejectModal() {
-    this.showRejectModal.set(false);
-    this.rejectReasonText.set('');
-  }
-
-  // 4. تأكيد الرفض من داخل المودال
-  confirmRejection() {
-    const reason = this.rejectReasonText().trim();
-    if (!reason) {
-      alert('يرجى كتابة سبب الرفض ليتمكن المستخدم من تصحيحه.');
-      return;
-    }
-    this.executeDecision(false, reason);
-  }
-
-  // 5. التنفيذ الفعلي والاتصال بالباك إند
-  private executeDecision(isApproved: boolean, reason: string) {
-    const details = this.selectedDetails();
-    if (!details) return;
 
     this.isSubmitting.set(true);
-    const payload = { isApproved: isApproved, rejectionReason: reason };
-
-    this.http.post(`${environment.apiUrl}/Admin/kyb-decision/${details.caseId}`, payload)
-      .subscribe({
-        next: () => {
-          this.isSubmitting.set(false);
-          if (!isApproved) this.closeRejectModal(); // نقفل المودال لو كان رفض
-          
-          this.fetchPendingRequests(); // نحدث الجدول
-          this.setTab('pending');      // نرجع لشاشة الجدول
-        },
-        error: (err) => {
-          console.error('خطأ في إرسال القرار:', err);
-          this.isSubmitting.set(false);
-        }
-      });
+    
+    // بناء الـ Payload المطابق لطلبك
+    const payload = { 
+      isApproved: isApproved, 
+      rejectionReason: rejectionReason 
+    };
+    
+    this.kybService.submitKybDecision(details.caseId, payload).subscribe({
+      next: () => {
+        this.isSubmitting.set(false);
+        this.fetchPendingRequests(); // تحديث الجدول
+        this.setTab('pending');      // العودة لصفحة الطلبات
+      },
+      error: (err) => {
+        console.error('خطأ في إرسال القرار:', err);
+        this.isSubmitting.set(false);
+      }
+    });
   }
 }
