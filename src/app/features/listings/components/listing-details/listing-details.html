@@ -1,144 +1,168 @@
 <app-navbar></app-navbar>
 
 <div class="listing-details" dir="rtl">
-    <main>
+  <main>
 
-        @if (notFound()) {
-        <div class="not-found">
-            <p>المنتج غير موجود</p>
-            <button class="btn-outline" (click)="goBack()">العودة للسوق</button>
-        </div>
-        }
+    @if (notFound()) {
+    <div class="not-found">
+      <p>المنتج غير موجود</p>
+      <button class="btn-outline" (click)="goBack()">العودة للسوق</button>
+    </div>
+    }
 
-        @if (listing(); as item) {
+    @if (listing(); as item) {
 
-        <nav class="breadcrumb" aria-label="مسار التنقل">
-            <span class="breadcrumb-prev" (click)="goBack()">الرئيسية / سوق الفايض / </span>
-            <span class="breadcrumb-current">تفاصيل الخامة</span>
-        </nav>
+    <nav class="breadcrumb" aria-label="مسار التنقل">
+      <span class="breadcrumb-prev" (click)="goBack()">الرئيسية / سوق الفايض / </span>
+      <span class="breadcrumb-current">تفاصيل الخامة</span>
+    </nav>
 
-        <div class="details-layout">
+    <div class="details-layout">
 
-            <div class="images-col">
+      <div class="images-col">
 
-                <div class="main-image">
-                    <img [ngSrc]="item.images[selectedImage()]" [alt]="item.title" fill class="object-fit-cover" />
-                </div>
-
-                <div class="thumbnails">
-                    @for (img of item.images; track $index) {
-                    <div class="thumbnail" [class.active]="selectedImage() === $index" (click)="selectImage($index)">
-                        <img [ngSrc]="img" [alt]="item.title + ' صورة ' + ($index + 1)" width="120" height="120" />
-                    </div>
-                    }
-                </div>
-
-                <div class="bottom-row">
-
-                    <div class="lab-files">
-                        <h2 class="section-title">ملفات التحليل المرفقة</h2>
-                        <div class="file-list">
-                            @for (file of item.labFiles; track file.name) {
-                            <a [href]="file.url" class="file-item" target="_blank">
-                                <img ngSrc="assets/icons/market/pdf.png" alt="pdf" width="32" height="32" class="file-icon" />
-                                <span class="file-name">{{ file.name }}</span>
-                                <span class="file-size">({{ file.size }})</span>
-                            </a>
-                            }
-                        </div>
-                    </div>
-
-                    <div class="company-card">
-                        <h2 class="section-title">بيانات الشركة</h2>
-                        <div class="company-info">
-                            <div class="company-avatar">{{ item.company.name.charAt(0) }}</div>
-                            <div class="company-details">
-                                <span class="company-id">{{ item.company.id }}</span>
-                                <span class="company-name">{{ item.company.name }}</span>
-                                <div class="company-rating">
-                                    <img ngSrc="assets/icons/market/star.png" alt="تقييم" width="16" height="16" />
-                                    <span class="rating-value">{{ item.company.rating }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="details-col">
-
-                <h1 class="listing-title">{{ item.title }}</h1>
-                <p class="listing-price">
-                    <span class="price-value">{{ item.price | number }}</span>
-                    <span class="price-unit">&nbsp;ج.م / طن</span>
-                </p>
-
-                <div class="meta-grid">
-
-                    <div class="meta-card">
-                        <div class="meta-label">
-                            <img ngSrc="assets/icons/market/quantity.png" alt="" aria-hidden="true" width="16" height="16" />
-                            الكمية المتاحة
-                        </div>
-                        <div class="meta-value">{{ item.quantity }} طن</div>
-                    </div>
-
-                    <div class="meta-card">
-                        <div class="meta-label">
-                            <img ngSrc="assets/icons/market/location.png" alt="" aria-hidden="true" width="16" height="16" />
-                            المحافظة
-                        </div>
-                        <div class="meta-value">{{ item.governorate }}</div>
-                    </div>
-                    <div class="meta-card">
-                        <div class="meta-label">
-                            <img ngSrc="assets/icons/market/date.png" alt="" aria-hidden="true" width="16" height="16" />
-                            تاريخ النشر
-                        </div>
-                        <div class="meta-value">{{ item.publishedAgo }}</div>
-                    </div>
-
-                </div>
-
-                <div class="section-block">
-                    <h2 class="section-title">وصف الخامة</h2>
-                    <div class="divider"></div>
-                    <p class="description-text">{{ item.description }}</p>
-                </div>
-
-                <div class="section-block">
-                    <h2 class="section-title">المواصفات الفنية</h2>
-                    <div class="divider"></div>
-                    <div class="specs-grid">
-                        @for (spec of item.specs; track spec.label) {
-                        <div class="spec-row">
-                            <span class="spec-label">{{ spec.label }}</span>
-                            <span class="spec-value">{{ spec.value }}</span>
-                        </div>
-                        }
-                    </div>
-                </div>
-
-                <div class="action-buttons">
-                    <button class="btn-primary" (click)="onSendOffer()">إرسال عرض سعر</button>
-                    <button class="btn-outline" (click)="onContactSeller()">مراسلة البائع</button>
-                     <button class="btn-outline" (click)="goBack()">العودة للمتجر</button> 
-                </div>
-
-            </div>
+        <div class="main-image">
+          <img [ngSrc]="item.images[selectedImage()]" [alt]="item.title" fill class="object-fit-cover" />
         </div>
 
-     @if (isPopupOpen()) {
-        <app-offer-popup 
-            [listing]="listing()"
-            (closeModal)="onClosePopup()"
-            (submitOffer)="onSubmitOffer($event)">
-        </app-offer-popup>
-        } 
+        <div class="thumbnails">
+          @for (img of item.images; track $index) {
+          <div class="thumbnail" [class.active]="selectedImage() === $index" (click)="selectImage($index)">
+            <img [ngSrc]="img" [alt]="item.title + ' صورة ' + ($index + 1)" width="120" height="120" />
+          </div>
+          }
+        </div>
 
+        <div class="bottom-row">
+
+          <div class="lab-files">
+            <h2 class="section-title">ملفات التحليل المرفقة</h2>
+            <div class="file-list">
+              @for (file of item.labFiles; track file.name) {
+              <a [href]="file.url" class="file-item" target="_blank">
+                <img ngSrc="assets/icons/market/pdf.png" alt="pdf" width="32" height="32" class="file-icon" />
+                <span class="file-name">{{ file.name }}</span>
+                <span class="file-size">({{ file.size }})</span>
+              </a>
+              }
+            </div>
+          </div>
+
+          <div class="company-card">
+            <h2 class="section-title">بيانات الشركة</h2>
+            <div class="company-info">
+              <div class="company-avatar">{{ item.company.name.charAt(0) }}</div>
+              <div class="company-details">
+                <span class="company-id">{{ item.company.id }}</span>
+                <span class="company-name">{{ item.company.name }}</span>
+                <div class="company-rating">
+                  <img ngSrc="assets/icons/market/star.png" alt="تقييم" width="16" height="16" />
+                  <span class="rating-value">{{ item.company.rating }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="details-col">
+
+        <h1 class="listing-title">{{ item.title }}</h1>
+        <p class="listing-price">
+          <span class="price-value">{{ item.price | number }}</span>
+          <span class="price-unit">&nbsp;ج.م / طن</span>
+        </p>
+
+        <div class="meta-grid">
+
+          <div class="meta-card">
+            <div class="meta-label">
+              <img ngSrc="assets/icons/market/quantity.png" alt="" aria-hidden="true" width="16" height="16" />
+              الكمية المتاحة
+            </div>
+            <div class="meta-value">{{ item.quantity }} طن</div>
+          </div>
+
+          <div class="meta-card">
+            <div class="meta-label">
+              <img ngSrc="assets/icons/market/location.png" alt="" aria-hidden="true" width="16" height="16" />
+              المحافظة
+            </div>
+            <div class="meta-value">{{ item.governorate }}</div>
+          </div>
+
+          <div class="meta-card">
+            <div class="meta-label">
+              <img ngSrc="assets/icons/market/date.png" alt="" aria-hidden="true" width="16" height="16" />
+              تاريخ النشر
+            </div>
+            <div class="meta-value">{{ item.publishedAgo }}</div>
+          </div>
+
+        </div>
+
+        <div class="section-block">
+          <h2 class="section-title">وصف الخامة</h2>
+          <div class="divider"></div>
+          <p class="description-text">{{ item.description }}</p>
+        </div>
+
+        <div class="section-block">
+          <h2 class="section-title">المواصفات الفنية</h2>
+          <div class="divider"></div>
+          <div class="specs-grid">
+            @for (spec of item.specs; track spec.label) {
+            <div class="spec-row">
+              <span class="spec-label">{{ spec.label }}</span>
+              <span class="spec-value">{{ spec.value }}</span>
+            </div>
+            }
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn-primary" (click)="onSendOffer()">
+            إرسال عرض سعر
+          </button>
+
+          <button
+            class="btn-outline"
+            (click)="onContactSeller()"
+            [disabled]="isContactingLoading()"
+          >
+            @if (isContactingLoading()) {
+              جاري الفتح...
+            } @else {
+              مراسلة البائع
+            }
+          </button>
+
+          <button class="btn-outline" (click)="goBack()">العودة للمتجر</button>
+        </div>
+
+        @if (contactError()) {
+          <p class="error-text">{{ contactError() }}</p>
         }
 
-    </main>
+        @if (submitError()) {
+          <p class="error-text">{{ submitError() }}</p>
+        }
+
+      </div>
+    </div>
+
+    @if (isPopupOpen()) {
+      <app-offer-popup
+        [listing]="listing()"
+        (closeModal)="onClosePopup()"
+        (submitOffer)="onSubmitOffer($event)">
+      </app-offer-popup>
+    }
+
+    }
+
+  </main>
 </div>
+
 <app-chatbot-widget></app-chatbot-widget>

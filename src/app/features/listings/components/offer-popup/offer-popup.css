@@ -71,7 +71,7 @@
     text-align: right;
 }
 
-.modal-meta__value {
+.modal-meta-value {
     font-weight: 700;
     color: var(--primary-darkest);
 }

@@ -6,10 +6,23 @@ import { ApiResponseWithData, PagedResult } from '../../../core/models/api-respo
 import { Listing, ListingDto, ListingDetailsDto, ListingSearchParams } from '../models/listing.model';
 import { adaptListings, adaptListingDetails } from '../adapters/listing.adapter';
 
+export interface SubmitOfferRequest {
+  readonly ListingId: number;
+  readonly OfferedQuantity: number;
+  readonly OfferedPricePerUnit: number;
+  readonly Notes: string;
+}
+
+export interface CreateChatResponse {
+  readonly Id: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class MarketplaceService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/listings`;
+  private readonly offersUrl = `${environment.apiUrl}/purchaseoffers`;
+  private readonly chatsUrl = `${environment.apiUrl}/chats`;
 
   getListings(
     page: number = 1,
@@ -29,9 +42,9 @@ export class MarketplaceService {
     if (filters.minPrice != null) params = params.set('MinPrice', filters.minPrice.toString());
     if (filters.maxPrice != null) params = params.set('MaxPrice', filters.maxPrice.toString());
     if (filters.sortBy) {
-  const direction = filters.sortBy === 'price_asc' ? 'asc' : 'desc';
-  params = params.set('SortDirection', direction);
-}
+      const direction = filters.sortBy === 'price_asc' ? 'asc' : 'desc';
+      params = params.set('SortDirection', direction);
+    }
 
     return this.http
       .get<ApiResponseWithData<PagedResult<ListingDto>>>(this.apiUrl, { params })
@@ -48,24 +61,34 @@ export class MarketplaceService {
   getListingById(id: string): Observable<any> {
     return this.http
       .get<ApiResponseWithData<ListingDetailsDto>>(`${this.apiUrl}/${id}`)
-      .pipe(
-        map(res => adaptListingDetails(res.Data!))
-      );
+      .pipe(map(res => adaptListingDetails(res.Data!)));
   }
 
   smartSearch(query: string, page: number = 1, pageSize: number = 12): Observable<any> {
-  let params = new HttpParams()
-    .set('Page', page.toString())
-    .set('PageSize', pageSize.toString())
-    .set('query', query);
+    let params = new HttpParams()
+      .set('Page', page.toString())
+      .set('PageSize', pageSize.toString())
+      .set('query', query);
 
-  return this.http
-    .get<ApiResponseWithData<PagedResult<ListingDto>>>(`${this.apiUrl}/smart-search`, { params })
-    .pipe(
-      map(res => ({
-        items: adaptListings([...(res.Data?.Items ?? [])]),
-        totalCount: res.Data?.TotalCount ?? 0,
-      }))
-    );
-}
+    return this.http
+      .get<ApiResponseWithData<PagedResult<ListingDto>>>(`${this.apiUrl}/smart-search`, { params })
+      .pipe(
+        map(res => ({
+          items: adaptListings([...(res.Data?.Items ?? [])]),
+          totalCount: res.Data?.TotalCount ?? 0,
+        }))
+      );
+  }
+
+  submitOffer(payload: SubmitOfferRequest): Observable<void> {
+    return this.http
+      .post<ApiResponseWithData<unknown>>(`${this.offersUrl}/create`, payload)
+      .pipe(map(() => void 0));
+  }
+
+  createOrGetChat(listingId: number): Observable<number> {
+    return this.http
+      .post<ApiResponseWithData<CreateChatResponse>>(this.chatsUrl, { ListingId: listingId })
+      .pipe(map(res => res.Data!.Id));
+  }
 }

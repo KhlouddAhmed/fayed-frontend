@@ -1,58 +1,35 @@
-// DTOs mirror the .NET backend shape (PascalCase comes in, adapter normalizes it)
-export interface LoginRequest {
-  email: string;
-  password: string;
-  rememberMe: boolean;
+// =============================================
+// REQUEST DTOs — match backend PascalCase
+// =============================================
+export interface LoginRequestDto {
+  readonly Email: string;
+  readonly Password: string;
 }
 
-// Raw shape from .NET backend — PascalCase as .NET sends it by default
+// =============================================
+// RESPONSE DTOs — match backend PascalCase
+// =============================================
 export interface LoginResponseDto {
-  Token: string;
-  CompanyId: string;
-  CompanyName: string;
-  KybStatus: 'Pending' | 'Verified' | 'Rejected';
+  readonly Token: string;
+  readonly ExpiresOn: string;
+  readonly UserName: string;
+  readonly Email: string;
 }
 
-// Normalized UI model used inside the app
-export interface LoginUser {
-  token: string;
-  companyId: string;
-  companyName: string;
-  kybStatus: 'pending' | 'verified' | 'rejected';
-}
-
-// Register
-export interface RegisterRequestDto {
-  Email: string;
-  PhoneNumber: string;
-  PasswordHash: string;
-}
-
-export interface RegisterResponseDto {
-  Success: boolean;
-  Message: string;
-  CompanyId?: string;
-}
-
-// Normalized UI model
-export interface RegisterRequest {
-  email: string;
-  phoneNumber: string;
-  passwordHash: string;
-}
-
-export interface RegisterResponse {
-  success: boolean;
-  message: string;
-  companyId?: string;
+// =============================================
+// UI MODELS — camelCase, used in components
+// =============================================
+export interface LoginRequest {
+  readonly email: string;
+  readonly password: string;
 }
 
 export interface AuthUser {
-  id: string;
-  email: string;
-  name: string;
-  factoryId: string;
-  logoUrl: string;
-  role: 'Admin' | 'Factory';
-  expiresOn: Date;
+  readonly id: string;
+  readonly email: string;
+  readonly name: string;
+  readonly factoryId: string;
+  readonly logoUrl: string;
+  readonly role: 'Admin' | 'Factory';
+  readonly expiresOn: Date;
 }

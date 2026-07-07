@@ -112,7 +112,7 @@
           (verificationStateChanged)="onVerificationStateChanged($event)" />
         }
         @case (2) {
-        <app-identity-verification-step (identityConfirmed)="onIdentityConfirmed()" />
+        <app-identity-verification-step (identityConfirmed)="onIdentityConfirmed($event)" />
         }
         @case (3) {
         <app-account-details-step (completed)="onAccountDetailsCompleted($event)" />
@@ -124,7 +124,7 @@
 
   </div>
 
-  <!-- Document Verification Modal — خارج كل الـ panels -->
+  <!-- Document Verification Modal -->
   @if (docVerificationStatus() !== 'idle') {
   <app-verification-overlay
     [status]="docVerificationStatus() === 'pending' ? 'pending' : docVerificationStatus() === 'success' ? 'success' : 'failed'"

@@ -50,7 +50,7 @@ export const routes: Routes = [
   // Admin Dashboard — admin role required
   {
     path: 'admin',
-    canActivate: [authGuard, adminGuard],
+    // canActivate: [authGuard, adminGuard],
     loadComponent: () =>
       import('./features/dashboards/layouts/admin-layout/admin-layout').then(
         m => m.AdminLayoutComponent
@@ -121,7 +121,7 @@ export const routes: Routes = [
   // Company Dashboard — authenticated + verified factory required
   {
     path: 'dashboard/company',
-    canActivate: [authGuard, verifiedGuard],
+    // canActivate: [authGuard, verifiedGuard], - remove comment when auth is done and works
     loadComponent: () =>
       import('./features/dashboards/layouts/company-layout/company-layout').then(
         m => m.CompanyLayout
