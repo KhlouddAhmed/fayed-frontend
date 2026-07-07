@@ -1,12 +1,12 @@
 export interface ApiResponse {
   readonly StatusCode: number;
-  readonly IsSuccess: boolean;
-  readonly Message: string;
+  readonly isSuccess: boolean;
+  readonly message: string;
   readonly Errors: readonly string[] | null;
 }
 
 export interface ApiResponseWithData<T> extends ApiResponse {
-  readonly Data: T | null;
+  readonly data: T | null;
 }
 
 export interface PagedResult<T> {

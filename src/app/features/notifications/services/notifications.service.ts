@@ -13,13 +13,13 @@ export class NotificationsService {
   getAll(): Observable<Notification[]> {
     return this.http
       .get<ApiResponseWithData<NotificationDto[]>>(`${environment.apiUrl}/notifications`)
-      .pipe(map(res => adaptNotifications(res.Data ?? [])));
+      .pipe(map(res => adaptNotifications(res.data ?? [])));
   }
 
   getUnreadCount(): Observable<number> {
     return this.http
       .get<ApiResponseWithData<number>>(`${environment.apiUrl}/notifications/unread-count`)
-      .pipe(map(res => res.Data ?? 0));
+      .pipe(map(res => res.data ?? 0));
   }
 
   markAsRead(id: string): Observable<void> {

@@ -23,7 +23,7 @@ export class DisputeService {
   getAll(): Observable<readonly Dispute[]> {
     return this.http
       .get<ApiResponseWithData<readonly DisputeDto[]>>(`${environment.apiUrl}/disputes`)
-      .pipe(map(res => adaptDisputes(res.Data ?? [])));
+      .pipe(map(res => adaptDisputes(res.data ?? [])));
   }
 
   getNegotiationLog(disputeId: string): Observable<readonly NegotiationMessage[]> {
@@ -31,12 +31,12 @@ export class DisputeService {
       .get<ApiResponseWithData<readonly NegotiationMessageDto[]>>(
         `${environment.apiUrl}/disputes/${disputeId}`
       )
-      .pipe(map(res => adaptNegotiationMessages(res.Data ?? [])));
+      .pipe(map(res => adaptNegotiationMessages(res.data ?? [])));
   }
 
   create(request: CreateDisputeRequestDto): Observable<Dispute> {
     return this.http
       .post<ApiResponseWithData<DisputeDto>>(`${environment.apiUrl}/disputes`, request)
-      .pipe(map(res => adaptDispute(res.Data!)));
+      .pipe(map(res => adaptDispute(res.data!)));
   }
 }

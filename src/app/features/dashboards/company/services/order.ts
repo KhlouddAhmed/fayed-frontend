@@ -13,13 +13,13 @@ export class OrderService {
   getMyPurchases(): Observable<readonly Order[]> {
     return this.http
       .get<ApiResponseWithData<readonly OrderDto[]>>(`${environment.apiUrl}/orders/my-purchases`)
-      .pipe(map(res => adaptOrders(res.Data ?? [])));
+      .pipe(map(res => adaptOrders(res.data ?? [])));
   }
 
   getMySales(): Observable<readonly Order[]> {
     return this.http
       .get<ApiResponseWithData<readonly OrderDto[]>>(`${environment.apiUrl}/orders/my-sales`)
-      .pipe(map(res => adaptOrders(res.Data ?? [])));
+      .pipe(map(res => adaptOrders(res.data ?? [])));
   }
 
   complete(orderId: string): Observable<void> {

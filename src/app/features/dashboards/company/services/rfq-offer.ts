@@ -13,25 +13,25 @@ export class RfqOfferService {
   getSent(): Observable<readonly Offer[]> {
     return this.http
       .get<ApiResponseWithData<readonly OfferDto[]>>(`${environment.apiUrl}/offers/sent`)
-      .pipe(map(res => adaptOffers(res.Data ?? [])));
+      .pipe(map(res => adaptOffers(res.data ?? [])));
   }
 
   getReceived(): Observable<readonly Offer[]> {
     return this.http
       .get<ApiResponseWithData<readonly OfferDto[]>>(`${environment.apiUrl}/offers/received`)
-      .pipe(map(res => adaptOffers(res.Data ?? [])));
+      .pipe(map(res => adaptOffers(res.data ?? [])));
   }
 
   accept(offerId: string): Observable<Offer> {
     return this.http
       .put<ApiResponseWithData<OfferDto>>(`${environment.apiUrl}/offers/${offerId}/accept`, {})
-      .pipe(map(res => adaptOffer(res.Data!)));
+      .pipe(map(res => adaptOffer(res.data!)));
   }
 
   reject(offerId: string): Observable<Offer> {
     return this.http
       .put<ApiResponseWithData<OfferDto>>(`${environment.apiUrl}/offers/${offerId}/reject-or-cancel`, {})
-      .pipe(map(res => adaptOffer(res.Data!)));
+      .pipe(map(res => adaptOffer(res.data!)));
   }
 
   withdraw(offerId: string): Observable<Offer> {

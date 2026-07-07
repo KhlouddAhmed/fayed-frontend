@@ -30,7 +30,7 @@ export class RegistrationService {
         `${environment.apiUrl}/verification/extract`,
         formData
       )
-      .pipe(map(response => adaptKybExtractionResult(response.Data!)));
+      .pipe(map(response => adaptKybExtractionResult(response.data!)));
   }
 
   registerFactory(request: RegisterRequestDto): Observable<ApiResponse> {

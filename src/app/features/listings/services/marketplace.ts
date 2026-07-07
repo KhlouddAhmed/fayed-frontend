@@ -50,10 +50,10 @@ export class MarketplaceService {
       .get<ApiResponseWithData<PagedResult<ListingDto>>>(this.apiUrl, { params })
       .pipe(
         map(res => ({
-          items: adaptListings([...(res.Data?.Items ?? [])]),
-          totalCount: res.Data?.TotalCount ?? 0,
-          page: res.Data?.Page ?? page,
-          pageSize: res.Data?.PageSize ?? pageSize,
+          items: adaptListings([...(res.data?.Items ?? [])]),
+          totalCount: res.data?.TotalCount ?? 0,
+          page: res.data?.Page ?? page,
+          pageSize: res.data?.PageSize ?? pageSize,
         }))
       );
   }
@@ -61,7 +61,7 @@ export class MarketplaceService {
   getListingById(id: string): Observable<any> {
     return this.http
       .get<ApiResponseWithData<ListingDetailsDto>>(`${this.apiUrl}/${id}`)
-      .pipe(map(res => adaptListingDetails(res.Data!)));
+      .pipe(map(res => adaptListingDetails(res.data!)));
   }
 
   smartSearch(query: string, page: number = 1, pageSize: number = 12): Observable<any> {
@@ -74,8 +74,8 @@ export class MarketplaceService {
       .get<ApiResponseWithData<PagedResult<ListingDto>>>(`${this.apiUrl}/smart-search`, { params })
       .pipe(
         map(res => ({
-          items: adaptListings([...(res.Data?.Items ?? [])]),
-          totalCount: res.Data?.TotalCount ?? 0,
+          items: adaptListings([...(res.data?.Items ?? [])]),
+          totalCount: res.data?.TotalCount ?? 0,
         }))
       );
   }
@@ -89,6 +89,6 @@ export class MarketplaceService {
   createOrGetChat(listingId: number): Observable<number> {
     return this.http
       .post<ApiResponseWithData<CreateChatResponse>>(this.chatsUrl, { ListingId: listingId })
-      .pipe(map(res => res.Data!.Id));
+      .pipe(map(res => res.data!.Id));
   }
 }

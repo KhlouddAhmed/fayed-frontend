@@ -58,9 +58,9 @@ export class RegisterPage {
   // Step 1 — documents uploaded + AI extracted
   onDocumentsUploaded(result: DocumentStepResult): void {
     this.documentStepResult.set(result);
-    this.companyData.set(result.extractedCompanyData);
-    this.docVerificationStatus.set('idle');
-    this.currentStep.set(2);
+    // this.companyData.set(result.extractedCompanyData);
+    // this.docVerificationStatus.set('idle');
+    // this.currentStep.set(2);
   }
 
   onVerificationStateChanged(state: DocumentVerificationState): void {
@@ -69,12 +69,20 @@ export class RegisterPage {
     this.docRejectionReasons.set(state.rejectionReasons);
   }
 
+  // onDocConfirmCorrect(): void {
+  //   const data = this.docExtractedData();
+  //   if (data) {
+  //     this.companyData.set(data);
+  //     this.docVerificationStatus.set('idle');
+  //     this.currentStep.set(2);
+  //   }
+  // }
   onDocConfirmCorrect(): void {
-    const data = this.docExtractedData();
-    if (data) {
-      this.companyData.set(data);
+    const docResult = this.documentStepResult(); 
+    if (docResult) {
+      this.companyData.set(docResult.extractedCompanyData);
       this.docVerificationStatus.set('idle');
-      this.currentStep.set(2);
+      this.currentStep.set(2); 
     }
   }
 
@@ -129,10 +137,10 @@ export class RegisterPage {
     this.registrationService.registerFactory(request).subscribe({
       next: response => {
         this.isSubmitting.set(false);
-        if (response.IsSuccess) {
+        if (response.isSuccess) { 
           this.showSuccessModal.set(true);
         } else {
-          this.toast.error(response.Message ?? 'حدث خطأ أثناء التسجيل.');
+          this.toast.error(response.message ?? 'حدث خطأ أثناء التسجيل.'); 
         }
       },
       error: () => {

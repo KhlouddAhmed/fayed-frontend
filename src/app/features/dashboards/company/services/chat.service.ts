@@ -89,15 +89,15 @@ export class ChatService {
   getConversations(): Observable<readonly ConversationDto[]> {
     return this.http
       .get<ApiResponseWithData<readonly ChatDto[]>>(`${environment.apiUrl}/chats`)
-      .pipe(map(res => (res.Data ?? []).map(adaptChatToConversation)));
+      .pipe(map(res => (res.data ?? []).map(adaptChatToConversation)));
   }
 
   getMessages(chatId: string): Observable<readonly MessageDto[]> {
     return this.http
       .get<ApiResponseWithData<ChatDetailsDto>>(`${environment.apiUrl}/chats/${chatId}`)
       .pipe(
-        map(res => (res.Data?.Messages ?? []).map(msg =>
-          adaptBackendMessage(msg, res.Data!.Id)
+        map(res => (res.data?.Messages ?? []).map(msg =>
+          adaptBackendMessage(msg, res.data!.Id)
         ))
       );
   }
@@ -108,7 +108,7 @@ export class ChatService {
         `${environment.apiUrl}/chats/${chatId}/messages`,
         { content }
       )
-      .pipe(map(res => adaptBackendMessage(res.Data!, Number(chatId))));
+      .pipe(map(res => adaptBackendMessage(res.data!, Number(chatId))));
   }
 
   markAsRead(chatId: string): Observable<void> {
@@ -118,31 +118,31 @@ export class ChatService {
   createChat(listingId: number): Observable<ConversationDto> {
     return this.http
       .post<ApiResponseWithData<ChatDto>>(`${environment.apiUrl}/chats`, { ListingId: listingId })
-      .pipe(map(res => adaptChatToConversation(res.Data!)));
+      .pipe(map(res => adaptChatToConversation(res.data!)));
   }
 
-  // Contract endpoints — مرتبطة بالـ orders مش الـ chats
+  // Contract endpoints
   getContract(orderId: string): Observable<ContractDto | null> {
     return this.http
       .get<ApiResponseWithData<ContractDto>>(`${environment.apiUrl}/orders/${orderId}/contract`)
-      .pipe(map(res => res.Data ?? null));
+      .pipe(map(res => res.data ?? null));
   }
 
   createContract(orderId: string): Observable<ContractDto> {
     return this.http
       .get<ApiResponseWithData<ContractDto>>(`${environment.apiUrl}/orders/${orderId}/contract/form`)
-      .pipe(map(res => res.Data!));
+      .pipe(map(res => res.data!));
   }
 
   acceptAmendment(orderId: string): Observable<ContractDto> {
     return this.http
       .put<ApiResponseWithData<ContractDto>>(`${environment.apiUrl}/orders/${orderId}/contract/accept`, {})
-      .pipe(map(res => res.Data!));
+      .pipe(map(res => res.data!));
   }
 
   declineAmendment(orderId: string): Observable<ContractDto> {
     return this.http
       .put<ApiResponseWithData<ContractDto>>(`${environment.apiUrl}/orders/${orderId}/contract/decline`, {})
-      .pipe(map(res => res.Data!));
+      .pipe(map(res => res.data!));
   }
 }
