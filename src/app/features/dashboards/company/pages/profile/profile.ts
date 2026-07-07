@@ -26,11 +26,11 @@ interface ProfileDto {
   readonly LogoUrl: string | null;
   readonly FactoryVerificationStatus: string;
   readonly Documents: readonly {
-    readonly Id: number;
-    readonly Name: string;
-    readonly Url: string;
-    readonly Status: string;
-  }[];
+  readonly Id: number;
+  readonly DocumentType: string;
+  readonly FileUrl: string;
+  readonly UploadedAt: string;
+}[];
 }
 
 // =============================================
@@ -43,22 +43,22 @@ function adaptProfile(dto: ProfileDto): CompanyProfile {
     initial: (dto.FactoryName ?? dto.Name).charAt(0).toUpperCase(),
     code: 'FYD-' + String(dto.FactoryId ?? dto.Id).padStart(4, '0'),
     activityType: dto.Sector ?? 'غير محدد',
-    foundedYear: 2020,                          // mock — مش في الـ DTO
+    foundedYear: 2020,                       
     location: dto.Address ?? 'غير محدد',
     registryNumber: dto.CommercialRegistryNo ?? 'غير محدد',
-    description: 'لا يوجد وصف متاح',           // mock — مش في الـ DTO
+    description: 'لا يوجد وصف متاح',           
     isVerified: dto.FactoryVerificationStatus === 'Verified',
     email: dto.Email,
     phone: dto.PhoneNumber ?? 'غير محدد',
     contactPerson: dto.Name,
-    website: 'غير محدد',                        // mock — مش في الـ DTO
+    website: 'غير محدد',                      
     documents: dto.Documents.map((doc) => ({
-      id: String(doc.Id),
-      name: doc.Name,
-      fileName: doc.Url.split('/').pop() ?? doc.Name,
-      status: doc.Status.toLowerCase() === 'approved' ? 'approved' : 'pending',
-      url: doc.Url,
-    })),
+  id: String(doc.Id),
+  name: doc.DocumentType,
+  fileName: doc.FileUrl.split('/').pop() ?? doc.DocumentType,
+  status: 'approved' as const,
+  url: doc.FileUrl,
+})),
   };
 }
 
@@ -75,11 +75,11 @@ export class Profile {
 
   protected readonly profileResource = resource({
     loader: async () => {
-      const dto = await firstValueFrom(
-        this.http.get<ProfileDto>(`${environment.apiUrl}/profile`)
-      );
-      return adaptProfile(dto);
-    },
+  const response = await firstValueFrom(
+    this.http.get<{ data: ProfileDto }>(`${environment.apiUrl}/profile`)
+  );
+  return adaptProfile(response.data);
+},
   });
 
   protected onEditProfile(): void {
