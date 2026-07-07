@@ -7,28 +7,15 @@ import {
 
 export function adaptKybExtractionResult(dto: KybExtractionResultDto): KybExtractedData {
   return {
-    extractedFields: dto.ExtractedFields ?? '{}',
-    confidenceScore: dto.ConfidenceScore ?? 0,
-    mismatches: dto.Mismatches ?? null,
-    recommendation: dto.Recommendation ?? 'Review',
-    validityIssues: dto.ValidityIssues ?? [],
-    modelVersion: dto.ModelVersion ?? '',
+    extractedFields: dto.ExtractedFields ?? dto.extractedFields ?? '{}',
+    confidenceScore: dto.ConfidenceScore ?? dto.confidenceScore ?? 0,
+    mismatches: dto.Mismatches ?? dto.mismatches ?? null,
+    recommendation: dto.Recommendation ?? dto.recommendation ?? 'review',
+    validityIssues: dto.ValidityIssues ?? dto.validityIssues ?? [],
+    modelVersion: dto.ModelVersion ?? dto.modelVersion ?? '',
   };
 }
 
-// export function parseExtractedCompanyData(extractedFields: string): ExtractedCompanyData {
-//   try {
-//     const parsed = JSON.parse(extractedFields) as Record<string, string>;
-//     return {
-//       companyName: parsed['CompanyName'] ?? parsed['company_name'] ?? '',
-//       ownerName: parsed['OwnerName'] ?? parsed['owner_name'] ?? '',
-//       registryNumber: parsed['CommercialRegistryNo'] ?? parsed['registry_number'] ?? '',
-//       taxNumber: parsed['TaxCardNo'] ?? parsed['tax_number'] ?? '',
-//     };
-//   } catch {
-//     return {};
-//   }
-// }
 export function parseExtractedCompanyData(extractedFields: string): ExtractedCompanyData {
   try {
     const parsed = JSON.parse(extractedFields) as Record<string, string>;

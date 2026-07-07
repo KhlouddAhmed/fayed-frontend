@@ -2,9 +2,19 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { ApiResponse, ApiResponseWithData } from '../../../core/models/api-response.model';
+import { ApiResponseWithData, ApiResponse } from '../../../core/models/api-response.model';
 import { KybExtractionResultDto, KybExtractedData, RegisterRequestDto } from '../models/registration.models';
 import { adaptKybExtractionResult, buildExtractFormData, buildRegisterFormData } from '../adapters/registration.adapter';
+
+// Backend returns camelCase — matches actual response shape
+interface RawKybResponse {
+  readonly data?: KybExtractionResultDto;
+  readonly Data?: KybExtractionResultDto;
+  readonly statusCode?: number;
+  readonly isSuccess?: boolean;
+  readonly message?: string;
+  readonly errors?: string[] | null;
+}
 
 @Injectable({ providedIn: 'root' })
 export class RegistrationService {
@@ -26,11 +36,18 @@ export class RegistrationService {
     const formData = buildExtractFormData(commercialRegistryFile, taxCardFile, declared);
 
     return this.http
-      .post<ApiResponseWithData<KybExtractionResultDto>>(
+      .post<RawKybResponse>(
         `${environment.apiUrl}/verification/extract`,
         formData
       )
-      .pipe(map(response => adaptKybExtractionResult(response.data!)));
+      .pipe(
+        map(response => {
+          // Handle both camelCase (actual) and PascalCase (assumed)
+          const dto = response.data ?? response.Data;
+          if (!dto) throw new Error('No data in KYB response');
+          return adaptKybExtractionResult(dto);
+        })
+      );
   }
 
   registerFactory(request: RegisterRequestDto): Observable<ApiResponse> {

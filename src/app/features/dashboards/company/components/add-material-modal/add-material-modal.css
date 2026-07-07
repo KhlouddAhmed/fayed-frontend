@@ -80,6 +80,7 @@
 .form-section {
   display: flex;
   flex-direction: column;
+  padding:25px; 
 }
 
 .form-row-2 {

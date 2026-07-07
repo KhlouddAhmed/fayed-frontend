@@ -60,15 +60,21 @@ export class UploadDocumentsStep {
     this.registrationService.extractDocuments(registry, taxCard).subscribe({
       next: kybResult => {
         const companyData = parseExtractedCompanyData(kybResult.extractedFields);
+
+        // Backend returns lowercase: "reject", "approve", "review"
+        const rec = kybResult.recommendation?.toLowerCase() ?? 'review';
         const hasValidityIssues = kybResult.validityIssues.length > 0;
-        const status: VerificationStatus =
-          kybResult.recommendation === 'Reject' || hasValidityIssues ? 'failed' : 'success';
+        const isRejected = rec === 'reject' || hasValidityIssues;
+
+        const status: VerificationStatus = isRejected ? 'failed' : 'success';
 
         this.extractedData.set(companyData);
         this.rejectionReasons.set(kybResult.validityIssues);
         this.verificationStatus.set(status);
         this.emitState();
 
+        // Even on success — we wait for user to confirm in the overlay
+        // documentsUploaded is emitted after user clicks "نعم, التالي" in register-page
         if (status === 'success') {
           this.documentsUploaded.emit({
             commercialRegistryFile: registry,

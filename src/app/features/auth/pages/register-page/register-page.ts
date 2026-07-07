@@ -9,6 +9,7 @@ import { VerificationOverlay } from '../../components/verification-overlay/verif
 import { RegistrationSuccessModal } from '../../components/registration-success-modal/registration-success-modal';
 import { RegistrationService } from '../../services/registration';
 import { ToastService } from '../../../../core/services/toast.service';
+import { isResponseSuccess, getResponseMessage } from '../../../../core/models/api-response.model';
 import {
   DocumentStepResult,
   IdentityStepResult,
@@ -42,25 +43,16 @@ export class RegisterPage {
   protected readonly showSuccessModal = signal(false);
   protected readonly isSubmitting = signal(false);
 
-  // Step 1 result
-  private documentStepResult = signal<DocumentStepResult | null>(null);
+  private readonly documentStepResult = signal<DocumentStepResult | null>(null);
+  private readonly identityStepResult = signal<IdentityStepResult | null>(null);
 
-  // Step 2 result
-  private identityStepResult = signal<IdentityStepResult | null>(null);
-
-  // Verification overlay state
   protected readonly docVerificationStatus = signal<VerificationStatus>('idle');
   protected readonly docExtractedData = signal<ExtractedCompanyData | null>(null);
   protected readonly docRejectionReasons = signal<readonly string[]>([]);
-
   protected readonly companyData = signal<ExtractedCompanyData | null>(null);
 
-  // Step 1 — documents uploaded + AI extracted
   onDocumentsUploaded(result: DocumentStepResult): void {
     this.documentStepResult.set(result);
-    // this.companyData.set(result.extractedCompanyData);
-    // this.docVerificationStatus.set('idle');
-    // this.currentStep.set(2);
   }
 
   onVerificationStateChanged(state: DocumentVerificationState): void {
@@ -69,20 +61,12 @@ export class RegisterPage {
     this.docRejectionReasons.set(state.rejectionReasons);
   }
 
-  // onDocConfirmCorrect(): void {
-  //   const data = this.docExtractedData();
-  //   if (data) {
-  //     this.companyData.set(data);
-  //     this.docVerificationStatus.set('idle');
-  //     this.currentStep.set(2);
-  //   }
-  // }
   onDocConfirmCorrect(): void {
-    const docResult = this.documentStepResult(); 
+    const docResult = this.documentStepResult();
     if (docResult) {
       this.companyData.set(docResult.extractedCompanyData);
       this.docVerificationStatus.set('idle');
-      this.currentStep.set(2); 
+      this.currentStep.set(2);
     }
   }
 
@@ -94,13 +78,11 @@ export class RegisterPage {
     this.docVerificationStatus.set('idle');
   }
 
-  // Step 2 — identity files collected (pure UI)
   onIdentityConfirmed(result: IdentityStepResult): void {
     this.identityStepResult.set(result);
     this.currentStep.set(3);
   }
 
-  // Step 3 — account details submitted → final register call
   onAccountDetailsCompleted(details: AccountDetailsResult): void {
     const docResult = this.documentStepResult();
     const idResult = this.identityStepResult();
@@ -137,10 +119,10 @@ export class RegisterPage {
     this.registrationService.registerFactory(request).subscribe({
       next: response => {
         this.isSubmitting.set(false);
-        if (response.isSuccess) { 
+        if (isResponseSuccess(response)) {
           this.showSuccessModal.set(true);
         } else {
-          this.toast.error(response.message ?? 'حدث خطأ أثناء التسجيل.'); 
+          this.toast.error(getResponseMessage(response) || 'حدث خطأ أثناء التسجيل.');
         }
       },
       error: () => {

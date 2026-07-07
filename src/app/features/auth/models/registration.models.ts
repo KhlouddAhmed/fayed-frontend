@@ -10,15 +10,24 @@ export interface SelectedFileMeta {
 }
 
 // =============================================
-// KYB EXTRACTION — matches KybExtractionResultDto.cs
+// KYB EXTRACTION — supports both camelCase (actual) and PascalCase (assumed)
+// Backend confirmed returns camelCase
 // =============================================
 export interface KybExtractionResultDto {
-  readonly ExtractedFields: string;
-  readonly ConfidenceScore: number;
-  readonly Mismatches: string | null;
-  readonly Recommendation: string;
-  readonly ValidityIssues: readonly string[];
-  readonly ModelVersion: string;
+  // camelCase — actual backend response
+  readonly extractedFields?: string;
+  readonly confidenceScore?: number;
+  readonly mismatches?: string | null;
+  readonly recommendation?: string;
+  readonly validityIssues?: readonly string[];
+  readonly modelVersion?: string;
+  // PascalCase — fallback
+  readonly ExtractedFields?: string;
+  readonly ConfidenceScore?: number;
+  readonly Mismatches?: string | null;
+  readonly Recommendation?: string;
+  readonly ValidityIssues?: readonly string[];
+  readonly ModelVersion?: string;
 }
 
 export interface KybExtractedData {
@@ -31,7 +40,8 @@ export interface KybExtractedData {
 }
 
 // =============================================
-// EXTRACTED COMPANY DATA — parsed from ExtractedFields JSON
+// EXTRACTED COMPANY DATA — parsed from extractedFields JSON
+// Keys match actual AI response (camelCase)
 // =============================================
 export interface ExtractedCompanyData {
   readonly companyName?: string;
@@ -41,7 +51,7 @@ export interface ExtractedCompanyData {
 }
 
 // =============================================
-// STEP 1 OUTPUT — passed from upload-documents-step to parent
+// STEP 1 OUTPUT
 // =============================================
 export interface DocumentStepResult {
   readonly commercialRegistryFile: File;
@@ -51,7 +61,7 @@ export interface DocumentStepResult {
 }
 
 // =============================================
-// STEP 2 OUTPUT — passed from identity-verification-step to parent
+// STEP 2 OUTPUT
 // =============================================
 export interface IdentityStepResult {
   readonly nationalIdFile: File;
@@ -59,7 +69,7 @@ export interface IdentityStepResult {
 }
 
 // =============================================
-// STEP 3 OUTPUT — passed from account-details-step to parent
+// STEP 3 OUTPUT
 // =============================================
 export interface AccountDetailsResult {
   readonly email: string;
