@@ -11,26 +11,26 @@ import { environment } from '../../../../../environments/environment';
 // DTO — mirrors ProfileDto.cs exactly
 // =============================================
 interface ProfileDto {
-  readonly Id: number;
-  readonly Name: string;
-  readonly Email: string;
-  readonly PhoneNumber: string | null;
-  readonly NationalId: string | null;
-  readonly UserVerificationStatus: string;
-  readonly FactoryId: number | null;
-  readonly FactoryName: string | null;
-  readonly CommercialRegistryNo: string | null;
-  readonly TaxCardNo: string | null;
-  readonly Address: string | null;
-  readonly Sector: string | null;
-  readonly LogoUrl: string | null;
-  readonly FactoryVerificationStatus: string;
-  readonly Documents: readonly {
-  readonly Id: number;
-  readonly DocumentType: string;
-  readonly FileUrl: string;
-  readonly UploadedAt: string;
-}[];
+  readonly id: number;
+  readonly name: string;
+  readonly email: string;
+  readonly phoneNumber: string | null;
+  readonly nationalId: string | null;
+  readonly userVerificationStatus: string;
+  readonly factoryId: number | null;
+  readonly factoryName: string | null;
+  readonly commercialRegistryNo: string | null;
+  readonly taxCardNo: string | null;
+  readonly address: string | null;
+  readonly sector: string | null;
+  readonly logoUrl: string | null;
+  readonly factoryVerificationStatus: string;
+  readonly documents: readonly {
+    readonly id: number;
+    readonly documentType: string;
+    readonly fileUrl: string;
+    readonly uploadedAt: string;
+  }[];
 }
 
 // =============================================
@@ -38,27 +38,27 @@ interface ProfileDto {
 // =============================================
 function adaptProfile(dto: ProfileDto): CompanyProfile {
   return {
-    id: String(dto.FactoryId ?? dto.Id),
-    name: dto.FactoryName ?? dto.Name,
-    initial: (dto.FactoryName ?? dto.Name).charAt(0).toUpperCase(),
-    code: 'FYD-' + String(dto.FactoryId ?? dto.Id).padStart(4, '0'),
-    activityType: dto.Sector ?? 'غير محدد',
-    foundedYear: 2020,                       
-    location: dto.Address ?? 'غير محدد',
-    registryNumber: dto.CommercialRegistryNo ?? 'غير محدد',
-    description: 'لا يوجد وصف متاح',           
-    isVerified: dto.FactoryVerificationStatus === 'Verified',
-    email: dto.Email,
-    phone: dto.PhoneNumber ?? 'غير محدد',
-    contactPerson: dto.Name,
-    website: 'غير محدد',                      
-    documents: dto.Documents.map((doc) => ({
-  id: String(doc.Id),
-  name: doc.DocumentType,
-  fileName: doc.FileUrl.split('/').pop() ?? doc.DocumentType,
-  status: 'approved' as const,
-  url: doc.FileUrl,
-})),
+    id: String(dto.factoryId ?? dto.id),
+    name: dto.factoryName ?? dto.name,
+    initial: (dto.factoryName ?? dto.name).charAt(0).toUpperCase(),
+    code: 'FYD-' + String(dto.factoryId ?? dto.id).padStart(4, '0'),
+    activityType: dto.sector ?? 'غير محدد',
+    foundedYear: 2020,
+    location: dto.address ?? 'غير محدد',
+    registryNumber: dto.commercialRegistryNo ?? 'غير محدد',
+    description: 'لا يوجد وصف متاح',
+    isVerified: dto.factoryVerificationStatus === 'Verified',
+    email: dto.email,
+    phone: dto.phoneNumber ?? 'غير محدد',
+    contactPerson: dto.name,
+    website: 'غير محدد',
+    documents: dto.documents.map((doc) => ({
+      id: String(doc.id),
+      name: doc.documentType,
+      fileName: doc.fileUrl.split('/').pop() ?? doc.documentType,
+      status: 'approved' as const,
+      url: doc.fileUrl,
+    })),
   };
 }
 
