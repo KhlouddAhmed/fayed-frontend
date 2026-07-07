@@ -10,10 +10,10 @@ export interface LoginRequestDto {
 // RESPONSE DTOs — match backend PascalCase
 // =============================================
 export interface LoginResponseDto {
-  readonly Token: string;
-  readonly ExpiresOn: string;
-  readonly UserName: string;
-  readonly Email: string;
+  token: string;
+  expiresOn: string;
+  userName: string;
+  email: string;
 }
 
 // =============================================

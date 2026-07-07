@@ -49,41 +49,46 @@ export class LoginPage {
     this.passwordTouched.set(true);
   }
 
-  onSubmit(): void {
-    this.emailTouched.set(true);
-    this.passwordTouched.set(true);
-    this.errorMessage.set(null);
+onSubmit(): void {
+  this.emailTouched.set(true);
+  this.passwordTouched.set(true);
+  this.errorMessage.set(null);
 
-    if (!this.isFormValid()) {
-      this.errorMessage.set('يرجى إدخال البريد الإلكتروني وكلمة المرور.');
-      return;
-    }
-
-    const credentials: LoginRequest = {
-      email: this.email().trim(),
-      password: this.password(),
-    };
-
-    this.isLoading.set(true);
-
-    this.authService.login(credentials).subscribe({
-      next: user => {
-        this.isLoading.set(false);
-        if (!user) {
-          this.errorMessage.set('البريد الإلكتروني أو كلمة المرور غير صحيحة.');
-          return;
-        }
-        const destination = user.role === 'Admin'
-          ? `/${ROUTES.ADMIN.OVERVIEW}`
-          : `/${ROUTES.DASHBOARD.OVERVIEW}`;
-        this.router.navigateByUrl(destination);
-      },
-      error: () => {
-        this.isLoading.set(false);
-        this.errorMessage.set('البريد الإلكتروني أو كلمة المرور غير صحيحة.');
-      },
-    });
+  if (!this.isFormValid()) {
+    this.errorMessage.set('يرجى إدخال البريد الإلكتروني وكلمة المرور.');
+    return;
   }
+
+  const credentials: LoginRequest = {
+    email: this.email().trim(),
+    password: this.password(),
+  };
+
+  this.isLoading.set(true);
+
+  this.authService.login(credentials).subscribe({
+    next: user => {
+      this.isLoading.set(false);
+      
+      if (!user) {
+        this.errorMessage.set('البريد الإلكتروني أو كلمة المرور غير صحيحة.');
+        return;
+      }
+      if (user.role === 'Admin') {
+        this.router.navigate(['/admin']); 
+      } else if (user.role === 'Factory') {
+        this.router.navigate(['/dashboard/company']);
+      } else {
+        this.router.navigate(['/dashboard/company']);
+      }
+    },
+    error: (err) => {
+      this.isLoading.set(false);
+      this.errorMessage.set('حدث خطأ أثناء الاتصال بالسيرفر، برجاء المحاولة لاحقاً.');
+      console.error(err);
+    }
+  });
+}
 
   goBack(): void {
     this.router.navigateByUrl(`/${ROUTES.HOME}`);
