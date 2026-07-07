@@ -1,87 +1,105 @@
-import { Component, signal } from '@angular/core';
-
-// 1. واجهة الطلبات (للتاب الأول والثاني)
-interface Order {
-  id: string;
-  buyer: string;
-  seller: string;
-  value: string;
-  date: string;
-  deliveryStatus: 'shipping' | 'delivered' | 'preparing' | 'dispute';
-  financialStatus: 'held' | 'released' | 'suspended';
-}
-
-// 2. واجهة المعاملات المالية (للتاب الثالث)
-interface Transaction {
-  id: string;
-  beneficiary: string;
-  type: 'profit' | 'refund';
-  amount: string;
-  gateway: string;
-  isProcessed: boolean;
-}
-
-// 3. واجهة سجل المعاملات (للتاب الرابع الجديد)
-interface HistoryRecord {
-  movementId: string;
-  orderId: string;
-  totalValue: string;
-  commission: string;
-  paymentMethod: string;
-  dateTime: string;
-}
+import { Component, signal, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { OrdersService, EscrowOrder, RefundProfitTransaction, LedgerRecord } from './orders.service';
 
 @Component({
   selector: 'app-orders',
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './orders-payments.html',
   styleUrls: ['./orders-payments.css']
 })
-export class OrdersComponent {
-  activeTab = signal<'all' | 'escrow' | 'refunds' | 'history'>('history');
+export class OrdersComponent implements OnInit {
+  private ordersService = inject(OrdersService);
 
+  // تم التعديل لتفتح على 'all' بشكل افتراضي
+  activeTab = signal<'all' | 'escrow' | 'refunds' | 'history'>('all');
 
-  orders = signal<Order[]>([
-    { id: 'ORD-1045', buyer: 'السويدي للمحولات', seller: 'النحاس المصرية', value: '36,000 ج.م', date: '2026-06-01', deliveryStatus: 'shipping', financialStatus: 'held' },
-    { id: 'ORD-1046', buyer: 'الصناعات الغذائية الحديثة', seller: 'بلاستيك الإسكندرية', value: '48,000 ج.م', date: '2026-06-03', deliveryStatus: 'delivered', financialStatus: 'released' },
-    { id: 'ORD-1047', buyer: 'العربية للتعبئة', seller: 'الورق الوطنية', value: '84,000 ج.م', date: '2026-06-04', deliveryStatus: 'preparing', financialStatus: 'held' },
-    { id: 'ORD-1048', buyer: 'مصر للإنشاءات', seller: 'العالمية للحديد', value: '120,000 ج.م', date: '2026-06-06', deliveryStatus: 'dispute', financialStatus: 'suspended' }
-  ]);
+  // الإشارات اللي هتشيل الداتا
+  orders = signal<EscrowOrder[]>([]);
+  transactions = signal<RefundProfitTransaction[]>([]);
+  historyRecords = signal<LedgerRecord[]>([]);
 
+  isLoading = signal<boolean>(false);
+  isReleasing = signal<boolean>(false);
 
-  transactions = signal<Transaction[]>([
-    { id: 'TXN-9021', beneficiary: 'مصنع مصر للبلاستيك', type: 'profit', amount: '24,000 ج.م', gateway: 'كارت ائتمان البنك الأهلي', isProcessed: false },
-    { id: 'TXN-9022', beneficiary: 'مصنع مصر للبلاستيك', type: 'refund', amount: '24,000 ج.م', gateway: 'كارت ائتمان البنك الأهلي', isProcessed: false }, 
-    { id: 'TXN-9023', beneficiary: 'مصنع مصر للبلاستيك', type: 'profit', amount: '24,000 ج.م', gateway: 'كارت ائتمان البنك الأهلي', isProcessed: false }
-  ]);
-
-
-  historyRecords = signal<HistoryRecord[]>([
-    { movementId: 'PAY-7829-AB', orderId: 'ORD-1042', totalValue: '15,000 ج.م', commission: '750 ج.م (5.0%)', paymentMethod: 'تحويل مباشر', dateTime: '2026-06-02 09:30' },
-    { movementId: 'PAY-7829-AB', orderId: 'ORD-1042', totalValue: '15,000 ج.م', commission: '750 ج.م (5.0%)', paymentMethod: 'تحويل مباشر', dateTime: '2026-06-02 09:30' },
-    { movementId: 'PAY-7829-AB', orderId: 'ORD-1042', totalValue: '15,000 ج.م', commission: '750 ج.م (5.0%)', paymentMethod: 'تحويل مباشر', dateTime: '2026-06-02 09:30' },
-    { movementId: 'PAY-7829-AB', orderId: 'ORD-1042', totalValue: '15,000 ج.م', commission: '750 ج.م (5.0%)', paymentMethod: 'تحويل مباشر', dateTime: '2026-06-02 09:30' }
-  ]);
+  ngOnInit() {
+    this.fetchOrders(); // جلب الطلبات أول ما الشاشة تفتح
+  }
 
   setTab(tab: 'all' | 'escrow' | 'refunds' | 'history') {
     this.activeTab.set(tab);
+    
+    // جلب الداتا ديناميكياً حسب التابة
+    if ((tab === 'all' || tab === 'escrow') && this.orders().length === 0) {
+      this.fetchOrders();
+    } else if (tab === 'refunds' && this.transactions().length === 0) {
+      this.fetchRefunds();
+    } else if (tab === 'history' && this.historyRecords().length === 0) {
+      this.fetchLedger();
+    }
   }
 
+  fetchOrders() {
+    this.isLoading.set(true);
+    this.ordersService.getEscrowOrders().subscribe({
+      next: (res) => {
+        if (res.IsSuccess && res.Data) this.orders.set(res.Data);
+        this.isLoading.set(false);
+      },
+      error: (err) => { console.error('خطأ:', err); this.isLoading.set(false); }
+    });
+  }
+
+  fetchRefunds() {
+    this.isLoading.set(true);
+    this.ordersService.getRefundsProfits().subscribe({
+      next: (res) => {
+        if (res.IsSuccess && res.Data) this.transactions.set(res.Data);
+        this.isLoading.set(false);
+      },
+      error: (err) => { console.error('خطأ:', err); this.isLoading.set(false); }
+    });
+  }
+
+  fetchLedger() {
+    this.isLoading.set(true);
+    this.ordersService.getLedger().subscribe({
+      next: (res) => {
+        if (res.IsSuccess && res.Data) this.historyRecords.set(res.Data);
+        this.isLoading.set(false);
+      },
+      error: (err) => { console.error('خطأ:', err); this.isLoading.set(false); }
+    });
+  }
+
+  releaseFunds(orderId: number) {
+    this.isReleasing.set(true);
+    this.ordersService.releaseEscrow(orderId).subscribe({
+      next: (res) => {
+        if (res.IsSuccess) {
+          // تحديث حالة الطلب في الشاشة بدون ريفريش
+          this.orders.update(orders => 
+            orders.map(o => o.orderId === orderId ? { ...o, escrowStatus: 'released' } : o)
+          );
+        }
+        this.isReleasing.set(false);
+      },
+      error: (err) => {
+        console.error('خطأ في الإفراج:', err);
+        this.isReleasing.set(false);
+      }
+    });
+  }
+
+  // دوال مساعدة لترجمة الحالات
   getDeliveryStatusText(status: string): string {
     const statuses: Record<string, string> = { 'shipping': 'قيد الشحن', 'delivered': 'تم التسليم', 'preparing': 'قيد التجهيز', 'dispute': 'نزاع مفتوح' };
-    return statuses[status] || status;
+    return statuses[status.toLowerCase()] || status;
   }
 
   getFinancialStatusText(status: string): string {
     const statuses: Record<string, string> = { 'held': 'محتجز', 'released': 'تم الإفراج', 'suspended': 'معلق' };
-    return statuses[status] || status;
-  }
-
-  releaseFunds(id: string) {
-    this.orders.update(orders => orders.map(o => o.id === id ? { ...o, financialStatus: 'released' } : o));
-  }
-
-  processTransaction(id: string) {
-    this.transactions.update(txns => txns.map(t => t.id === id ? { ...t, isProcessed: true } : t));
+    return statuses[status.toLowerCase()] || status;
   }
 }

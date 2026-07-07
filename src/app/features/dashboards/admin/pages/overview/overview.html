@@ -1,188 +1,138 @@
-<div class="overview-container" dir="rtl" style="font-family: 'Cairo', sans-serif;">
-  
-  <!-- عنوان الصفحة -->
-  <div class="page-header mb-4 text-end">
-    <h4 class="fw-bold text-navy mb-1">لوحة تحكم منصة فايض</h4>
-    <p class="text-muted" style="font-size: 14px;">نظرة عامة على حالة الفوائض وتوثيق الشركات والعمليات اليومية</p>
+@if (isLoading()) {
+  <div class="d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+      <span class="visually-hidden">جاري التحميل...</span>
+    </div>
   </div>
-
-  <!-- الكروت العلوية -->
-  <div class="row g-3 mb-4">
-    @for (stat of dashboardStats(); track stat.title) {
-      <div class="col-12 col-md-6 col-xl-3">
-        <app-stat-card 
-          [title]="stat.title" 
-          [value]="stat.value" 
-          [subtitle]="stat.subtitle"
-          [icon]="stat.icon" 
-          [color]="stat.color">
-        </app-stat-card>
-      </div>
-    }
-  </div>
-
-  <!-- القسم الأوسط (الرسم البياني + آخر الأحداث) -->
-  <div class="row g-3 mb-4">
+} @else {
+  <div class="overview-container" dir="rtl" style="font-family: 'Cairo', sans-serif;">
     
-    <!-- الرسم البياني (Chart) - تصميم مطابق تماماً للصورة -->
-    <div class="col-12 col-lg-8">
-      <div class="card border-0 shadow-sm h-100" style="border-radius: 16px;">
-        <div class="card-body p-4">
-          
-          <div class="text-end mb-2">
-            <h6 class="fw-bold text-navy mb-1">معدل التداول والمبيعات الشهرية</h6>
-            <small class="text-muted" style="font-size: 12px;">حجم الصفقات المبرمة والمدفوعة — يونيو 2026</small>
-          </div>
+    <div class="page-header mb-4 text-end">
+      <h4 class="fw-bold text-navy mb-1">لوحة تحكم منصة فايض</h4>
+      <p class="text-muted" style="font-size: 14px;">نظرة عامة على حالة الفوائض وتوثيق الشركات والعمليات اليومية</p>
+    </div>
 
-          <!-- بناء الشارت بالـ Flexbox والـ SVG المباشر -->
-          <div class="chart-wrapper d-flex mt-4" style="height: 250px;">
-            <!-- المحور الصادي (الأرقام على اليسار) -->
-            <div class="y-axis d-flex flex-column justify-content-between text-muted pe-3 text-start" style="font-size: 11px; padding-bottom: 25px;">
-              <span>2.6M</span>
-              <span>1.9M</span>
-              <span>1.3M</span>
-              <span>0.7M</span>
-              <span>0.0M</span>
-            </div>
+    <div class="row g-3 mb-4">
+      @for (stat of dashboardStats(); track stat.title) {
+        <div class="col-12 col-md-6 col-xl-3">
+          <app-stat-card 
+            [title]="stat.title" 
+            [value]="stat.value" 
+            [subtitle]="stat.subtitle"
+            [icon]="stat.icon" 
+            [color]="stat.color">
+          </app-stat-card>
+        </div>
+      }
+    </div>
+
+    <div class="row g-3 mb-4">
+      
+      <div class="col-12 col-lg-8">
+        <div class="card border-0 shadow-sm h-100" style="border-radius: 16px;">
+          <div class="card-body p-4">
             
-            <!-- مساحة الرسم البياني -->
-            <div class="chart-area flex-grow-1 d-flex flex-column">
-              <!-- الشبكة والمنحنى -->
-              <div class="graph-box position-relative w-100 flex-grow-1">
-                <!-- خطوط الشبكة الأفقية -->
-                <div class="grid-lines position-absolute w-100 h-100 d-flex flex-column justify-content-between">
-                  <div class="border-top" style="border-color: #F1F5F9 !important;"></div>
-                  <div class="border-top" style="border-color: #F1F5F9 !important;"></div>
-                  <div class="border-top" style="border-color: #F1F5F9 !important;"></div>
-                  <div class="border-top" style="border-color: #F1F5F9 !important;"></div>
-                  <div class="border-top" style="border-color: #F1F5F9 !important;"></div>
-                </div>
-                
-                <!-- المنحنى الأزرق والتدرج اللوني -->
-                <div class="svg-container position-absolute w-100 h-100" style="top: 0; left: 0; z-index: 1;">
-                  <svg viewBox="0 0 1000 250" preserveAspectRatio="none" style="width: 100%; height: 100%;">
-                    <defs>
-                      <linearGradient id="gradientArea" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#3B82F6" stop-opacity="0.15"></stop>
-                        <stop offset="100%" stop-color="#3B82F6" stop-opacity="0"></stop>
-                      </linearGradient>
-                    </defs>
-                    <!-- مساحة التدرج اللوني -->
-                    <path d="M0,180 C150,100 250,100 400,160 C 550,220 650,80 800,120 C 900,140 950,50 1000,40 L1000,250 L0,250 Z" fill="url(#gradientArea)"></path>
-                    <!-- خط المنحنى -->
-                    <path d="M0,180 C150,100 250,100 400,160 C 550,220 650,80 800,120 C 900,140 950,50 1000,40" fill="none" stroke="#2563EB" stroke-width="3"></path>
-                  </svg>
-                </div>
+            <div class="text-end mb-2">
+              <h6 class="fw-bold text-navy mb-1">معدل التداول والمبيعات الشهرية</h6>
+              <small class="text-muted" style="font-size: 12px;">حجم الصفقات المبرمة والمدفوعة — يونيو 2026</small>
+            </div>
+
+            <div class="chart-wrapper d-flex mt-4" style="height: 250px;">
+              <div class="y-axis d-flex flex-column justify-content-between text-muted pe-3 text-start" style="font-size: 11px; padding-bottom: 25px;">
+                <span>2.6M</span><span>1.9M</span><span>1.3M</span><span>0.7M</span><span>0.0M</span>
               </div>
               
-              <!-- المحور السيني (الشهور بالأسفل) -->
-              <div class="x-axis w-100 d-flex justify-content-between text-muted pt-2" style="font-size: 11px; height: 25px;">
-                <span>يناير</span>
-                <span>فبراير</span>
-                <span>مارس</span>
-                <span>إبريل</span>
-                <span>مايو</span>
-                <span>يونيو</span>
+              <div class="chart-area flex-grow-1 d-flex flex-column">
+                <div class="graph-box position-relative w-100 flex-grow-1">
+                  <div class="grid-lines position-absolute w-100 h-100 d-flex flex-column justify-content-between">
+                    <div class="border-top" style="border-color: #F1F5F9 !important;"></div>
+                    <div class="border-top" style="border-color: #F1F5F9 !important;"></div>
+                    <div class="border-top" style="border-color: #F1F5F9 !important;"></div>
+                    <div class="border-top" style="border-color: #F1F5F9 !important;"></div>
+                    <div class="border-top" style="border-color: #F1F5F9 !important;"></div>
+                  </div>
+                  
+                  <div class="svg-container position-absolute w-100 h-100" style="top: 0; left: 0; z-index: 1;">
+                    <svg viewBox="0 0 1000 250" preserveAspectRatio="none" style="width: 100%; height: 100%;">
+                      <defs>
+                        <linearGradient id="gradientArea" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stop-color="#3B82F6" stop-opacity="0.15"></stop>
+                          <stop offset="100%" stop-color="#3B82F6" stop-opacity="0"></stop>
+                        </linearGradient>
+                      </defs>
+                      <path d="M0,180 C150,100 250,100 400,160 C 550,220 650,80 800,120 C 900,140 950,50 1000,40 L1000,250 L0,250 Z" fill="url(#gradientArea)"></path>
+                      <path d="M0,180 C150,100 250,100 400,160 C 550,220 650,80 800,120 C 900,140 950,50 1000,40" fill="none" stroke="#2563EB" stroke-width="3"></path>
+                    </svg>
+                  </div>
+                </div>
+                
+                <div class="x-axis w-100 d-flex justify-content-between text-muted pt-2" style="font-size: 11px; height: 25px;">
+                  <span>يناير</span><span>فبراير</span><span>مارس</span><span>إبريل</span><span>مايو</span><span>يونيو</span>
+                </div>
               </div>
-            </div>
-          </div>
-          
-        </div>
-      </div>
-    </div>
-
-    <!-- آخر الأحداث -->
-    <div class="col-12 col-lg-4">
-      <div class="card border-0 shadow-sm h-100" style="border-radius: 16px;">
-        <div class="card-body p-4">
-          <h6 class="fw-bold text-navy mb-4 text-end">آخر الأحداث المباشرة</h6>
-          
-          <div class="activity-feed text-end">
-            <div class="d-flex justify-content-between mb-4">
-              <div class="details" style="font-size: 13px;">
-                <span class="text-primary fw-bold">أحمد (مشرف)</span> مراجعة مستندات<br>شركة النصر للمنسوجات
-              </div>
-              <div class="time text-muted mt-1" style="font-size: 11px;">10:24</div>
             </div>
             
-            <div class="d-flex justify-content-between mb-4">
-              <div class="details" style="font-size: 13px;">
-                <span class="text-primary fw-bold">النظام</span> إنشاء ملف نزاع تلقائي<br>للطلب ORD-1048
-              </div>
-              <div class="time text-muted mt-1" style="font-size: 11px;">10:15</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-4">
+        <div class="card border-0 shadow-sm h-100" style="border-radius: 16px;">
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-navy mb-4 text-end">آخر الأحداث المباشرة</h6>
+            
+            <div class="activity-feed text-end">
+              @for (event of recentEvents(); track $index) {
+                <div class="d-flex justify-content-between mb-4">
+                  <div class="details" style="font-size: 13px;">
+                    <span class="text-primary fw-bold">{{ event.adminName }}</span> {{ event.actionDescription }}<br>
+                    <span class="text-muted">{{ event.targetEntity }}</span>
+                  </div>
+                  <div class="time text-muted mt-1" style="font-size: 11px;">{{ event.time }}</div>
+                </div>
+              } @empty {
+                <div class="text-muted text-center py-4">لا توجد أحداث حديثة.</div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="card border-0 shadow-sm position-relative" style="border-radius: 16px;">
+          <div class="card-body p-4">
+            
+            <div class="position-absolute" style="left: 20px; top: 20px;">
+              <span class="badge rounded-pill fw-medium" style="background-color: #EBF5FF; color: #3B82F6; font-size: 12px; padding: 6px 12px;">مباشر</span>
             </div>
 
-            <div class="d-flex justify-content-between mb-4">
-              <div class="details" style="font-size: 13px;">
-                <span class="text-primary fw-bold">خالد (مشرف)</span> تعديل قائمة بوابات<br>الدفع - فوري كاش
+            <h6 class="fw-bold text-navy mb-4 text-end">إدارة الموارد حسب الفئة</h6>
+            
+            @for (category of categoryStats(); track $index) {
+              <div class="d-flex align-items-center mb-4">
+                <div style="width: 100px; text-align: right;" class="text-muted font-13 fw-bold">{{ category.categoryName }}</div>
+                
+                <div class="position-relative flex-grow-1 mx-4 d-flex align-items-center" style="height: 6px;">
+                  <div class="w-100 position-absolute rounded-pill" style="height: 2px; background-color: #E2E8F0; right: 0;"></div>
+                  <div class="position-absolute rounded-pill" 
+                       [style.width.%]="category.percentage" 
+                       [style.background-color]="category.color" 
+                       style="height: 6px; right: 0; z-index: 1;"></div>
+                </div>
+                
+                <div style="width: 40px; text-align: left;" class="fw-bold text-navy font-13">{{ category.percentage }}%</div>
               </div>
-              <div class="time text-muted mt-1" style="font-size: 11px;">09:58</div>
-            </div>
+            } @empty {
+              <div class="text-muted text-center py-3">لا توجد بيانات للفئات حالياً.</div>
+            }
 
-            <div class="d-flex justify-content-between">
-              <div class="details" style="font-size: 13px;">
-                <span class="text-primary fw-bold">أحمد (مشرف)</span> إيقاف حساب كريم<br>ممدوح (FYD-204)
-              </div>
-              <div class="time text-muted mt-1" style="font-size: 11px;">09:12</div>
-            </div>
           </div>
         </div>
       </div>
     </div>
 
   </div>
-
-  <!-- القسم الأخير (إدارة الموارد حسب الفئة) -->
-  <div class="row">
-    <div class="col-12">
-      <div class="card border-0 shadow-sm position-relative" style="border-radius: 16px;">
-        <div class="card-body p-4">
-          
-          <div class="position-absolute" style="left: 20px; top: 20px;">
-            <span class="badge rounded-pill fw-medium" style="background-color: #EBF5FF; color: #3B82F6; font-size: 12px; padding: 6px 12px;">يونيو 2026</span>
-          </div>
-
-          <h6 class="fw-bold text-navy mb-4 text-end">إدارة الموارد حسب الفئة</h6>
-          
-          <div class="d-flex align-items-center mb-4">
-            <div style="width: 100px; text-align: right;" class="text-muted font-13 fw-bold">معادن</div>
-            <div class="position-relative flex-grow-1 mx-4 d-flex align-items-center" style="height: 6px;">
-              <div class="w-100 position-absolute rounded-pill" style="height: 2px; background-color: #E2E8F0; right: 0;"></div>
-              <div class="position-absolute rounded-pill" style="height: 6px; width: 45%; background-color: #2563EB; right: 0; z-index: 1;"></div>
-            </div>
-            <div style="width: 40px; text-align: left;" class="fw-bold text-navy font-13">45%</div>
-          </div>
-
-          <div class="d-flex align-items-center mb-4">
-            <div style="width: 100px; text-align: right;" class="text-muted font-13 fw-bold">بلاستيك</div>
-            <div class="position-relative flex-grow-1 mx-4 d-flex align-items-center" style="height: 6px;">
-              <div class="w-100 position-absolute rounded-pill" style="height: 2px; background-color: #E2E8F0; right: 0;"></div>
-              <div class="position-absolute rounded-pill" style="height: 6px; width: 30%; background-color: #3B82F6; right: 0; z-index: 1;"></div>
-            </div>
-            <div style="width: 40px; text-align: left;" class="fw-bold text-navy font-13">30%</div>
-          </div>
-
-          <div class="d-flex align-items-center mb-4">
-            <div style="width: 100px; text-align: right;" class="text-muted font-13 fw-bold">ورق وكرتون</div>
-            <div class="position-relative flex-grow-1 mx-4 d-flex align-items-center" style="height: 6px;">
-              <div class="w-100 position-absolute rounded-pill" style="height: 2px; background-color: #E2E8F0; right: 0;"></div>
-              <div class="position-absolute rounded-pill" style="height: 6px; width: 15%; background-color: #60A5FA; right: 0; z-index: 1;"></div>
-            </div>
-            <div style="width: 40px; text-align: left;" class="fw-bold text-navy font-13">15%</div>
-          </div>
-
-          <div class="d-flex align-items-center">
-            <div style="width: 100px; text-align: right;" class="text-muted font-13 fw-bold">كيماويات</div>
-            <div class="position-relative flex-grow-1 mx-4 d-flex align-items-center" style="height: 6px;">
-              <div class="w-100 position-absolute rounded-pill" style="height: 2px; background-color: #E2E8F0; right: 0;"></div>
-              <div class="position-absolute rounded-pill" style="height: 6px; width: 10%; background-color: #93C5FD; right: 0; z-index: 1;"></div>
-            </div>
-            <div style="width: 40px; text-align: left;" class="fw-bold text-navy font-13">10%</div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
+}

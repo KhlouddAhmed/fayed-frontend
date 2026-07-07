@@ -1,34 +1,35 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ModerationService } from './moderation.service';
 
-interface AdListing {
-  id: string;
+export interface AdListing {
+  id: number;
+  listingIdentifier: string;
   title: string;
   seller: string;
   category: string;
   quantity: string;
   price: string;
-  status: 'pending' | 'active' | 'rejected'; 
+  status: 'pending' | 'active' | 'rejected';
 }
 
 @Component({
   selector: 'app-moderation',
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './listings-moderation.html',
   styleUrls: ['./listings-moderation.css']
 })
-export class ModerationComponent {
-  // خلينا التاب الافتراضي هو 'pending' عشان تشوف التصميم الجديد أول ما تفتح
-  activeTab = signal<'all' | 'pending'>('pending');
+export class ModerationComponent implements OnInit {
+  private moderationService = inject(ModerationService);
+
+  activeTab = signal<'all' | 'pending'>('all');
   searchQuery = signal<string>('');
+  isLoading = signal<boolean>(true);
 
-  // الداتا تم تحديثها لتطابق الصورة تماماً، مع فصل السعر والكمية
-  adListings = signal<AdListing[]>([
-    { id: 'LST-502', title: 'خردة كابلات نحاس أحمر صناعي', seller: 'السويدي للكابلات', category: 'معادن', quantity: '2 طن', price: '18,000 ج.م', status: 'pending' },
-    { id: 'LST-503', title: 'حبيبات بلاستيك PET معاد تدويرها مغسولة', seller: 'الوطنية للبلاستيك', category: 'بلاستيك', quantity: '10 طن', price: '24,000 ج.م', status: 'pending' },
-    { id: 'LST-504', title: 'كرتون مستعمل مضغوط بالية OCC', seller: 'مصر للتعبئة', category: 'ورق وكرتون', quantity: '15 طن', price: '4,200 ج.م', status: 'pending' }
-  ]);
+  adListings = signal<AdListing[]>([]);
 
-  // حساب عدد الإعلانات المعلقة بشكل ديناميكي للبادج اللي في التاب
+  // حساب عدد الإعلانات المعلقة بشكل ديناميكي للبادج
   pendingCount = computed(() => this.adListings().filter(ad => ad.status === 'pending').length);
 
   filteredAds = computed(() => {
@@ -45,9 +46,40 @@ export class ModerationComponent {
     });
   });
 
+  ngOnInit() {
+    this.fetchPendingAds();
+  }
+
+  fetchPendingAds() {
+    this.isLoading.set(true);
+    this.moderationService.getPendingListings().subscribe({
+      next: (res) => {
+        if (res.IsSuccess && res.Data) {
+          // تحويل الـ JSON اللي راجع من السيرفر ليتطابق مع واجهة الشاشة
+          const mappedData: AdListing[] = res.Data.map(item => ({
+            id: item.listingId,
+            listingIdentifier: item.listingIdentifier,
+            title: item.title,
+            seller: item.sellerName,
+            category: item.categoryName,
+            quantity: item.quantityText,
+            price: item.priceText,
+            status: 'pending' // كل اللي راجع من الـ API ده بيكون معلق
+          }));
+          this.adListings.set(mappedData);
+        }
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('فشل جلب الإعلانات المعلقة:', err);
+        this.isLoading.set(false);
+      }
+    });
+  }
+
   setTab(tab: 'all' | 'pending') {
     this.activeTab.set(tab);
-    this.searchQuery.set(''); // تفريغ البحث عند تغيير التاب
+    this.searchQuery.set('');
   }
 
   updateSearch(event: Event) {
@@ -55,12 +87,22 @@ export class ModerationComponent {
     this.searchQuery.set(input);
   }
 
-  // دالة لتعديل الحالة (شغالة لزراير القبول/الرفض وللقائمة المنسدلة كمان)
-  changeAdStatus(id: string, newStatus: 'pending' | 'active' | 'rejected', event?: Event) {
-    const finalStatus = event ? (event.target as HTMLSelectElement).value as 'pending' | 'active' : newStatus;
-    
-    this.adListings.update(ads => 
-      ads.map(ad => ad.id === id ? { ...ad, status: finalStatus } : ad)
-    );
+  // دالة لتعديل الحالة وإرسال القرار للسيرفر
+  changeAdStatus(id: number, newStatus: 'active' | 'rejected') {
+    const isApproved = newStatus === 'active';
+
+    this.moderationService.decideListing(id, isApproved).subscribe({
+      next: (res) => {
+        if (res.IsSuccess) {
+          // تحديث الحالة في الواجهة فوراً بعد نجاح الطلب
+          this.adListings.update(ads => 
+            ads.map(ad => ad.id === id ? { ...ad, status: newStatus } : ad)
+          );
+        }
+      },
+      error: (err) => {
+        console.error('فشل اتخاذ القرار:', err);
+      }
+    });
   }
 }

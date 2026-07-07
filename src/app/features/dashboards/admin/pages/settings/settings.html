@@ -1,4 +1,4 @@
-<div class="settings-container" dir="rtl">
+<div class="settings-container" dir="rtl" style="font-family: 'Cairo', sans-serif;">
   
   <div class="page-header mb-4 text-end">
     <h4 class="fw-bold text-navy mb-1">إعدادات منصة فايض</h4>
@@ -11,10 +11,10 @@
     <button class="btn tab-btn px-2 py-3" [class.active]="activeTab() === 'systemLog'" (click)="setTab('systemLog')">سجل النظام</button>
   </div>
 
-  <!-- ================= تاب العمولات ================= -->
   @if (activeTab() === 'commissions') {
     <div class="card border-0 shadow-sm bg-white p-5 mx-auto" style="border-radius: 16px; max-width: 900px;">
       <h6 class="fw-bold text-navy mb-5 text-end fs-5">نسب العمولات حسب الفئة (%)</h6>
+      
       <form [formGroup]="commissionsForm" (ngSubmit)="saveCommissions()">
         <div class="mb-4">
           <label class="form-label text-muted fw-semibold mb-2 d-block text-end" style="font-size: 13px;">المعادن (نحاس، حديد، ألومنيوم)</label>
@@ -51,24 +51,26 @@
             <span class="text-muted fw-bold">%</span>
           </div>
         </div>
+  
         <div class="text-start"> 
           <button type="submit" class="btn btn-save px-4 py-2" [disabled]="isSaving()">
             @if (isSaving()) { <span class="spinner-border spinner-border-sm ms-2"></span> جارٍ الحفظ... } 
-            @else { <i class="bi bi-floppy ms-2"></i> حفظ نسب العمولات الجديدة }
+            @else { <i class="bi bi-floppy ms-2"></i> حفظ نسب العمولات }
           </button>
         </div>
       </form>
     </div>
   }
 
-  <!-- ================= تاب بوابات الدفع ================= -->
   @if (activeTab() === 'gateways') {
     <div class="card border-0 shadow-sm bg-white p-5 mx-auto" style="border-radius: 16px; max-width: 900px;">
+      
       <form [formGroup]="gatewaysForm" (ngSubmit)="saveGateways()">
+        
         <div class="gateway-card mb-4 p-4 border rounded-4">
           <div class="d-flex justify-content-between align-items-start mb-4">
             <div class="form-check form-switch custom-switch mt-1">
-              <input class="form-check-input" type="checkbox" role="switch" formControlName="fawryEnabled">
+              <input class="form-check-input" type="checkbox" role="switch" formControlName="isFawryEnabled">
             </div>
             <div class="text-end">
               <h6 class="fw-bold text-navy mb-1">بوابة فوري التفاعلية (Fawry Pay)</h6>
@@ -80,10 +82,11 @@
             <input type="text" class="form-control custom-input text-end fw-bold" formControlName="fawryMerchantId" dir="ltr">
           </div>
         </div>
+
         <div class="gateway-card mb-4 p-4 border rounded-4">
           <div class="d-flex justify-content-between align-items-start mb-4">
             <div class="form-check form-switch custom-switch mt-1">
-              <input class="form-check-input" type="checkbox" role="switch" formControlName="paymobEnabled">
+              <input class="form-check-input" type="checkbox" role="switch" formControlName="isPaymobEnabled">
             </div>
             <div class="text-end">
               <h6 class="fw-bold text-navy mb-1">بوابة كروت الائتمان مدى/فيزا</h6>
@@ -95,6 +98,7 @@
             <input type="text" class="form-control custom-input text-end fw-bold" formControlName="paymobSecretKey" dir="ltr">
           </div>
         </div>
+
         <div class="gateway-card mb-5 p-4 border rounded-4">
           <div class="text-end mb-4">
             <h6 class="fw-bold text-navy mb-1">الحساب البنكي الرسمي للمنصة</h6>
@@ -105,65 +109,57 @@
           </div>
           <div>
             <label class="form-label text-muted fw-semibold mb-2 d-block text-end" style="font-size: 13px;">رقم الآيبان (IBAN)</label>
-            <input type="text" class="form-control custom-input text-end fw-bold" formControlName="iban" dir="ltr">
+            <input type="text" class="form-control custom-input text-end fw-bold" formControlName="bankIban" dir="ltr">
           </div>
         </div>
+
         <div class="text-start"> 
           <button type="submit" class="btn btn-save px-4 py-2" [disabled]="isSavingGateways()">
             @if (isSavingGateways()) { <span class="spinner-border spinner-border-sm ms-2"></span> جارٍ الحفظ... } 
             @else { <i class="bi bi-floppy ms-2"></i> حفظ منافذ الدفع }
           </button>
         </div>
+
       </form>
     </div>
   }
 
-  <!-- ================= تاب سجل النظام ================= -->
   @if (activeTab() === 'systemLog') {
     <div class="card border-0 shadow-sm bg-white p-5 mx-auto" style="border-radius: 16px; max-width: 900px;">
       
-      <!-- الهيدر والأزرار -->
       <div class="d-flex justify-content-between align-items-center mb-4">
-        
-        <!-- أزرار التحكم -->
         <div class="d-flex gap-2">
-          <button class="btn btn-outline-light-custom px-3 py-2" (click)="clearLogs()">
-             مسح <i class="bi bi-x"></i>
+          <button class="btn btn-outline-danger px-3 py-2 fw-medium" (click)="clearLogs()">
+             مسح السجل <i class="bi bi-trash ms-1"></i>
           </button>
-          <button class="btn btn-outline-light-custom px-3 py-2" (click)="downloadLogs()">
-             تنزيل السجل <i class="bi bi-download"></i>
+          <button class="btn btn-primary px-3 py-2 fw-medium" style="background-color: #2563EB; border: none;" (click)="downloadLogs()">
+             تنزيل السجل <i class="bi bi-download ms-1"></i>
           </button>
         </div>
-
-        <!-- العنوان -->
         <h5 class="fw-bold text-navy mb-0">سجل أحداث النظام</h5>
       </div>
 
-      <!-- شاشة التيرمينال (السجل) -->
-      <div class="terminal-container p-4 rounded-4" dir="rtl">
+      <div class="terminal-container p-4 rounded-4" dir="rtl" style="background-color: #1E293B; color: #E2E8F0; max-height: 400px; overflow-y: auto;">
         
-        @for (log of systemLogs(); track $index) {
-          <div class="d-flex justify-content-between align-items-start mb-2 log-row">
-            
-            <div class="log-content text-end">
-              <span class="log-time" dir="ltr">{{ log.time }}</span>
-              <span class="log-user ms-2">{{ log.user }}</span>
-              <span class="log-action ms-2">{{ log.action }}</span>
+        @if (isLoadingLogs()) {
+          <div class="text-center py-5"><span class="spinner-border text-light"></span></div>
+        } @else {
+          @for (log of systemLogs(); track log.logId) {
+            <div class="d-flex justify-content-between align-items-start mb-3 border-bottom border-secondary pb-2">
+              <div class="log-content text-end">
+                <span class="text-info fw-bold" dir="ltr">[{{ log.time }}]</span>
+                <span class="text-warning ms-2 fw-bold">{{ log.adminName }}:</span>
+                <span class="ms-2">{{ log.action }} - {{ log.targetEntity }}</span>
+              </div>
+              <div class="text-secondary" dir="ltr" style="font-size: 12px;">IP: {{ log.ipAddress }}</div>
             </div>
-
-            <!-- عنوان الـ IP في اليسار -->
-            <div class="log-ip" dir="ltr">{{ log.ip }}</div>
-          </div>
+          } @empty {
+            <div class="text-center text-muted my-5 pb-4">
+              <i class="bi bi-terminal fs-1 mb-2 d-block" style="opacity: 0.5;"></i>
+              سجل النظام فارغ حاليًا
+            </div>
+          }
         }
-
-        <!-- حالة عدم وجود بيانات -->
-        @if (systemLogs().length === 0) {
-          <div class="text-center text-muted my-5 pb-4">
-            <i class="bi bi-terminal fs-1 mb-2 d-block" style="opacity: 0.5;"></i>
-            سجل النظام فارغ حالياً
-          </div>
-        }
-
       </div>
 
     </div>
