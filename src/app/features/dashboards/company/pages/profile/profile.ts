@@ -1,36 +1,66 @@
-// profile.ts
-import { ChangeDetectionStrategy, Component, resource } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, resource } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { CompanyProfile } from '../../models/profile.model';
 import { LoadingSkeleton } from '../../../../../shared/components/loading-skeleton/loading-skeleton';
 import { ErrorState } from '../../../../../shared/components/error-state/error-state';
+import { environment } from '../../../../../environments/environment';
 
-/* =============================================
-  MOCK DATA — استبدل بـ service call حقيقي
-============================================= */
-const MOCK_PROFILE: CompanyProfile = {
-  id: 'company-001',
-  name: 'شركة النور للبلاستيك',
-  initial: 'N',
-  code: 'FYD-2586',
-  activityType: 'تصنيع البلاستيك',
-  foundedYear: 2016,
-  location: 'القاهرة',
-  registryNumber: 'CR-2026-4587',
-  description: 'شركة رائدة في مجال تصنيع وتوريد منتجات البلاستيك عالية الجودة منذ أكثر من 6 سنوات. نلتزم بتقديم أفضل المنتجات والخدمات لعملائنا مع الحفاظ على أعلى معايير الجودة.',
-  isVerified: true,
-  email: 'info@alnorplast.com',
-  phone: '+20 100 123 4567',
-  contactPerson: 'أحمد محمد علي',
-  website: 'www.alnileplast.com',
-  documents: [
-    { id: '1', name: 'السجل التجاري', fileName: 'CR-2026-4587.pdf', status: 'approved', url: '#' },
-    { id: '2', name: 'البطاقة الضريبية', fileName: 'Tax-58674578.pdf', status: 'approved', url: '#' },
-    { id: '3', name: 'شهادة الجودة (COA)', fileName: 'COA-2026.pdf', status: 'approved', url: '#' },
-  ],
-};
+// =============================================
+// DTO — mirrors ProfileDto.cs exactly
+// =============================================
+interface ProfileDto {
+  readonly Id: number;
+  readonly Name: string;
+  readonly Email: string;
+  readonly PhoneNumber: string | null;
+  readonly NationalId: string | null;
+  readonly UserVerificationStatus: string;
+  readonly FactoryId: number | null;
+  readonly FactoryName: string | null;
+  readonly CommercialRegistryNo: string | null;
+  readonly TaxCardNo: string | null;
+  readonly Address: string | null;
+  readonly Sector: string | null;
+  readonly LogoUrl: string | null;
+  readonly FactoryVerificationStatus: string;
+  readonly Documents: readonly {
+    readonly Id: number;
+    readonly Name: string;
+    readonly Url: string;
+    readonly Status: string;
+  }[];
+}
 
-const MOCK_DELAY_MS = 500;
+// =============================================
+// Adapter — DTO → UI Model
+// =============================================
+function adaptProfile(dto: ProfileDto): CompanyProfile {
+  return {
+    id: String(dto.FactoryId ?? dto.Id),
+    name: dto.FactoryName ?? dto.Name,
+    initial: (dto.FactoryName ?? dto.Name).charAt(0).toUpperCase(),
+    code: 'FYD-' + String(dto.FactoryId ?? dto.Id).padStart(4, '0'),
+    activityType: dto.Sector ?? 'غير محدد',
+    foundedYear: 2020,                          // mock — مش في الـ DTO
+    location: dto.Address ?? 'غير محدد',
+    registryNumber: dto.CommercialRegistryNo ?? 'غير محدد',
+    description: 'لا يوجد وصف متاح',           // mock — مش في الـ DTO
+    isVerified: dto.FactoryVerificationStatus === 'Verified',
+    email: dto.Email,
+    phone: dto.PhoneNumber ?? 'غير محدد',
+    contactPerson: dto.Name,
+    website: 'غير محدد',                        // mock — مش في الـ DTO
+    documents: dto.Documents.map((doc) => ({
+      id: String(doc.Id),
+      name: doc.Name,
+      fileName: doc.Url.split('/').pop() ?? doc.Name,
+      status: doc.Status.toLowerCase() === 'approved' ? 'approved' : 'pending',
+      url: doc.Url,
+    })),
+  };
+}
 
 @Component({
   selector: 'app-profile',
@@ -40,21 +70,20 @@ const MOCK_DELAY_MS = 500;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Profile {
+  private readonly http = inject(HttpClient);
   protected readonly currentDate = new Date();
 
   protected readonly profileResource = resource({
-    loader: () =>
-      new Promise<CompanyProfile>((resolve) => {
-        setTimeout(() => resolve(MOCK_PROFILE), MOCK_DELAY_MS);
-      }),
+    loader: async () => {
+      const dto = await firstValueFrom(
+        this.http.get<ProfileDto>(`${environment.apiUrl}/profile`)
+      );
+      return adaptProfile(dto);
+    },
   });
-  
- /* =============================================
-     ACTIONS
-     ============================================= */
+
   protected onEditProfile(): void {
-    // TODO: فتح modal تعديل البيانات
-  console.log('edit profile');
+    console.log('edit profile');
   }
 
   protected onViewDocument(docId: string): void {
@@ -68,7 +97,6 @@ export class Profile {
   }
 
   protected onUploadDocument(): void {
-    // TODO: فتح file picker
-  console.log('upload document');
+    console.log('upload document');
   }
 }

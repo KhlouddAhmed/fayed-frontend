@@ -34,6 +34,17 @@ export class Overview {
     loader: () => this.overviewService.getSummary(),
   });
 
+  //mock data
+  protected readonly companyName = 'شركة النور';
+
+  protected readonly mockStats = {
+    openDisputesCount: 2,
+    newMessagesCount: 5,
+    newOffersCount: 3,
+    smartAlertsCount: 1,
+    requiresUrgentAction: false,
+  };
+  
   protected readonly currentDate = new Date();
 
   protected onStartConversation(): void {

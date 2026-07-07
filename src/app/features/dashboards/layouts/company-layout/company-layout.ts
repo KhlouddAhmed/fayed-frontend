@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, computed } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 // import { SidebarNavItem } from '../../../../core/models/sidebar-nav-item.model';
 import { NgOptimizedImage } from '@angular/common';
 import { NotificationBell } from '../../../notifications/components/notification-bell/notification-bell';
 import { AuthService } from '../../../auth/services/auth';
+import { AuthStateService } from '../../../../core/services/auth-state.service';
 
 const COMPANY_NAV_ITEMS: readonly SidebarNavItem[] = [
   { label: 'الرئيسية', route: '/dashboard/company/overview', icon: 'assets/icons/dashboard/layout/home.svg' },
@@ -29,15 +30,25 @@ export class CompanyLayout {
   // private readonly router = inject(Router);
 
   //for logout
+  private readonly authState = inject(AuthStateService);
   private readonly authService = inject(AuthService);
 
   // State for sidebar and modal
   protected readonly sidebarOpen = signal(false);
   protected readonly isLogoutModalOpen = signal(false);
 
-  protected readonly companyName = 'شركة النور';
-  protected readonly companyCode = 'FYD-2586';
-  protected readonly avatarInitial = 'N';
+  // protected readonly companyName = 'شركة النور';
+  // protected readonly companyCode = 'FYD-2586';
+  // protected readonly avatarInitial = 'N';
+  protected readonly userName = computed(() => this.authState.currentUser()?.name ?? '');
+  
+  protected readonly userInitial = computed(() => 
+    this.authState.currentUser()?.name?.charAt(0)?.toUpperCase() ?? 'م'
+  );
+  protected readonly factoryId = computed(() => {
+    const id = this.authState.currentUser()?.factoryId;
+    return id ? `FYD-${id}` : '';
+  });
 
   // Toggle sidebar
   protected toggleSidebar(): void {
