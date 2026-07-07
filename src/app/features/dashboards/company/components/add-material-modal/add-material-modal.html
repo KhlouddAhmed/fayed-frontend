@@ -7,12 +7,11 @@
     <button type="button" class="add-material-modal-close-btn" (click)="cancel.emit()" aria-label="إغلاق">
       <img src="assets/icons/dashboard/close.svg" alt="" width="42" height="42" />
     </button>
-
   </header>
 
   <div class="add-material-modal-body">
 
-    <form class="add-material-modal-main add-material-modal-form" (submit)="onSubmit(); $event.preventDefault()">
+    <form class="add-material-modal-form" (submit)="onSubmit(); $event.preventDefault()">
 
       <section class="form-section">
         <h3 class="form-section-title">معلومات الخامة الأساسية</h3>
@@ -20,22 +19,20 @@
         <div class="form-row-2" style="margin-block-end: 16px;">
           <label class="add-material-modal-field">
             <span>اسم الخامة</span>
-            <input type="text" [value]="formValue().name" (input)="updateField('name', $any($event.target).value)"
+            <input type="text" [value]="formValue().name"
+              (input)="updateField('name', $any($event.target).value)"
               placeholder="مثال: PET معاد تدويره شفاف" />
           </label>
 
+          <!-- Category dropdown from API -->
           <label class="add-material-modal-field">
             <span>تصنيف الخامة</span>
-            <select [value]="formValue().category" (change)="updateField('category', $any($event.target).value)">
-              <option value="" disabled>الصنف</option>
-              <option value="بلاستيك">بلاستيك</option>
-              <option value="معادن">معادن</option>
-              <option value="ورق وكرتون">ورق وكرتون</option>
-              <option value="زجاج">زجاج</option>
-              <option value="مطاط">مطاط</option>
-              <option value="نسيج">نسيج</option>
-              <option value="كيماويات">كيماويات</option>
-              <option value="أخرى">أخرى</option>
+            <select [value]="formValue().categoryId"
+              (change)="updateField('categoryId', $any($event.target).value)">
+              <option value="0" disabled>اختر التصنيف</option>
+              @for (cat of categories(); track cat.id) {
+                <option [value]="cat.id">{{ cat.name }}</option>
+              }
             </select>
           </label>
         </div>
@@ -55,8 +52,9 @@
 
           <label class="add-material-modal-field">
             <span>حالة الخامة</span>
-            <select [value]="formValue().condition" (change)="updateField('condition', $any($event.target).value)">
-              <option value="" disabled>مثال: نشط</option>
+            <select [value]="formValue().condition"
+              (change)="updateField('condition', $any($event.target).value)">
+              <option value="" disabled>مثال: ممتاز</option>
               <option value="excellent">ممتاز</option>
               <option value="good">جيد</option>
               <option value="fair">مقبول</option>
@@ -69,7 +67,7 @@
           <div class="textarea-wrapper">
             <textarea rows="4" [value]="formValue().description"
               (input)="updateField('description', $any($event.target).value)"
-              placeholder="مثال: حبيبات PET معاد تدويرها عالية الجودة، شفافة ونظيفة، مناسبة لصناعة العبوات البلاستيكية والتغليف."
+              placeholder="مثال: حبيبات PET معاد تدويرها عالية الجودة..."
               maxlength="500"></textarea>
             <span class="char-count">{{ formValue().description.length }}/500</span>
           </div>
@@ -84,8 +82,8 @@
             <span>الكمية المتاحة</span>
             <div class="form-row-3" style="gap: 8px;">
               <input type="number" min="0" [value]="formValue().availableQuantity"
-                (input)="updateField('availableQuantity', $any($event.target).value)" placeholder="مثال: 30"
-                style="grid-column: 1 / 3;" />
+                (input)="updateField('availableQuantity', $any($event.target).value)"
+                placeholder="مثال: 30" style="grid-column: 1 / 3;" />
               <div class="unit-badge">طن</div>
             </div>
           </label>
@@ -94,8 +92,8 @@
             <span>اقل كمية للبيع</span>
             <div class="form-row-3" style="gap: 8px;">
               <input type="number" min="0" [value]="formValue().minOrderQuantity"
-                (input)="updateField('minOrderQuantity', $any($event.target).value)" placeholder="مثال: 5"
-                style="grid-column: 1 / 3;" />
+                (input)="updateField('minOrderQuantity', $any($event.target).value)"
+                placeholder="مثال: 5" style="grid-column: 1 / 3;" />
               <div class="unit-badge">طن</div>
             </div>
           </label>
@@ -113,7 +111,6 @@
         </label>
       </section>
 
-
     </form>
 
     <aside class="add-material-modal-sidebar">
@@ -121,8 +118,8 @@
         <h3 class="sidebar-section-title">الصور والفيديو</h3>
 
         <p style="font-size: 0.8125rem; color: var(--text-soft); margin: 0 0 10px 0; text-align: right;">صور المادة</p>
-        <div class="upload-zone" role="button" tabindex="0" aria-label="رفع صور المادة" (click)="imageInput.click()"
-          (keydown.enter)="imageInput.click()">
+        <div class="upload-zone" role="button" tabindex="0" aria-label="رفع صور المادة"
+          (click)="imageInput.click()" (keydown.enter)="imageInput.click()">
           <input #imageInput type="file" accept="image/png,image/jpeg" multiple style="display:none"
             (change)="onImagesSelected($any($event.target).files)" />
           <span class="upload-zone-icon"><i class="lucide-image"></i></span>
@@ -130,10 +127,9 @@
           <span class="upload-zone-hint">PNG, JPG حتى 5MB</span>
         </div>
 
-        <p style="font-size: 0.8125rem; color: var(--text-soft); margin: 16px 0 10px 0; text-align: right;">فيديو المادة
-        </p>
-        <div class="upload-zone" role="button" tabindex="0" aria-label="رفع فيديو المادة" (click)="videoInput.click()"
-          (keydown.enter)="videoInput.click()">
+        <p style="font-size: 0.8125rem; color: var(--text-soft); margin: 16px 0 10px 0; text-align: right;">فيديو المادة</p>
+        <div class="upload-zone" role="button" tabindex="0" aria-label="رفع فيديو المادة"
+          (click)="videoInput.click()" (keydown.enter)="videoInput.click()">
           <input #videoInput type="file" accept="video/*" style="display:none"
             (change)="onVideoSelected($any($event.target).files)" />
           <span class="upload-zone-icon"><i class="lucide-video"></i></span>
@@ -141,10 +137,9 @@
           <span class="upload-zone-hint">MP4, MOV حتى 50MB</span>
         </div>
 
-        <p style="font-size: 0.8125rem; color: var(--text-soft); margin: 16px 0 10px 0; text-align: right;">رفع شهادة
-          التحليل</p>
-        <div class="upload-zone" role="button" tabindex="0" aria-label="رفع شهادة التحليل" (click)="docInput.click()"
-          (keydown.enter)="docInput.click()">
+        <p style="font-size: 0.8125rem; color: var(--text-soft); margin: 16px 0 10px 0; text-align: right;">رفع شهادة التحليل</p>
+        <div class="upload-zone" role="button" tabindex="0" aria-label="رفع شهادة التحليل"
+          (click)="docInput.click()" (keydown.enter)="docInput.click()">
           <input #docInput type="file" accept=".pdf,.doc,.docx,image/png,image/jpeg" style="display:none"
             (change)="onDocSelected($any($event.target).files)" />
           <span class="upload-zone-icon"><i class="lucide-file-text"></i></span>
@@ -152,14 +147,15 @@
           <span class="upload-zone-hint">PDF, PNG, JPG حتى 5MB</span>
         </div>
       </div>
-            <footer class="add-material-modal-footer" style="padding: 0; border: none; margin-block-start: 4px;">
-        <button type="submit" class="btn-fayed btn-blue" [disabled]="!isFormValid() || isSubmitting()">
-          {{ isEditMode() ? 'حفظ التعديلات' : 'اضافة المادة' }}
+
+      <footer class="add-material-modal-footer" style="padding: 0; border: none; margin-block-start: 4px;">
+        <button type="submit" class="btn-fayed btn-blue" [disabled]="isSubmitting() || !isFormValid()"
+          (click)="onSubmit()">
+          {{ isSubmitting() ? 'جاري الحفظ...' : 'حفظ' }}
         </button>
         <button type="button" class="btn-fayed btn-white" (click)="cancel.emit()">
           الغاء
         </button>
-
       </footer>
     </aside>
 

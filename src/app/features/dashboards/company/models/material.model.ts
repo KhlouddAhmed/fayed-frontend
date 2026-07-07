@@ -1,11 +1,8 @@
-// =============================================
-// API DTOs (.NET 8 — PascalCase as received from backend)
-// =============================================
-
 export interface MaterialDto {
   readonly Id: string;
   readonly Name: string;
   readonly Category: string;
+  readonly CategoryId: number;
   readonly Status: string;
   readonly Description: string;
   readonly AvailableQuantity: number;
@@ -21,16 +18,13 @@ export interface MaterialDto {
   readonly UpdatedAt: string;
 }
 
-// =============================================
-// UI Models (camelCase, normalized, display-ready)
-// =============================================
-
 export type MaterialStatus = 'active' | 'underReview' | 'paused' | 'rejected';
 
 export interface Material {
   readonly id: string;
   readonly name: string;
   readonly category: string;
+  readonly categoryId?: number;
   readonly status: MaterialStatus;
   readonly description: string;
   readonly availableQuantity: number;
@@ -53,13 +47,10 @@ export interface LabCertificate {
   readonly fileSizeKb: number;
 }
 
-// =============================================
-// Form model — used by AddMaterialModal for both create and edit
-// =============================================
-
 export interface MaterialFormValue {
   readonly name: string;
   readonly category: string;
+  readonly categoryId: number;
   readonly status: MaterialStatus;
   readonly description: string;
   readonly availableQuantity: number;

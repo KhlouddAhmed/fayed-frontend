@@ -9,19 +9,8 @@ const MATERIAL_STATUS_MAP: Readonly<Record<string, MaterialStatus>> = {
 
 const DEFAULT_MATERIAL_STATUS: MaterialStatus = 'active';
 
-function adaptMaterialStatus(rawStatus: string | undefined | null): MaterialStatus {
-  if (!rawStatus) {
-    return DEFAULT_MATERIAL_STATUS;
-  }
-
-  return MATERIAL_STATUS_MAP[rawStatus] ?? DEFAULT_MATERIAL_STATUS;
-}
-
 function adaptLabCertificate(dto: MaterialDto): LabCertificate | null {
-  if (!dto.LabCertificateUrl) {
-    return null;
-  }
-
+  if (!dto.LabCertificateUrl) return null;
   return {
     url: dto.LabCertificateUrl,
     fileName: dto.LabCertificateFileName ?? '',
@@ -34,7 +23,8 @@ export function adaptMaterial(dto: MaterialDto): Material {
     id: dto.Id,
     name: dto.Name,
     category: dto.Category,
-    status: adaptMaterialStatus(dto.Status),
+    categoryId: dto.CategoryId,
+    status: MATERIAL_STATUS_MAP[dto.Status] ?? DEFAULT_MATERIAL_STATUS,
     description: dto.Description ?? '',
     availableQuantity: dto.AvailableQuantity ?? 0,
     minOrderQuantity: dto.MinOrderQuantity ?? 0,

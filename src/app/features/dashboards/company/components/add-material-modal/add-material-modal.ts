@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, effect, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, OnInit, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Material, MaterialFormValue, MaterialStatus } from '../../models/material.model';
+import { CategoriesService, Category } from '../../services/categories.service';
 
 const EMPTY_FORM_VALUE: MaterialFormValue = {
   name: '',
   category: '',
+  categoryId: 0,
   materialType: '',
   condition: '',
   status: 'active',
@@ -20,6 +22,7 @@ function toFormValue(material: Material): MaterialFormValue {
   return {
     name: material.name,
     category: material.category,
+    categoryId: material.categoryId ?? 0,
     materialType: material.materialType ?? '',
     condition: material.condition ?? '',
     status: material.status,
@@ -39,7 +42,9 @@ function toFormValue(material: Material): MaterialFormValue {
   styleUrl: './add-material-modal.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddMaterialModal {
+export class AddMaterialModal implements OnInit {
+  private readonly categoriesService = inject(CategoriesService);
+
   readonly editingMaterial = input<Material | null>(null);
   readonly isSubmitting = input<boolean>(false);
 
@@ -47,14 +52,14 @@ export class AddMaterialModal {
   readonly submitForm = output<MaterialFormValue>();
 
   protected readonly formValue = signal<MaterialFormValue>(EMPTY_FORM_VALUE);
-
+  protected readonly categories = signal<Category[]>([]);
   protected readonly isEditMode = computed(() => this.editingMaterial() !== null);
 
   protected readonly isFormValid = computed(() => {
     const value = this.formValue();
     return (
       value.name.trim().length > 0 &&
-      value.category.trim().length > 0 &&
+      value.categoryId > 0 &&
       value.availableQuantity > 0 &&
       value.minOrderQuantity > 0 &&
       value.pricePerUnit > 0
@@ -68,50 +73,41 @@ export class AddMaterialModal {
     });
   }
 
-  protected updateField<K extends keyof MaterialFormValue>(
-    field: K,
-    rawValue: string,
-  ): void {
+  ngOnInit(): void {
+    this.categoriesService.getAll().subscribe({
+      next: cats => this.categories.set(cats as Category[]),
+    });
+  }
+
+  protected updateField<K extends keyof MaterialFormValue>(field: K, rawValue: string): void {
     const numericFields: readonly (keyof MaterialFormValue)[] = [
-  'availableQuantity',
-  'minOrderQuantity',
-  'pricePerUnit',
-  'maxPricePerUnit',
-];
-
+      'availableQuantity', 'minOrderQuantity', 'pricePerUnit', 'maxPricePerUnit', 'categoryId',
+    ];
     const parsedValue = numericFields.includes(field) ? Number(rawValue) : rawValue;
-
-    this.formValue.update((current) => ({
-      ...current,
-      [field]: parsedValue,
-    }));
+    this.formValue.update(current => ({ ...current, [field]: parsedValue }));
   }
 
   protected updateStatus(status: MaterialStatus): void {
-    this.formValue.update((current) => ({ ...current, status }));
+    this.formValue.update(current => ({ ...current, status }));
   }
 
   protected onSubmit(): void {
-    if (!this.isFormValid()) {
-      return;
-    }
-
+    if (!this.isFormValid()) return;
     this.submitForm.emit(this.formValue());
   }
 
   protected onImagesSelected(files: FileList | null): void {
-  if (!files) return;
-  const selected = Array.from(files);
-  this.formValue.update((current) => ({ ...current, imageFiles: selected }));
-}
+    if (!files) return;
+    this.formValue.update(current => ({ ...current, imageFiles: Array.from(files) }));
+  }
 
-protected onVideoSelected(files: FileList | null): void {
-  if (!files || files.length === 0) return;
-  this.formValue.update((current) => ({ ...current, videoFile: files[0] }));
-}
+  protected onVideoSelected(files: FileList | null): void {
+    if (!files || files.length === 0) return;
+    this.formValue.update(current => ({ ...current, videoFile: files[0] }));
+  }
 
-protected onDocSelected(files: FileList | null): void {
-  if (!files || files.length === 0) return;
-  this.formValue.update((current) => ({ ...current, labCertificateFile: files[0] }));
-}
+  protected onDocSelected(files: FileList | null): void {
+    if (!files || files.length === 0) return;
+    this.formValue.update(current => ({ ...current, labCertificateFile: files[0] }));
+  }
 }

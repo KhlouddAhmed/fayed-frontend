@@ -23,8 +23,9 @@ export interface NegotiationMessageDto {
 }
 
 export interface CreateDisputeRequestDto {
-  readonly OrderReference: string;
+  readonly OrderId: number;
   readonly Reason: string;
+  readonly Title: string;
   readonly Description: string;
 }
 
@@ -37,7 +38,8 @@ export type DisputeStatus = 'activeOpen' | 'underReview' | 'resolved';
 export type DisputeReason =
   | 'productNotAsDescribed'
   | 'lateDelivery'
-  | 'quantityShortfall';
+  | 'quantityShortfall'
+  | 'delay';
 
 export type NegotiationSenderType = 'system' | 'buyer' | 'seller';
 
@@ -62,7 +64,8 @@ export interface NegotiationMessage {
 }
 
 export interface CreateDisputeRequest {
-  readonly orderReference: string;
+  readonly orderId: number;
   readonly reason: DisputeReason;
+  readonly title: string;
   readonly description: string;
 }
