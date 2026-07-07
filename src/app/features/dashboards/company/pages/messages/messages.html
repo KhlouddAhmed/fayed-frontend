@@ -54,14 +54,19 @@
   </div>
   }
 
-  @if (activeModal() === 'contract_panel' && activeContract(); as contract) {
+ @if (activeModal() === 'contract_panel' && activeContract(); as contract) {
   <div class="messages-page-overlay messages-page-overlay--wide">
     <div (click)="$event.stopPropagation()">
-      <app-contract-panel [contract]="contract" [isSubmitting]="isContractSubmitting()" (close)="closeContractPanel()"
-        (acceptAmendment)="onAcceptAmendment($event)" (requestAmendment)="onRequestAmendment($event)"
-        (signContract)="onSignContract($event)" (proceedToPayment)="onProceedToPayment()">
-      </app-contract-panel>
+      
+      <app-contract-panel 
+        [contract]="contract" 
+        [isSubmitting]="isContractSubmitting()" 
+        (close)="closeContractPanel()"
+        (acceptAmendment)="onAcceptAmendment($event)" 
+        (requestAmendment)="onRequestAmendment($event)"
+        (signContract)="onSignContract($event)"
+        (proceedToPayment)="onProceedToPayment(contract.id)"  />
     </div>
   </div>
-  }
+}
 </div>

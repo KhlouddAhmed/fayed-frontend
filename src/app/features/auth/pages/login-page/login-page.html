@@ -95,8 +95,6 @@
                   [disabled]="isLoading()"
                   aria-label="كلمة المرور"
                 />
-
-                <!-- Eye Toggle — 4 حالات بناءً على focus + showPassword -->
                 <button
                   type="button"
                   class="toggle-password-btn"
@@ -111,21 +109,9 @@
               }
             </div>
 
-            <!-- Remember Me / Forgot Password Row -->
-            <div class="d-flex justify-content-between align-items-center mb-4 text-row">
-              <div class="d-flex align-items-center gap-2">
-                <input
-                  id="remember"
-                  type="checkbox"
-                  class="form-check-input remember-check"
-                  [checked]="rememberMe()"
-                  (change)="onRememberMeChange($event)"
-                  aria-label="تذكرني"
-                />
-                <label for="remember" class="remember-label">تذكرني</label>
-              </div>
-              <a href="/auth/forgot-password" class="forgot-link"
-                (click)="$event.preventDefault(); onForgotPassword()">
+            <!-- Forgot Password -->
+            <div class="d-flex justify-content-end mb-4">
+              <a routerLink="/auth/forgot-password" class="forgot-link">
                 نسيت كلمة المرور؟
               </a>
             </div>

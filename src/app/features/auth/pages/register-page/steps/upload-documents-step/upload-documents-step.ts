@@ -1,14 +1,14 @@
 import { Component, computed, inject, output, signal } from '@angular/core';
-
+import { RouterLink } from '@angular/router';
 import { FileUploadCard } from '../../../../components/file-upload-card/file-upload-card';
 import { RegistrationService } from '../../../../services/registration';
-import { ExtractedCompanyData, VerificationStatus } from '../../../../models/registration.models';
-import { RouterLink } from '@angular/router';
+import { DocumentStepResult, ExtractedCompanyData, VerificationStatus } from '../../../../models/registration.models';
+import { parseExtractedCompanyData } from '../../../../adapters/registration.adapter';
 
 export interface DocumentVerificationState {
-  status: VerificationStatus;
-  extractedData: ExtractedCompanyData | null;
-  rejectionReasons: readonly string[];
+  readonly status: VerificationStatus;
+  readonly extractedData: ExtractedCompanyData | null;
+  readonly rejectionReasons: readonly string[];
 }
 
 @Component({
@@ -18,19 +18,20 @@ export interface DocumentVerificationState {
   styleUrl: './upload-documents-step.css',
 })
 export class UploadDocumentsStep {
-  private registrationService = inject(RegistrationService);
+  private readonly registrationService = inject(RegistrationService);
 
-  readonly documentsUploaded = output<ExtractedCompanyData>();
+  readonly documentsUploaded = output<DocumentStepResult>();
   readonly verificationStateChanged = output<DocumentVerificationState>();
 
-  commercialRegistryFile = signal<File | null>(null);
-  taxCardFile = signal<File | null>(null);
+  protected readonly commercialRegistryFile = signal<File | null>(null);
+  protected readonly taxCardFile = signal<File | null>(null);
+  protected readonly verificationStatus = signal<VerificationStatus>('idle');
+  protected readonly extractedData = signal<ExtractedCompanyData | null>(null);
+  protected readonly rejectionReasons = signal<readonly string[]>([]);
 
-  isNextEnabled = computed(() => this.commercialRegistryFile() !== null && this.taxCardFile() !== null);
-
-  verificationStatus = signal<VerificationStatus>('idle');
-  extractedData = signal<ExtractedCompanyData | null>(null);
-  rejectionReasons = signal<readonly string[]>([]);
+  protected readonly isNextEnabled = computed(
+    () => this.commercialRegistryFile() !== null && this.taxCardFile() !== null
+  );
 
   onCommercialRegistryAccepted(file: File): void {
     this.commercialRegistryFile.set(file);
@@ -56,28 +57,40 @@ export class UploadDocumentsStep {
     this.verificationStatus.set('pending');
     this.emitState();
 
-    this.registrationService.startDocumentVerification(registry, taxCard).subscribe((startedCase) => {
-      this.registrationService.verifyDocumentsUntilSettled(startedCase.caseId).subscribe((settledCase) => {
-        this.verificationStatus.set(settledCase.status);
-        this.extractedData.set(settledCase.extractedData ?? null);
-        this.rejectionReasons.set(settledCase.rejectionReasons ?? []);
+    this.registrationService.extractDocuments(registry, taxCard).subscribe({
+      next: kybResult => {
+        const companyData = parseExtractedCompanyData(kybResult.extractedFields);
+        const hasValidityIssues = kybResult.validityIssues.length > 0;
+        const status: VerificationStatus =
+          kybResult.recommendation === 'Reject' || hasValidityIssues ? 'failed' : 'success';
+
+        this.extractedData.set(companyData);
+        this.rejectionReasons.set(kybResult.validityIssues);
+        this.verificationStatus.set(status);
         this.emitState();
-      });
+
+        if (status === 'success') {
+          this.documentsUploaded.emit({
+            commercialRegistryFile: registry,
+            taxCardFile: taxCard,
+            kybResult,
+            extractedCompanyData: companyData,
+          });
+        }
+      },
+      error: () => {
+        this.verificationStatus.set('failed');
+        this.rejectionReasons.set(['تعذر التحقق من المستندات. يرجى المحاولة مرة أخرى.']);
+        this.emitState();
+      },
     });
   }
 
-  onConfirmCorrect(): void {
-    const data = this.extractedData();
-    if (data) {
-      this.documentsUploaded.emit(data);
-    }
-  }
-
-  onReportIncorrect(): void {
+  onRetry(): void {
     this.resetStep();
   }
 
-  onRetry(): void {
+  onReportIncorrect(): void {
     this.resetStep();
   }
 

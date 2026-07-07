@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-listing-card',
-  imports: [NgOptimizedImage, DecimalPipe],
+  imports: [DecimalPipe],
   templateUrl: './listing-card.html',
   styleUrl: './listing-card.css',
 })

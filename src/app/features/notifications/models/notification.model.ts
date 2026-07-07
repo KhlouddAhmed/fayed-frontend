@@ -1,18 +1,15 @@
-// =============================================
-// DTO — الشكل اللي بيجي من الباك اند
-// =============================================
+// DTO — matches backend exactly
 export interface NotificationDto {
-  Id: string;
+  Id: number;
   Title: string;
-  Body: string;
-  CreatedAt: string;        // ISO date string
+  Message: string;       // backend uses Message not Body
+  Type: string;
+  RelatedLink: string | null;
   IsRead: boolean;
-  Type: 'order' | 'offer' | 'shipping' | 'payment' | 'system' | 'contract';
+  CreatedAt: string;
 }
 
-// =============================================
-// UI Model — اللي بنستخدمه جوه التطبيق
-// =============================================
+// UI Model
 export type NotificationType = 'order' | 'offer' | 'shipping' | 'payment' | 'system' | 'contract';
 export type NotificationFilter = 'all' | 'unread' | 'orders' | 'offers' | 'payments' | 'system';
 
@@ -23,4 +20,5 @@ export interface Notification {
   readonly timeAgo: string;
   readonly isUnread: boolean;
   readonly type: NotificationType;
+  readonly relatedLink: string | null;
 }

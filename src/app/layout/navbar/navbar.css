@@ -18,7 +18,7 @@
 }
 
 /* =============================================
-   NAV LINKS 
+   NAV LINKS
    ============================================= */
 .nav-link {
   color: var(--text-muted);
@@ -35,8 +35,13 @@
   color: var(--primary);
 }
 
+.nav-link--active {
+  color: var(--primary);
+  font-weight: 600;
+}
+
 /* =============================================
-   NAVBAR BUTTONS
+   NAVBAR BUTTONS (Guest)
    ============================================= */
 .navbar-btn-login {
   color: var(--text-main);
@@ -76,7 +81,7 @@
 }
 
 /* =============================================
-   MOBILE MENU DROPDOWN 
+   MOBILE MENU DROPDOWN
    ============================================= */
 .navbar-mobile-menu {
   position: absolute;
@@ -101,15 +106,137 @@
   color: var(--primary);
 }
 
-
 @keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* =============================================
+   USER MENU
+   ============================================= */
+.fayed-user-menu {
+  position: relative;
+}
+
+.fayed-user-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.fayed-user-trigger:hover {
+  background-color: var(--bg-soft);
+}
+
+/* =============================================
+   AVATAR
+   ============================================= */
+.fayed-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fayed-avatar-initial {
+  color: var(--white);
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: "Cairo", sans-serif;
+}
+
+/* =============================================
+   USER INFO
+   ============================================= */
+.fayed-user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+
+.fayed-user-name {
+  font-family: "Cairo", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--navy);
+  white-space: nowrap;
+}
+
+.fayed-user-code {
+  font-family: "Cairo", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--primary);
+  white-space: nowrap;
+}
+
+/* =============================================
+   DROPDOWN MENU
+   ============================================= */
+.fayed-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 180px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-window);
+  overflow: hidden;
+  z-index: 1001;
+  animation: dropdownIn 0.15s ease;
+  padding: 6px;
+}
+
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fayed-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-family: "Cairo", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-soft);
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: right;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.fayed-dropdown-item:hover {
+  background-color: var(--bg-soft);
+  color: var(--primary);
+}
+
+.fayed-dropdown-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
+.fayed-dropdown-logout {
+  color: #ef4444;
+}
+
+.fayed-dropdown-logout:hover {
+  background-color: #fef2f2;
+  color: #dc2626;
 }

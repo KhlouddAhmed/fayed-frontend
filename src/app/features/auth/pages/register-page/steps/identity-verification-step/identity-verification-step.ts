@@ -1,28 +1,22 @@
-import { Component, computed, inject, output, signal } from '@angular/core';
-
+import { Component, computed, output, signal } from '@angular/core';
 import { FileUploadCard } from '../../../../components/file-upload-card/file-upload-card';
-import { VerificationOverlay } from '../../../../components/verification-overlay/verification-overlay';
-import { RegistrationService } from '../../../../services/registration';
-import { VerificationStatus } from '../../../../models/registration.models';
+import { IdentityStepResult } from '../../../../models/registration.models';
 
 @Component({
   selector: 'app-identity-verification-step',
-  imports: [FileUploadCard, VerificationOverlay],
+  imports: [FileUploadCard],
   templateUrl: './identity-verification-step.html',
   styleUrl: './identity-verification-step.css',
 })
 export class IdentityVerificationStep {
-  private registrationService = inject(RegistrationService);
+  readonly identityConfirmed = output<IdentityStepResult>();
 
-  readonly identityConfirmed = output<void>();
+  protected readonly selfieFile = signal<File | null>(null);
+  protected readonly idCardFile = signal<File | null>(null);
 
-  selfieFile = signal<File | null>(null);
-  idCardFile = signal<File | null>(null);
-
-  isNextEnabled = computed(() => this.selfieFile() !== null && this.idCardFile() !== null);
-
-  verificationStatus = signal<VerificationStatus>('idle');
-  rejectionMessage = signal<string>('');
+  protected readonly isNextEnabled = computed(
+    () => this.selfieFile() !== null && this.idCardFile() !== null
+  );
 
   onSelfieAccepted(file: File): void {
     this.selfieFile.set(file);
@@ -45,24 +39,9 @@ export class IdentityVerificationStep {
     const idCard = this.idCardFile();
     if (!selfie || !idCard) return;
 
-    this.verificationStatus.set('pending');
-
-    this.registrationService.startIdentityVerification(selfie, idCard).subscribe((startedCase) => {
-      this.registrationService.verifyIdentityUntilSettled(startedCase.caseId).subscribe((settledCase) => {
-        this.verificationStatus.set(settledCase.status);
-        this.rejectionMessage.set(settledCase.rejectionMessage ?? '');
-      });
+    this.identityConfirmed.emit({
+      nationalIdFile: idCard,
+      selfieWithIdFile: selfie,
     });
-  }
-
-  onConfirmContinue(): void {
-    this.identityConfirmed.emit();
-  }
-
-  onRetry(): void {
-    this.verificationStatus.set('idle');
-    this.rejectionMessage.set('');
-    this.selfieFile.set(null);
-    this.idCardFile.set(null);
   }
 }

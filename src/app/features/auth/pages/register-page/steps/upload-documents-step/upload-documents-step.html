@@ -4,10 +4,10 @@
   <p class="form-subtitle">نحتاج الي السجل التجاري والبطاقه الضريبية للتحقق من الشركة</p>
 
   <div class="upload-cards-grid">
-    <app-file-upload-card label="البطاقة الضريبية" [acceptedExtensions]="['pdf', 'jpg', 'png']" [maxSizeMb]="10"
+    <app-file-upload-card label="البطاقة الضريبية" [acceptedExtensions]="['pdf', 'jpg', 'png','jpeg']" [maxSizeMb]="10"
       iconType="document" (fileAccepted)="onTaxCardAccepted($event)" (fileRemoved)="onTaxCardRemoved()" />
 
-    <app-file-upload-card label="السجل التجاري" [acceptedExtensions]="['pdf', 'jpg', 'png']" [maxSizeMb]="10"
+    <app-file-upload-card label="السجل التجاري" [acceptedExtensions]="['pdf', 'jpg', 'png','jpeg']" [maxSizeMb]="10"
       iconType="document" (fileAccepted)="onCommercialRegistryAccepted($event)"
       (fileRemoved)="onCommercialRegistryRemoved()" />
   </div>

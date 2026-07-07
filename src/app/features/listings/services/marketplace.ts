@@ -1,136 +1,94 @@
-import { Injectable } from '@angular/core';
-import { Observable, delay, of } from 'rxjs';
-import { Listing } from '../models/listing.model';
-import { PaginatedResponse } from '../../../core/models/pagination.model';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { ApiResponseWithData, PagedResult } from '../../../core/models/api-response.model';
+import { Listing, ListingDto, ListingDetailsDto, ListingSearchParams } from '../models/listing.model';
+import { adaptListings, adaptListingDetails } from '../adapters/listing.adapter';
 
-const MOCK_TOTAL_COUNT = 127;
+export interface SubmitOfferRequest {
+  readonly ListingId: number;
+  readonly OfferedQuantity: number;
+  readonly OfferedPricePerUnit: number;
+  readonly Notes: string;
+}
 
-@Injectable({
-  providedIn: 'root'
-})
+export interface CreateChatResponse {
+  readonly Id: number;
+}
+
+@Injectable({ providedIn: 'root' })
 export class MarketplaceService {
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = `${environment.apiUrl}/listings`;
+  private readonly offersUrl = `${environment.apiUrl}/purchaseoffers`;
+  private readonly chatsUrl = `${environment.apiUrl}/chats`;
 
-  private readonly mockListings: Listing[] = [
-    {
-      id: '1',
-      title: 'بولي إيثيلين منخفض الكثافة LDPE',
-      category: 'بلاستيك',
-      thumbnailUrl: '/assets/images/market/plastic-ldpe-pellets.jpg',
-      price: 16800,
-      quantity: 5,
-      unit: 'طن',
-      location: 'القاهرة',
-      governorate: 'القاهرة',
-      postedAgo: 'نشر منذ يوم',
-      materialTag: 'بلاستيك'
-    },
-    {
-      id: '2',
-      title: 'حديد تسليح',
-      category: 'معادن',
-      thumbnailUrl: '/assets/images/market/metal-rebar-steel.jpg',
-      price: 21500,
-      quantity: 30,
-      unit: 'طن',
-      location: 'الإسكندرية',
-      governorate: 'الإسكندرية',
-      postedAgo: 'نشر منذ 3 أيام',
-      materialTag: 'معادن'
-    },
-    {
-      id: '3',
-      title: 'خيوط بوليستر معاد تدويرها',
-      category: 'ألياف ونسيج',
-      thumbnailUrl: '/assets/images/market/textile-polyester-thread.jpg',
-      price: 9200,
-      quantity: 3,
-      unit: 'طن',
-      location: 'الغربية',
-      governorate: 'الغربية',
-      postedAgo: 'نشر منذ 3 أيام',
-      materialTag: 'ألياف ونسيج'
-    },
-    {
-      id: '4',
-      title: 'أسمنت بورتلاندي فائض',
-      category: 'مواد بناء',
-      thumbnailUrl: '/assets/images/market/building-cement-portland.jpg',
-      price: 2800,
-      quantity: 50,
-      unit: 'طن',
-      location: 'دمياط',
-      governorate: 'دمياط',
-      postedAgo: 'نشر منذ يوم',
-      materialTag: 'مواد بناء'
-    },
-    {
-      id: '5',
-      title: 'كرتون مضغوط OCC',
-      category: 'ورق وكرتون',
-      thumbnailUrl: '/assets/images/market/paper-occ-recycled-carton.jpg',
-      price: 4500,
-      quantity: 15,
-      unit: 'طن',
-      location: 'العاصمة الإدارية',
-      governorate: 'العاصمة الإدارية',
-      postedAgo: 'نشر منذ 4 أيام',
-      materialTag: 'ورق وكرتون'
-    },
-    {
-      id: '6',
-      title: 'خام PVC',
-      category: 'بلاستيك',
-      thumbnailUrl: '/assets/images/market/plastic-pvc-raw-material.jpg',
-      price: 12500,
-      quantity: 5,
-      unit: 'طن',
-      location: 'المنوفية',
-      governorate: 'المنوفية',
-      postedAgo: 'نشر منذ يومين',
-      materialTag: 'بلاستيك'
-    },
-  ];
+  getListings(
+    page: number = 1,
+    pageSize: number = 12,
+    filters: Partial<ListingSearchParams> = {}
+  ): Observable<any> {
+    let params = new HttpParams()
+      .set('Page', page.toString())
+      .set('PageSize', pageSize.toString());
 
-  // تم تحديث الدالة لاستقبال الـ sort
-  getListings(page: number, pageSize: number, sort: string = 'newest'): Observable<PaginatedResponse<Listing>> {
-
-    // إنشاء نسخة من البيانات للترتيب
-    let dataToDisplay = [...this.mockListings];
-
-    // تطبيق منطق الترتيب
-    if (sort === 'price_asc') {
-      dataToDisplay.sort((a, b) => a.price - b.price);
-    } else if (sort === 'price_desc') {
-      dataToDisplay.sort((a, b) => b.price - a.price);
+    if (filters.searchTerm) params = params.set('SearchTerm', filters.searchTerm);
+    if (filters.categoryId) params = params.set('CategoryId', filters.categoryId!.toString());
+    if (filters.location) params = params.set('Location', filters.location);
+    if (filters.materialType) params = params.set('MaterialType', filters.materialType);
+    if (filters.minQuantity != null) params = params.set('MinQuantity', filters.minQuantity.toString());
+    if (filters.maxQuantity != null) params = params.set('MaxQuantity', filters.maxQuantity.toString());
+    if (filters.minPrice != null) params = params.set('MinPrice', filters.minPrice.toString());
+    if (filters.maxPrice != null) params = params.set('MaxPrice', filters.maxPrice.toString());
+    if (filters.sortBy) {
+      const direction = filters.sortBy === 'price_asc' ? 'asc' : 'desc';
+      params = params.set('SortDirection', direction);
     }
-    // يمكنك إضافة منطق إضافي لـ 'newest' أو 'oldest' هنا
 
-    const items = this.buildPageItems(page, pageSize, dataToDisplay);
-
-    const response: PaginatedResponse<Listing> = {
-      items,
-      totalCount: MOCK_TOTAL_COUNT,
-      page,
-      pageSize
-    };
-
-    return of(response).pipe(delay(600));
+    return this.http
+      .get<ApiResponseWithData<PagedResult<ListingDto>>>(this.apiUrl, { params })
+      .pipe(
+        map(res => ({
+          items: adaptListings([...(res.Data?.Items ?? [])]),
+          totalCount: res.Data?.TotalCount ?? 0,
+          page: res.Data?.Page ?? page,
+          pageSize: res.Data?.PageSize ?? pageSize,
+        }))
+      );
   }
 
-  // تم تحديث الدالة لاستقبال البيانات المرتبة
-  private buildPageItems(page: number, pageSize: number, data: Listing[]): Listing[] {
-    const startIndex = (page - 1) * pageSize;
-    const items: Listing[] = [];
+  getListingById(id: string): Observable<any> {
+    return this.http
+      .get<ApiResponseWithData<ListingDetailsDto>>(`${this.apiUrl}/${id}`)
+      .pipe(map(res => adaptListingDetails(res.Data!)));
+  }
 
-    for (let i = 0; i < pageSize; i++) {
-      const sourceIndex = (startIndex + i) % data.length;
-      const baseItem = data[sourceIndex];
-      items.push({
-        ...baseItem,
-        id: `${baseItem.id}-p${page}i${i}`
-      });
-    }
+  smartSearch(query: string, page: number = 1, pageSize: number = 12): Observable<any> {
+    let params = new HttpParams()
+      .set('Page', page.toString())
+      .set('PageSize', pageSize.toString())
+      .set('query', query);
 
-    return items;
+    return this.http
+      .get<ApiResponseWithData<PagedResult<ListingDto>>>(`${this.apiUrl}/smart-search`, { params })
+      .pipe(
+        map(res => ({
+          items: adaptListings([...(res.Data?.Items ?? [])]),
+          totalCount: res.Data?.TotalCount ?? 0,
+        }))
+      );
+  }
+
+  submitOffer(payload: SubmitOfferRequest): Observable<void> {
+    return this.http
+      .post<ApiResponseWithData<unknown>>(`${this.offersUrl}/create`, payload)
+      .pipe(map(() => void 0));
+  }
+
+  createOrGetChat(listingId: number): Observable<number> {
+    return this.http
+      .post<ApiResponseWithData<CreateChatResponse>>(this.chatsUrl, { ListingId: listingId })
+      .pipe(map(res => res.Data!.Id));
   }
 }

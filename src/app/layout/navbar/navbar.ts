@@ -1,47 +1,75 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, inject, signal, computed, HostListener } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgOptimizedImage } from '@angular/common';
+import { AuthStateService } from '../../core/services/auth-state.service';
+import { AuthService } from '../../features/auth/services/auth';
+import { ROUTES } from '../../core/constants/routes';
+import { NotificationBell } from '../../features/notifications/components/notification-bell/notification-bell';
 
-// Defines the structure for navigation items
 interface NavLink {
   readonly label: string;
   readonly route: string;
-  readonly fragment?: string; // Optional anchor link for page sections
+  readonly fragment?: string;
 }
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, RouterLinkActive, NgOptimizedImage],
+  imports: [RouterLink, RouterLinkActive, NgOptimizedImage, NotificationBell],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
-
 export class NavbarComponent {
-  // Input properties for authentication and loading states
-  isLoggedIn = input<boolean>(false);
-  isLoading = input<boolean>(false);
+  private readonly authState = inject(AuthStateService);
+  private readonly authService = inject(AuthService);
 
-  // Emits events to the parent component
-  readonly registerClicked = output<void>();
+  protected readonly routes = ROUTES;
+  protected readonly menuOpen = signal(false);
+  protected readonly dropdownOpen = signal(false);
 
-  // Tracks mobile menu visibility
-  readonly menuOpen = signal(false);
+  protected readonly isLoggedIn = computed(() => this.authState.isLoggedIn());
+  protected readonly userName = computed(() => this.authState.currentUser()?.name ?? '');
+  protected readonly userInitial = computed(() =>
+    this.authState.currentUser()?.name?.charAt(0)?.toUpperCase() ?? 'م'
+  );
+  protected readonly factoryId = computed(() => {
+    const id = this.authState.currentUser()?.factoryId;
+    return id ? `FYD-${id}` : '';
+  });
 
-  // Configuration for navigation items
-  readonly navLinks: readonly NavLink[] = [
+  protected readonly navLinks: readonly NavLink[] = [
     { label: 'الصفحة الرئيسية', route: '/' },
     { label: 'عن فايض', route: '/', fragment: 'how-it-works' },
     { label: 'سوق فايض', route: '/marketplace' },
     { label: 'الاسئلة الشائعة', route: '/', fragment: 'faq-section' },
-  ] as const;
+  ];
 
-  // Toggles mobile menu state
   toggleMenu(): void {
     this.menuOpen.update(v => !v);
   }
 
-  // Closes mobile menu
   closeMenu(): void {
     this.menuOpen.set(false);
+  }
+
+  toggleDropdown(): void {
+    this.dropdownOpen.update(v => !v);
+  }
+
+  closeDropdown(): void {
+    this.dropdownOpen.set(false);
+  }
+
+  logout(): void {
+    this.closeDropdown();
+    this.closeMenu();
+    this.authService.logout();
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.fayed-user-menu')) {
+      this.dropdownOpen.set(false);
+    }
   }
 }

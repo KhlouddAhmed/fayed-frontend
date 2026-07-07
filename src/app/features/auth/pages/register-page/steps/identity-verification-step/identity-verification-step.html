@@ -1,47 +1,35 @@
 <div class="identity-verification-step">
+  <h2 class="form-title">تأكيد هوية المالك</h2>
+  <p class="form-subtitle">نحتاج إلى صور من بطاقة الهوية وصورة لك مع البطاقة للتحقق من هويتك</p>
 
-  @if (verificationStatus() === 'idle') {
+  <div class="upload-cards-grid">
+    <app-file-upload-card
+      label="صورة لك وأنت تحمل البطاقة"
+      [acceptedExtensions]="['jpg', 'png']"
+      [maxSizeMb]="10"
+      iconType="upload"
+      (fileAccepted)="onSelfieAccepted($event)"
+      (fileRemoved)="onSelfieRemoved()"
+    />
 
-    <h2 class="form-title">تأكيد هوية المالك</h2>
-    <p class="form-subtitle">نحتاج إلى صور من بطاقة الهوية وصورة لك مع البطاقة للتحقق من هويتك</p>
+    <app-file-upload-card
+      label="صورة بطاقة الهوية"
+      [acceptedExtensions]="['jpg', 'png']"
+      [maxSizeMb]="10"
+      iconType="upload"
+      (fileAccepted)="onIdCardAccepted($event)"
+      (fileRemoved)="onIdCardRemoved()"
+    />
+  </div>
 
-    <div class="upload-cards-grid">
-      <app-file-upload-card
-        label="صورة لك وأنت تحمل البطاقة"
-        [acceptedExtensions]="['jpg', 'png']"
-        [maxSizeMb]="10"
-        iconType="upload"
-        (fileAccepted)="onSelfieAccepted($event)"
-        (fileRemoved)="onSelfieRemoved()" />
+  <p class="upload-disclaimer">تأكد أن جميع البيانات ظاهرة وبوضوح للقراءة</p>
 
-      <app-file-upload-card
-        label="صورة بطاقة الهوية"
-        [acceptedExtensions]="['jpg', 'png']"
-        [maxSizeMb]="10"
-        iconType="upload"
-        (fileAccepted)="onIdCardAccepted($event)"
-        (fileRemoved)="onIdCardRemoved()" />
-    </div>
-
-    <p class="upload-disclaimer">تأكد أن جميع البيانات ظاهرة وبوضوح للقراءة</p>
-
-    <button type="button" class="w-100 btn-primary" [disabled]="!isNextEnabled()" (click)="onNext()">
-      التالي
-    </button>
-
-  } @else {
-
-    <app-verification-overlay
-      [status]="verificationStatus() === 'pending' ? 'pending' : verificationStatus() === 'success' ? 'success' : 'failed'"
-      pendingTitle="جار التحقق من مطابقة الهوية"
-      pendingSubtitle="نقوم الان بالتحقق من الصور وبيانات المالك"
-      successTitle="تم التحقق بنجاح"
-      successSubtitle="البيانات مطابقة للسجل التجاري يمكنك الان المتابعة لانشاء حسابك"
-      failedTitle="تم رفض المستند"
-      [failedSubtitle]="rejectionMessage() || 'الصورة غير واضحة يرجي المحاولة مرة اخري'"
-      (confirmCorrect)="onConfirmContinue()"
-      (retry)="onRetry()" />
-
-  }
-
+  <button
+    type="button"
+    class="w-100 btn-primary"
+    [disabled]="!isNextEnabled()"
+    (click)="onNext()"
+  >
+    التالي
+  </button>
 </div>
