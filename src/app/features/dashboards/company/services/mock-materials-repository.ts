@@ -128,7 +128,22 @@ export class MockMaterialsRepository implements MaterialsRepository {
       setTimeout(() => resolve([...this.materials]), MOCK_NETWORK_DELAY_MS);
     });
   }
-
+// داخل كلاس MockMaterialsRepository
+async publish(id: string): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // قم بتحديث حالة المنتج في الـ mock array إذا أردت محاكاة النشر
+      const index = this.materials.findIndex((m) => m.Id === id);
+      if (index !== -1) {
+        this.materials[index] = {
+          ...this.materials[index],
+          Status: 'Active' // تحديث الحالة إلى 'Active' عند النشر
+        };
+      }
+      resolve();
+    }, 500); // محاكاة تأخير الشبكة
+  });
+}
   create(value: MaterialFormValue): Promise<MaterialDto> {
     const now = new Date().toISOString();
     const created: MaterialDto = {

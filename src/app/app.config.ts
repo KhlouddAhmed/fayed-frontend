@@ -25,6 +25,7 @@ import { DISPUTE_REPOSITORY } from './features/dashboards/company/services/dispu
 import { MockDisputeRepository } from './features/dashboards/company/services/mock-dispute-repository';
 import { MESSAGES_REPOSITORY } from './features/dashboards/company/services/messages-repository.token';
 import { MockMessagesRepository } from './features/dashboards/company/services/mock-messages-repository';
+import { RealMaterialsRepository } from './features/dashboards/company/services/real-materials-repository';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -52,5 +53,7 @@ export const appConfig: ApplicationConfig = {
     { provide: ORDERS_REPOSITORY,    useClass: MockOrdersRepository    },
     { provide: DISPUTE_REPOSITORY,   useClass: MockDisputeRepository   },
     { provide: MESSAGES_REPOSITORY,  useClass: MockMessagesRepository  },
+
+    { provide: MATERIALS_REPOSITORY, useClass: RealMaterialsRepository }
   ],
 };

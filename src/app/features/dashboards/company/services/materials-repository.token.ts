@@ -6,6 +6,7 @@ export interface MaterialsRepository {
   create(value: MaterialFormValue): Promise<MaterialDto>;
   update(id: string, value: MaterialFormValue): Promise<MaterialDto>;
   delete(id: string): Promise<void>;
+  publish(id: string): Promise<void>;
 }
 
 export const MATERIALS_REPOSITORY = new InjectionToken<MaterialsRepository>(

@@ -27,7 +27,6 @@ export class MyListings {
   });
 
   protected readonly currentDate = new Date();
-
   protected readonly activeModal = signal<ActiveModal>(null);
   protected readonly selectedMaterial = signal<Material | null>(null);
   protected readonly isSubmitting = signal(false);
@@ -59,25 +58,36 @@ export class MyListings {
     this.materialsResource.reload();
   }
 
-  protected async onSubmitForm(value: MaterialFormValue): Promise<void> {
-  this.isSubmitting.set(true);
-
-  try {
-    const editing = this.selectedMaterial();
-    if (editing) {
-      await this.repository.update(editing.id, value);
-    } else {
-      await this.repository.create(value);
+  // دالة النشر المربوطة بالـ API
+  protected async onPublishMaterial(materialId: string): Promise<void> {
+    this.isSubmitting.set(true);
+    try {
+      // نفترض وجود دالة publish في الـ repository الخاص بك
+      await this.repository.publish(materialId); 
+      this.activeModal.set(null);
+      this.materialsResource.reload();
+    } finally {
+      this.isSubmitting.set(false);
     }
-    this.activeModal.set(null);
-    this.materialsResource.reload();
-  } finally {
-    this.isSubmitting.set(false);
   }
-}
 
+  protected async onSubmitForm(value: MaterialFormValue): Promise<void> {
+    this.isSubmitting.set(true);
+    try {
+      const editing = this.selectedMaterial();
+      if (editing) {
+        await this.repository.update(editing.id, value);
+      } else {
+        await this.repository.create(value);
+      }
+      this.activeModal.set(null);
+      this.materialsResource.reload();
+    } finally {
+      this.isSubmitting.set(false);
+    }
+  }
 
-protected closeModal(): void {
+  protected closeModal(): void {
     this.activeModal.set(null);
   }
 }

@@ -28,6 +28,7 @@ export class MaterialDetailModal {
   readonly close = output<void>();
   readonly edit = output<string>();
   readonly delete = output<string>();
+  readonly publish = output<string>(); 
 
   protected readonly statusMap = MATERIAL_STATUS_DISPLAY_MAP;
   protected readonly selectedImageIndex = signal(0);
@@ -42,5 +43,10 @@ export class MaterialDetailModal {
 
   protected onDeleteClick(): void {
     this.delete.emit(this.material().id);
+  }
+
+
+  protected onPublishClick(): void {
+    this.publish.emit(this.material().id);
   }
 }
