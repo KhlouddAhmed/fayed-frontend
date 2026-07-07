@@ -55,13 +55,41 @@
           @if (dropdownOpen()) {
             <div class="fayed-dropdown" role="menu">
               <a
-                [routerLink]="['/', routes.DASHBOARD.OVERVIEW]"
+                [routerLink]="dashboardLink()"
                 class="fayed-dropdown-item"
                 role="menuitem"
                 (click)="closeDropdown()"
               >
                 لوحة التحكم
               </a>
+
+              @if (authState.currentUser()?.role === 'Factory') {
+                <a
+                  routerLink="/dashboard/my-listings"
+                  class="fayed-dropdown-item"
+                  role="menuitem"
+                  (click)="closeDropdown()"
+                >
+                  إعلاناتي
+                </a>
+                <a
+                  routerLink="/dashboard/orders"
+                  class="fayed-dropdown-item"
+                  role="menuitem"
+                  (click)="closeDropdown()"
+                >
+                  طلباتي
+                </a>
+                <a
+                  routerLink="/dashboard/profile"
+                  class="fayed-dropdown-item"
+                  role="menuitem"
+                  (click)="closeDropdown()"
+                >
+                  الملف الشخصي
+                </a>
+              }
+
               <a
                 href="mailto:support@fayed.com"
                 class="fayed-dropdown-item"
@@ -138,7 +166,7 @@
       <div class="d-flex flex-column gap-2 mt-3">
         @if (isLoggedIn()) {
           <a
-            [routerLink]="['/', routes.DASHBOARD.OVERVIEW]"
+            [routerLink]="dashboardLink()"
             class="btn navbar-btn-login w-100"
             (click)="closeMenu()"
           >
@@ -159,4 +187,4 @@
     </div>
   }
 
-</nav>
+</nav>غ

@@ -15,20 +15,17 @@ export class AuthService {
   private readonly authState = inject(AuthStateService);
   private readonly router = inject(Router);
 
-  login(request: LoginRequest): Observable<AuthUser | null> {
+ login(request: LoginRequest): Observable<AuthUser | null> {
     const body: LoginRequestDto = {
       Email: request.email,
       Password: request.password,
     };
 
     return this.http
-      .post<ApiResponseWithData<LoginResponseDto>>(
-        `${environment.apiUrl}/auth/login`,
-        body
-      )
+      .post<any>(`${environment.apiUrl}/auth/login`, body)
       .pipe(
         tap(response => {
-          const token = response.Data?.Token;
+          const token = response.data?.token; 
           const user = adaptLoginResponse(response);
           if (token && user) {
             this.authState.setSession(token, user);
