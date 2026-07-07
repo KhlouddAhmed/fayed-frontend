@@ -16,14 +16,27 @@ export function adaptKybExtractionResult(dto: KybExtractionResultDto): KybExtrac
   };
 }
 
+// export function parseExtractedCompanyData(extractedFields: string): ExtractedCompanyData {
+//   try {
+//     const parsed = JSON.parse(extractedFields) as Record<string, string>;
+//     return {
+//       companyName: parsed['CompanyName'] ?? parsed['company_name'] ?? '',
+//       ownerName: parsed['OwnerName'] ?? parsed['owner_name'] ?? '',
+//       registryNumber: parsed['CommercialRegistryNo'] ?? parsed['registry_number'] ?? '',
+//       taxNumber: parsed['TaxCardNo'] ?? parsed['tax_number'] ?? '',
+//     };
+//   } catch {
+//     return {};
+//   }
+// }
 export function parseExtractedCompanyData(extractedFields: string): ExtractedCompanyData {
   try {
     const parsed = JSON.parse(extractedFields) as Record<string, string>;
     return {
-      companyName: parsed['CompanyName'] ?? parsed['company_name'] ?? '',
-      ownerName: parsed['OwnerName'] ?? parsed['owner_name'] ?? '',
-      registryNumber: parsed['CommercialRegistryNo'] ?? parsed['registry_number'] ?? '',
-      taxNumber: parsed['TaxCardNo'] ?? parsed['tax_number'] ?? '',
+      companyName: parsed['legalName'] ?? parsed['CompanyName'] ?? parsed['company_name'] ?? '',
+      ownerName: parsed['ownerName'] ?? parsed['OwnerName'] ?? parsed['owner_name'] ?? '',
+      registryNumber: parsed['commercialRegistryNo'] ?? parsed['CommercialRegistryNo'] ?? parsed['registry_number'] ?? '',
+      taxNumber: parsed['taxCardNo'] ?? parsed['TaxCardNo'] ?? parsed['tax_number'] ?? '',
     };
   } catch {
     return {};

@@ -3,16 +3,17 @@ import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/rou
 // import { SidebarNavItem } from '../../../../core/models/sidebar-nav-item.model';
 import { NgOptimizedImage } from '@angular/common';
 import { NotificationBell } from '../../../notifications/components/notification-bell/notification-bell';
+import { AuthService } from '../../../auth/services/auth';
 
 const COMPANY_NAV_ITEMS: readonly SidebarNavItem[] = [
-  { label: 'الرئيسية', route: '/dashboard/company/overview', icon: 'assets/icons/dashboard/layout/home.svg'},
-  { label: 'المنتجات المعروضة', route: '/dashboard/company/my-listings', icon: 'assets/icons/dashboard/layout/box.svg'},
-  { label: 'العروض وطلبات الأسعار', route: '/dashboard/company/rfq-offers', icon: 'assets/icons/dashboard/layout/receipt.svg'},
-  { label: 'الطلبات النشطة', route: '/dashboard/company/orders', icon: 'assets/icons/dashboard/layout/group.svg'},
-  { label: 'الرسائل', route: '/dashboard/company/messages' ,icon: 'assets/icons/dashboard/layout/messages.svg'},
-  { label: 'النزاعات', route: '/dashboard/company/disputes' ,icon: 'assets/icons/dashboard/layout/disputes.svg'},
+  { label: 'الرئيسية', route: '/dashboard/company/overview', icon: 'assets/icons/dashboard/layout/home.svg' },
+  { label: 'المنتجات المعروضة', route: '/dashboard/company/my-listings', icon: 'assets/icons/dashboard/layout/box.svg' },
+  { label: 'العروض وطلبات الأسعار', route: '/dashboard/company/rfq-offers', icon: 'assets/icons/dashboard/layout/receipt.svg' },
+  { label: 'الطلبات النشطة', route: '/dashboard/company/orders', icon: 'assets/icons/dashboard/layout/group.svg' },
+  { label: 'الرسائل', route: '/dashboard/company/messages', icon: 'assets/icons/dashboard/layout/messages.svg' },
+  { label: 'النزاعات', route: '/dashboard/company/disputes', icon: 'assets/icons/dashboard/layout/disputes.svg' },
   // { label: 'التحليلات والإحصائيات', route: '/dashboard/company/analytics' },
-  { label: 'الملف الشخصي', route: '/dashboard/company/profile' ,icon: 'assets/icons/dashboard/layout/profile.svg'},
+  { label: 'الملف الشخصي', route: '/dashboard/company/profile', icon: 'assets/icons/dashboard/layout/profile.svg' },
 ];
 
 @Component({
@@ -25,7 +26,10 @@ const COMPANY_NAV_ITEMS: readonly SidebarNavItem[] = [
 })
 export class CompanyLayout {
   protected readonly navItems = COMPANY_NAV_ITEMS;
-  private readonly router = inject(Router);
+  // private readonly router = inject(Router);
+
+  //for logout
+  private readonly authService = inject(AuthService);
 
   // State for sidebar and modal
   protected readonly sidebarOpen = signal(false);
@@ -50,8 +54,10 @@ export class CompanyLayout {
   }
 
   protected confirmLogout(): void {
+    // this.isLogoutModalOpen.set(false);
+    // // Perform logout logic and redirect
+    // this.router.navigate(['/']);
     this.isLogoutModalOpen.set(false);
-    // Perform logout logic and redirect
-    this.router.navigate(['/']);
+    this.authService.logout();
   }
 }

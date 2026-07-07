@@ -14,18 +14,23 @@ interface NavLink {
 
 @Component({
   selector: 'app-navbar',
-  standalone: true, // تأكد إنها standalone لو بتستدعيها عل طول
+  standalone: true,
   imports: [RouterLink, RouterLinkActive, NgOptimizedImage, NotificationBell],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
 export class NavbarComponent {
-  protected readonly authState = inject(AuthStateService); // غيرناها لـ protected عشان نصل للـ role في الـ HTML
+  protected readonly authState = inject(AuthStateService);
   private readonly authService = inject(AuthService);
 
   protected readonly routes = ROUTES;
+
   protected readonly menuOpen = signal(false);
   protected readonly dropdownOpen = signal(false);
+  protected readonly isLogoutModalOpen = signal(false);
+
+  openLogoutModal(): void { this.isLogoutModalOpen.set(true); }
+  closeLogoutModal(): void { this.isLogoutModalOpen.set(false); }
 
   protected readonly isLoggedIn = computed(() => this.authState.isLoggedIn());
   protected readonly userName = computed(() => this.authState.currentUser()?.name ?? '');
@@ -73,6 +78,10 @@ export class NavbarComponent {
     this.authService.logout();
   }
 
+  confirmLogout(): void {
+    this.isLogoutModalOpen.set(false);
+    this.logout();
+  }
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     const target = event.target as HTMLElement;
