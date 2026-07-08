@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, resource } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { OverviewService } from '../../services/overview';
+
+import { OverviewService, OverviewSummary } from './overview.service'; 
 
 import { AiPromoCard } from '../../components/ai-promo-card/ai-promo-card';
 import { RecentActivityFeed } from '../../components/recent-activity-feed/recent-activity-feed';
@@ -11,7 +12,9 @@ import { CompanyStatCard } from '../../../../../shared/components/company-stat-c
 
 @Component({
   selector: 'app-overview',
-  imports: [CompanyStatCard,
+  standalone: true,
+  imports: [
+    CompanyStatCard,
     AiPromoCard,
     RecentActivityFeed,
     RecentOrdersTable,
@@ -24,61 +27,49 @@ import { CompanyStatCard } from '../../../../../shared/components/company-stat-c
   styleUrl: './overview.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Overview {
-  onNavigate(arg0: string) {
-    throw new Error('Method not implemented.');
-  }
+export class Overview implements OnInit {
   private readonly overviewService = inject(OverviewService);
 
-  protected readonly summaryResource = resource({
-    loader: () => this.overviewService.getSummary(),
-  });
+  // حالات الصفحة للإحصائيات العامة
+  isLoading = signal<boolean>(true);
+  isError = signal<boolean>(false);
+  summaryData = signal<OverviewSummary | null>(null);
+  
+  // المتغير الخاص بالإشعارات والنشاطات
+  activitiesData = signal<any[]>([]);
 
   protected readonly currentDate = new Date();
 
-  protected onStartConversation(): void {
-    // TODO(ai-promo): wire to chatbot-widget open() or navigate to full assistant page
-    // once the AI Assistant Card relationship to ChatbotWidget is confirmed.
+  ngOnInit(): void {
+    // 1. جلب بيانات الإحصائيات والطلبات
+    this.overviewService.getSummary().subscribe({
+      next: (data: OverviewSummary) => {
+        this.summaryData.set(data);
+        this.isLoading.set(false);
+      },
+      error: (err: any) => {
+        console.error('خطأ في جلب بيانات الإحصائيات:', err);
+        this.isError.set(true);
+        this.isLoading.set(false);
+      }
+    });
+
+    // 2. جلب بيانات الإشعارات (آخر النشاطات)
+    this.overviewService.getRecentNotifications().subscribe({
+      next: (data) => {
+        this.activitiesData.set(data);
+      },
+      error: (err) => {
+        console.error('خطأ في جلب الإشعارات:', err);
+      }
+    });
   }
 
-  // mock data for development purposes
-  protected readonly mockActivities = [
-    {
-      id: '1',
-      titleKey: 'تم استلام عرض جديد',
-      descriptionKey: 'عرض على فائض',
-      relatedEntityCode: 'PVC',
-      occurredAt: new Date()
-    },
-    {
-      id: '2',
-      titleKey: 'تم تحديث حالة الطلب',
-      descriptionKey: 'طلب رقم',
-      relatedEntityCode: '#4567',
-      occurredAt: new Date(new Date().getTime() - (60 * 60 * 1000))
-    },
-    {
-      id: '3',
-      titleKey: 'رسالة جديدة من العميل',
-      descriptionKey: 'بخصوص',
-      relatedEntityCode: 'Aluminum Pipes',
-      occurredAt: new Date(new Date().getTime() - (2 * 24 * 60 * 60 * 1000))
-    }
-    ,
-    {
-      id: '4',
-      titleKey: 'تم إرسال رسالة جديدة',
-      descriptionKey: 'بخصوص',
-      relatedEntityCode: 'Aluminum Pipes',
-      occurredAt: new Date(new Date().getTime() - (5 * 24 * 60 * 60 * 1000))
-    }
-    ,
-    {
-      id: '5',
-      titleKey: 'تم تحديث حالة الطلب 1245-ORD#',
-      descriptionKey: 'بخصوص',
-      relatedEntityCode: 'Aluminum Pipes',
-      occurredAt: new Date(new Date().getTime() - (5 * 24 * 60 * 60 * 1000))
-    }
-  ];
+  onNavigate(route: string) {
+    console.log('Navigating to:', route);
+  }
+
+  protected onStartConversation(): void {
+    console.log('Starting AI conversation...');
+  }
 }
