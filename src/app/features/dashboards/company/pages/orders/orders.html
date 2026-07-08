@@ -1,4 +1,4 @@
-<div class="orders-page">
+<div class="orders-page" dir="rtl">
     <header class="orders-page-header">
         <h1 class="orders-page-title">الطلبات النشطة</h1>
         <p class="orders-page-subtitle">الطلبات النشطة، التفاصيل، الضمان، الشحن، والفواتير</p>
@@ -10,11 +10,11 @@
     <div class="orders-page-tabs" role="tablist">
         <button type="button" role="tab" class="orders-page-tab"
             [class.orders-page-tab--active]="activeTab() === 'sent'" (click)="onTabChange('sent')">
-            الطلبات المرسلة
+            الطلبات المرسلة (المشتريات)
         </button>
         <button type="button" role="tab" class="orders-page-tab"
             [class.orders-page-tab--active]="activeTab() === 'received'" (click)="onTabChange('received')">
-            الطلبات المستلمة
+            الطلبات المستلمة (المبيعات)
         </button>
     </div>
 
@@ -23,133 +23,65 @@
     } @else if (ordersResource.error()) {
     <app-error-state (retry)="ordersResource.reload()" />
     } @else if (filteredOrders().length === 0) {
-    <app-empty-state title="لا توجد طلبات حالياً" description="ستظهر هنا الطلبات المرسلة والمستلمة فور توافرها" />
+    <app-empty-state title="لا توجد طلبات حالياً" description="لم يتم العثور على أي معاملات تجارية في هذا القسم." />
     } @else {
-    <div class="orders-page-table-wrapper">
-        <div class="orders-page-row orders-page-row--head">
-            <span class="orders-page-col">رقم الطلب</span>
-            <span class="orders-page-col">المورد</span>
-            <span class="orders-page-col">المنتج</span>
-            <span class="orders-page-col">القيمة</span>
-            <span class="orders-page-col">حالة الطلب</span>
-            <span class="orders-page-col">الإجراءات</span>
+    <div class="orders-table-wrapper">
+        <div class="orders-table-head">
+            <span>رقم الطلب</span>
+            <span>كود المورد</span>
+            <span>المنتج</span>
+            <span>إجمالي القيمة</span>
+            <span>حالة الطلب</span>
+            <span>الإجراءات</span>
         </div>
-
         @for (order of filteredOrders(); track order.id) {
-        <app-order-row [order]="order" (viewDetails)="onViewDetails($event)" /> }
+        <app-order-row [order]="order" (viewDetails)="onViewDetails($event)" />
+        }
     </div>
     }
 
     @if (selectedOrder(); as order) {
-    <div class="orders-page-overlay" (click)="closeModal()">
-        <div class="orders-page-modal-wrapper" (click)="$event.stopPropagation()">
-            <div class="orders-page-modal">
-                <header class="orders-modal-header">
-                    <div class="orders-modal-header-right">
-                        <h2 class="orders-modal-title">تفاصيل الطلب</h2>
-                        <app-status-badge [statusMap]="statusDisplayMap" [status]="order.status" />
+    <div class="orders-modal-backdrop" (click)="closeModal()">
+        <div class="orders-modal-card" (click)="$event.stopPropagation()">
+            <header class="orders-modal-header">
+                <h2 class="orders-modal-title">تفاصيل الطلب {{ order.code }}</h2>
+                <button type="button" class="orders-modal-close" (click)="closeModal()">×</button>
+            </header>
+
+            <div class="orders-modal-body">
+                <div class="orders-tracker">
+                    @for (step of STEP_ORDER; track step; let last = $last) {
+                    <div class="tracker-step" [class.tracker-step--done]="isStepDone(order.status, step)">
+                        <div class="tracker-bullet"></div>
+                        <span class="tracker-label">{{ statusDisplayMap[step].labelKey }}</span>
                     </div>
-                    <button type="button" class="orders-modal-close" (click)="closeModal()" aria-label="إغلاق">
-                        <img src="assets/icons/dashboard/close.svg" alt="" width="42" height="42" />
+                    @if (!last) {
+                    <div class="tracker-line" [class.tracker-line--done]="isStepDone(order.status, step)"></div>
+                    }
+                    }
+                </div>
+
+                <div class="order-financial-summary">
+                    <p><strong>اسم المنتج:</strong> {{ order.productName }}</p>
+                    <p><strong>الكمية المطلوبة:</strong> {{ order.quantity | number }} وحدة</p>
+                    <p><strong>إجمالي القيمة:</strong> {{ order.totalValue | number }} ج.م</p>
+                    <p><strong>حالة الضمان المالي (Escrow):</strong> مؤمن ومحفوظ عبر المنصة</p>
+                </div>
+
+                <div class="orders-modal-actions-grid">
+                    <button type="button" class="orders-modal-action-card">
+                        <div class="orders-modal-action-text">
+                            <span class="orders-modal-action-title">فتح نزاع مالي</span>
+                            <span class="orders-modal-action-subtitle">الإبلاغ عن مشكلة في الشحنة أو جودة البضاعة</span>
+                        </div>
+                        <div class="orders-modal-action-icon orders-modal-action-icon--red">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="12" y1="8" x2="12" y2="12" />
+                                <line x1="12" y1="16" x2="12.01" y2="16" />
+                            </svg>
+                        </div>
                     </button>
-                </header>
-
-                <div class="orders-modal-meta">
-                    <span class="orders-modal-code">{{ order.code }}</span>
-                    <span class="orders-modal-date">تاريخ الطلب: {{ order.orderDate | date: 'yyyy/MM/dd' }}</span>
-                </div>
-
-                <div class="orders-modal-info-grid">
-                    <div class="orders-modal-info-card">
-                        <span class="orders-modal-info-label">المورد</span>
-                        <span class="orders-modal-info-value">{{ order.supplierCode }}</span>
-                    </div>
-                    <div class="orders-modal-info-card">
-                        <span class="orders-modal-info-label">المنتج</span>
-                        <span class="orders-modal-info-value">{{ order.productName }}</span>
-                    </div>
-                    <div class="orders-modal-info-card">
-                        <span class="orders-modal-info-label">الكمية</span>
-                        <span class="orders-modal-info-value">{{ order.quantity }} طن</span>
-                    </div>
-                    <div class="orders-modal-info-card">
-                        <span class="orders-modal-info-label">القيمة الإجمالية</span>
-                        <span class="orders-modal-info-value">{{ order.totalValue | number }} ج.م</span>
-                    </div>
-                </div>
-
-                <div class="orders-modal-tracker-section">
-                    <h3 class="orders-modal-section-title">تتبع حالة الطلب</h3>
-                    <div class="orders-modal-tracker">
-                        <div class="tracker-step" [class.tracker-step--done]="isStepDone(order.status, 'accepted')">
-                            <div class="tracker-dot">
-                                @if (isStepDone(order.status, 'accepted')) {
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white"
-                                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg>
-                                }
-                            </div>
-                            <span class="tracker-label">قبول العرض</span>
-                        </div>
-                        <div class="tracker-line"
-                            [class.tracker-line--done]="isStepDone(order.status, 'inPreparation')"></div>
-                        <div class="tracker-step"
-                            [class.tracker-step--done]="isStepDone(order.status, 'inPreparation')">
-                            <div class="tracker-dot">
-                                @if (isStepDone(order.status, 'inPreparation')) {
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white"
-                                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg>
-                                }
-                            </div>
-                            <span class="tracker-label">قيد التجهيز</span>
-                        </div>
-                        <div class="tracker-line" [class.tracker-line--done]="isStepDone(order.status, 'delivered')">
-                        </div>
-                        <div class="tracker-step" [class.tracker-step--done]="isStepDone(order.status, 'delivered')">
-                            <div class="tracker-dot"></div>
-                            <span class="tracker-label">تم التسليم</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="orders-modal-actions-section">
-                    <h3 class="orders-modal-section-title">الإجراءات السريعة</h3>
-                    <div class="orders-modal-actions-grid">
-                        <button type="button" class="orders-modal-action-card">
-                                <div class="orders-modal-action-text">
-                                <span class="orders-modal-action-title">مراسلة الطرف الآخر</span>
-                                <span class="orders-modal-action-subtitle">متابعة الطلب أو إرسال استفسار</span>
-                            </div>
-                            <div class="orders-modal-action-icon orders-modal-action-icon--blue">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#155DFC"
-                                    stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <path
-                                        d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                                    <polyline points="22,6 12,13 2,6" />
-                                </svg>
-                            </div>
-
-                        </button>
-
-                        <button type="button" class="orders-modal-action-card">
-                                <div class="orders-modal-action-text">
-                                <span class="orders-modal-action-title">فتح نزاع</span>
-                                <span class="orders-modal-action-subtitle">الإبلاغ عن مشكلة في الطلب</span>
-                            </div>
-                            <div class="orders-modal-action-icon orders-modal-action-icon--red">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EF4444"
-                                    stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <line x1="12" y1="8" x2="12" y2="12" />
-                                    <line x1="12" y1="16" x2="12.01" y2="16" />
-                                </svg>
-                            </div>
-
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>

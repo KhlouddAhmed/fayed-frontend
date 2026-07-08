@@ -6,29 +6,35 @@ import { OrderRow } from '../../components/order-row/order-row';
 import { LoadingSkeleton } from '../../../../../shared/components/loading-skeleton/loading-skeleton';
 import { ErrorState } from '../../../../../shared/components/error-state/error-state';
 import { EmptyState } from '../../../../../shared/components/empty-state/empty-state';
-import { Order } from '../../models/order.model';
+import { Order, OrderStatus } from '../../models/order.model';
 import { StatusBadge, StatusBadgeVariant } from '../../../../../shared/components/status-badge/status-badge';
-import { OrderStatus } from '../../models/order.model';
 
 type OrderTab = 'sent' | 'received';
 
 @Component({
   selector: 'app-orders',
-imports: [OrderRow, LoadingSkeleton, ErrorState, EmptyState, DatePipe, StatusBadge, DecimalPipe],
+  standalone: true,
+  imports: [OrderRow, LoadingSkeleton, ErrorState, EmptyState, DatePipe, StatusBadge, DecimalPipe],
   templateUrl: './orders.html',
   styleUrl: './orders.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Orders {
   private readonly repository = inject(ORDERS_REPOSITORY);
 
+  // جلب كافة الطلبات من الـ API عبر الدالة الوحيدة المعرفة في الـ Token الخاص بك
   protected readonly ordersResource = resource({
-    loader: async () => adaptOrders(await this.repository.getAll()),
+    loader: async () => {
+      const data = await this.repository.getAll();
+      return adaptOrders(data);
+    },
   });
 
   protected readonly currentDate = new Date();
   protected readonly activeTab = signal<OrderTab>('sent');
   protected readonly selectedOrder = signal<Order | null>(null);
 
+  // فلترة الطلبات برمجياً وبشكل ريأكتف بناءً على التبويب النشط (sent أو received)
   protected readonly filteredOrders = computed(() => {
     const orders = this.ordersResource.value() ?? [];
     return orders.filter((order) => order.direction === this.activeTab());
@@ -47,24 +53,24 @@ export class Orders {
     this.selectedOrder.set(null);
   }
 
- protected readonly statusDisplayMap = {
-  pendingShipment: { labelKey: 'قيد الشحن', variant: 'warning' as StatusBadgeVariant },
-  inPreparation: { labelKey: 'قيد التجهيز', variant: 'warning' as StatusBadgeVariant },
-  delivered: { labelKey: 'تم التسليم', variant: 'info' as StatusBadgeVariant },
-  completed: { labelKey: 'مكتمل', variant: 'success' as StatusBadgeVariant },
-};
+  protected readonly statusDisplayMap = {
+    inPreparation: { labelKey: 'قيد التجهيز', variant: 'warning' as StatusBadgeVariant },
+    pendingShipment: { labelKey: 'قيد الشحن', variant: 'warning' as StatusBadgeVariant },
+    delivered: { labelKey: 'تم التسليم', variant: 'info' as StatusBadgeVariant },
+    completed: { labelKey: 'مكتمل', variant: 'success' as StatusBadgeVariant },
+  };
 
-private readonly STEP_ORDER: readonly OrderStatus[] = [
-  'pendingShipment',
-  'inPreparation',
-  'delivered',
-  'completed',
-];
+ 
+  protected readonly STEP_ORDER: readonly OrderStatus[] = [
+    'inPreparation',
+    'pendingShipment',
+    'delivered',
+    'completed',
+  ];
 
-protected isStepDone(currentStatus: OrderStatus, step: string): boolean {
-  const currentIndex = this.STEP_ORDER.indexOf(currentStatus);
-  const stepIndex = this.STEP_ORDER.indexOf(step as OrderStatus);
-  return stepIndex <= currentIndex;
-}
-
+  protected isStepDone(currentStatus: OrderStatus, step: OrderStatus): boolean {
+    const currentIndex = this.STEP_ORDER.indexOf(currentStatus);
+    const stepIndex = this.STEP_ORDER.indexOf(step);
+    return currentIndex >= stepIndex;
+  }
 }
