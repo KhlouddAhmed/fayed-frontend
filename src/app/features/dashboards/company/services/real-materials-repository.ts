@@ -4,52 +4,58 @@ import { firstValueFrom } from 'rxjs';
 import { MaterialDto, MaterialFormValue } from '../models/material.model';
 import { MaterialsRepository } from './materials-repository.token';
 
+interface BaseResponse<T> {
+  statusCode: number;
+  isSuccess: boolean;
+  message: string;
+  data: T;
+  errors: string[] | null;
+}
+
 @Injectable({ providedIn: 'root' })
 export class RealMaterialsRepository implements MaterialsRepository {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/listings';
 
   async getAll(): Promise<readonly MaterialDto[]> {
-    return firstValueFrom(this.http.get<MaterialDto[]>(`${this.baseUrl}/my-listings`));
+    const res = await firstValueFrom(this.http.get<BaseResponse<MaterialDto[]>>(`${this.baseUrl}/my-listings`));
+    return res.data;
   }
 
   async create(value: MaterialFormValue): Promise<MaterialDto> {
     const formData = this.mapToFormData(value);
-    return firstValueFrom(this.http.post<MaterialDto>(this.baseUrl, formData));
+    const res = await firstValueFrom(this.http.post<BaseResponse<MaterialDto>>(this.baseUrl, formData));
+    return res.data;
   }
 
   async update(id: string, value: MaterialFormValue): Promise<MaterialDto> {
     const formData = this.mapToFormData(value);
-    return firstValueFrom(this.http.put<MaterialDto>(`${this.baseUrl}/${id}`, formData));
+    const res = await firstValueFrom(this.http.put<BaseResponse<MaterialDto>>(`${this.baseUrl}/${id}`, formData));
+    return res.data;
   }
 
   async delete(id: string): Promise<void> {
-    return firstValueFrom(this.http.delete<void>(`${this.baseUrl}/${id}`));
+    await firstValueFrom(this.http.delete<BaseResponse<null>>(`${this.baseUrl}/${id}`));
   }
 
   async publish(id: string): Promise<void> {
-    return firstValueFrom(this.http.post<void>(`${this.baseUrl}/${id}/publish`, {}));
+    await firstValueFrom(this.http.post<BaseResponse<null>>(`${this.baseUrl}/${id}/publish`, {}));
   }
 
   private mapToFormData(value: MaterialFormValue): FormData {
     const formData = new FormData();
-    formData.append('Name', value.name);
-    formData.append('Description', value.description);
-    formData.append('MaterialType', value.materialType);
-    formData.append('Condition', value.condition);
-    formData.append('AvailableQuantity', value.availableQuantity.toString());
-    formData.append('Unit', value.unit);
-    formData.append('PricePerUnit', value.pricePerUnit.toString());
-    formData.append('MaxPricePerUnit', value.maxPricePerUnit.toString());
+    formData.append('title', value.title);
+    formData.append('description', value.description);
+    formData.append('price', value.price.toString());
+    formData.append('quantity', value.quantity.toString());
+    formData.append('categoryId', value.categoryId.toString());
+    formData.append('materialCondition', value.materialCondition);
     
- if (value.imageFiles) {
-      for (const file of value.imageFiles) {
-        formData.append('Images', file);
+    if (value.mediaFiles && value.mediaFiles.length > 0) {
+      for (const file of value.mediaFiles) {
+        formData.append('mediaFiles', file);
       }
     }
-
-    if (value.videoFile) formData.append('Video', value.videoFile);
-    if (value.labCertificateFile) formData.append('LabCertificate', value.labCertificateFile);
     
     return formData;
   }

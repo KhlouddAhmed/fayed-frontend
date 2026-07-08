@@ -1,6 +1,6 @@
 <div class="material-modal" role="dialog" aria-modal="true" aria-labelledby="material-modal-title">
   <header class="material-modal-header">
-        <h2 id="material-modal-title" class="material-modal-title">تفاصيل الخامة</h2>
+    <h2 id="material-modal-title" class="material-modal-title">تفاصيل الإعلان</h2>
     <button type="button" class="material-modal-close-btn" (click)="close.emit()" aria-label="إغلاق">
       <img src="assets/icons/dashboard/close.svg" alt="" width="42" height="42" />
     </button>
@@ -57,15 +57,15 @@
       </span>
     </div>
     <div class="material-modal-stat">
-      <span class="material-modal-stat-label">أقل كمية للبيع</span>
+      <span class="material-modal-stat-label">السعر</span>
       <span class="material-modal-stat-value">
-        {{ material().minOrderQuantity }} {{ material().unit }}
+        {{ material().pricePerUnit }} ج.م / {{ material().unit }}
       </span>
     </div>
     <div class="material-modal-stat">
-      <span class="material-modal-stat-label">السعر</span>
+      <span class="material-modal-stat-label">حالة الخامة</span>
       <span class="material-modal-stat-value">
-        {{ material().pricePerUnit }} ج.م /{{ material().unit }}
+        {{ material().condition }}
       </span>
     </div>
   </div>
@@ -73,7 +73,7 @@
   <div class="material-modal-dates">
     <div>
       <span class="material-modal-stat-label">تاريخ النشر</span>
-      <span class="material-modal-stat-value">{{ material().publishedAt | date: 'd/M/y' }}</span>
+      <span class="material-modal-stat-value">{{ material().publishedAt ? (material().publishedAt | date: 'd/M/y') : 'لم ينشر بعد' }}</span>
     </div>
     <div>
       <span class="material-modal-stat-label">آخر تحديث</span>
@@ -81,23 +81,15 @@
     </div>
   </div>
 
-  @if (material().labCertificate; as certificate) {
-    <section class="material-modal-section">
-      <h4 class="material-modal-section-title">شهادة التحليل والجودة</h4>
-      <a [href]="certificate.url" class="material-modal-certificate" download>
-        <i class="lucide-file-text"></i>
-        <span>{{ certificate.fileName }}</span>
-        <span class="material-modal-certificate-size">{{ certificate.fileSizeKb }} KB</span>
-      </a>
-    </section>
-  }
-
   <footer class="material-modal-footer">
-    <button type="button" class="btn-fayed btn-blue" (click)="onEditClick()">
-      تعديل المادة
+    <button type="button" class="btn-fayed btn-blue" (click)="onPublishClick()" *ngIf="material().status === 'Draft'">
+      نشر الإعلان
+    </button>
+    <button type="button" class="btn-fayed btn-blue" (click)="onEditClick()" *ngIf="material().status === 'Draft'">
+      تعديل الإعلان
     </button>
     <button type="button" class="btn-fayed btn-white" (click)="onDeleteClick()">
-      حذف المادة
+      حذف الإعلان
     </button>
   </footer>
 </div>
