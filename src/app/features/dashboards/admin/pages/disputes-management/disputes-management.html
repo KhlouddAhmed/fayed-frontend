@@ -1,41 +1,37 @@
 <div class="disputes-container" dir="rtl" style="font-family: 'Cairo', sans-serif;">
   
-
   <div class="page-header mb-4 text-end">
     <h4 class="fw-bold text-navy mb-1">مركز إدارة النزاعات</h4>
     <p class="text-muted" style="font-size: 14px;">فحص شكاوى تباين الجودة أو نقص الكميات مع حوار ثلاثي الأطراف</p>
   </div>
 
- 
   <div class="d-flex border-bottom mb-4 gap-2">
     <button class="btn tab-btn px-4 py-3 d-flex align-items-center gap-2" 
             [class.active]="activeTab() === 'open'" (click)="setTab('open')">
-      مفتوحة <span class="badge rounded-pill bg-light-blue text-primary px-2 py-1">3</span>
+      مفتوحة <span class="badge rounded-pill bg-light-blue text-primary px-2 py-1">{{ openCount() }}</span>
     </button>
     <button class="btn tab-btn px-4 py-3 d-flex align-items-center gap-2" 
             [class.active]="activeTab() === 'investigating'" (click)="setTab('investigating')">
-      قيد التحقيق <span class="badge rounded-pill bg-light text-muted px-2 py-1">2</span>
+      قيد التحقيق <span class="badge rounded-pill bg-light text-muted px-2 py-1">{{ investigatingCount() }}</span>
     </button>
     <button class="btn tab-btn px-4 py-3 d-flex align-items-center gap-2" 
             [class.active]="activeTab() === 'closed'" (click)="setTab('closed')">
-      منتهية <span class="badge rounded-pill bg-light text-muted px-2 py-1">2</span>
+      منتهية <span class="badge rounded-pill bg-light text-muted px-2 py-1">{{ closedCount() }}</span>
     </button>
   </div>
-
 
   @if (activeTab() === 'open') {
     <div class="row g-4">
       
-     
       <div class="col-12 col-xl-4">
         <h6 class="text-muted fw-semibold mb-3" style="font-size: 12px; padding-right: 8px;">قضايا النزاع الجارية</h6>
         
         <div class="d-flex flex-column gap-3">
-          @for (dispute of filteredDisputes(); track dispute.id) {
+          @for (dispute of filteredDisputes(); track dispute.dbId) {
             <div class="dispute-card card border p-3 rounded-4 cursor-pointer"
-                 [class.selected-card]="selectedDispute()?.id === dispute.id"
-                 (click)="selectDispute(dispute)">
-              
+                 [class.selected-card]="selectedDispute()?.dbId === dispute.dbId"
+                 (click)="selectDispute(dispute.dbId)">
+               
               <div class="d-flex justify-content-between align-items-start mb-2">
                 <span class="fw-bold text-navy" style="font-size: 13px;">{{ dispute.id }}</span>
                 <span class="badge bg-red-light text-danger rounded-pill px-3 py-1 fw-bold" style="font-size: 11px;">مفتوح</span>
@@ -50,7 +46,6 @@
         </div>
       </div>
 
-     
       <div class="col-12 col-xl-8">
         @if (selectedDispute(); as active) {
           <div class="card shadow-sm border-0 rounded-4 h-100 d-flex flex-column" style="border: 1px solid #E2E8F0 !important;">
@@ -65,10 +60,12 @@
               </div>
               
               <div class="d-flex gap-2">
-                <button class="btn btn-primary rounded-3 fw-medium px-4 py-2" style="font-size: 13px; background-color: #2563EB; border: none;">
+                <button class="btn btn-primary rounded-3 fw-medium px-4 py-2" style="font-size: 13px; background-color: #2563EB; border: none;"
+                        (click)="submitResolution('buyer')">
                   تعويض المشتري <i class="bi bi-person-x ms-1"></i>
                 </button>
-                <button class="btn btn-outline-primary rounded-3 fw-medium px-4 py-2" style="font-size: 13px; border-color: #2563EB; color: #2563EB;">
+                <button class="btn btn-outline-primary rounded-3 fw-medium px-4 py-2" style="font-size: 13px; border-color: #2563EB; color: #2563EB;"
+                        (click)="submitResolution('seller')">
                   صرف للبائع <i class="bi bi-cash ms-1"></i>
                 </button>
               </div>
@@ -100,10 +97,14 @@
 
             <div class="card-footer bg-white border-top p-4 rounded-bottom-4">
               <div class="d-flex gap-3">
-                <button class="btn btn-primary rounded-3 px-4 d-flex align-items-center justify-content-center" style="background-color: #2563EB; border: none;">
+                <button class="btn btn-primary rounded-3 px-4 d-flex align-items-center justify-content-center" 
+                        style="background-color: #2563EB; border: none;"
+                        (click)="sendMessage(msgInput)" [disabled]="isSendingMessage()">
                   إرسال <i class="bi bi-send ms-2"></i>
                 </button>
-                <input type="text" class="form-control rounded-3 bg-light border-0 px-3 py-3" placeholder="اكتب رسالتك الرسمية كمحكم للمنصة.." style="font-size: 13px;">
+                <input #msgInput type="text" class="form-control rounded-3 bg-light border-0 px-3 py-3" 
+                       placeholder="اكتب رسالتك الرسمية كمحكم للمنصة.." style="font-size: 13px;"
+                       (keyup.enter)="sendMessage(msgInput)">
               </div>
             </div>
 
@@ -120,12 +121,10 @@
     </div>
   }
   
- 
   @else if (activeTab() === 'investigating') {
     <div class="card shadow-sm border overflow-hidden rounded-4 mt-2" style="border-color: #E2E8F0 !important;">
       <div class="table-responsive">
         <table class="table table-borderless text-center align-middle mb-0">
-          
           <thead class="text-muted border-bottom" style="font-size: 13px;">
             <tr>
               <th class="py-4 fw-semibold text-end pe-4">المعرف</th>
@@ -136,19 +135,14 @@
               <th class="py-4 fw-semibold text-start ps-4">الحالة</th>
             </tr>
           </thead>
-          
           <tbody>
-            @for (dispute of filteredDisputes(); track $index) {
+            @for (dispute of filteredDisputes(); track dispute.dbId) {
               <tr class="border-bottom last-no-border">
                 <td class="py-4 fw-bold text-navy text-end pe-4" style="font-size: 13px;">{{ dispute.id }}</td>
                 <td class="py-4 fw-bold text-navy" style="font-size: 13px;">{{ dispute.orderId }}</td>
                 <td class="py-4 text-muted" style="font-size: 13px;">{{ dispute.buyerName }}</td>
                 <td class="py-4 text-muted" style="font-size: 13px;">{{ dispute.sellerName }}</td>
-                
-                <td class="py-4 text-muted mx-auto" style="font-size: 12px; max-width: 180px;">
-                  {{ dispute.issueSummary }}
-                </td>
-                
+                <td class="py-4 text-muted mx-auto" style="font-size: 12px; max-width: 180px;">{{ dispute.issueSummary }}</td>
                 <td class="py-4 text-start ps-4">
                   <span class="badge px-3 py-2 rounded-pill fw-bold badge-inspection d-inline-flex align-items-center gap-1">
                     قيد المعاينة <i class="bi bi-question-circle" style="font-size: 10px;"></i>
@@ -156,23 +150,18 @@
                 </td>
               </tr>
             } @empty {
-              <tr>
-                <td colspan="6" class="text-center py-5 text-muted">لا توجد قضايا لعرضها</td>
-              </tr>
+              <tr><td colspan="6" class="text-center py-5 text-muted">لا توجد قضايا لعرضها</td></tr>
             }
           </tbody>
-          
         </table>
       </div>
     </div>
   }
 
-  
   @else if (activeTab() === 'closed') {
     <div class="card shadow-sm border overflow-hidden rounded-4 mt-2" style="border-color: #E2E8F0 !important;">
       <div class="table-responsive">
         <table class="table table-borderless text-center align-middle mb-0">
-          
           <thead class="text-muted border-bottom" style="font-size: 13px;">
             <tr>
               <th class="py-4 fw-semibold text-end pe-4">المعرف</th>
@@ -182,30 +171,55 @@
               <th class="py-4 fw-semibold text-start ps-4">وسيط الحكم</th>
             </tr>
           </thead>
-          
           <tbody>
-            @for (dispute of filteredDisputes(); track $index) {
+            @for (dispute of filteredDisputes(); track dispute.dbId) {
               <tr class="border-bottom last-no-border">
                 <td class="py-4 text-muted text-end pe-4" style="font-size: 13px;">{{ dispute.id }}</td>
                 <td class="py-4 fw-bold text-navy" style="font-size: 13px;">{{ dispute.orderId }}</td>
-                
                 <td class="py-4">
                   <span class="badge px-3 py-2 rounded-pill fw-bold badge-success-light d-inline-flex align-items-center gap-1">
                     {{ dispute.finalDecision }} <i class="bi bi-check2-circle" style="font-size: 11px;"></i>
                   </span>
                 </td>
-                
                 <td class="py-4 text-muted" style="font-size: 13px;">{{ dispute.settlementDate }}</td>
                 <td class="py-4 text-muted text-start ps-4" style="font-size: 13px;">{{ dispute.moderator }}</td>
               </tr>
             } @empty {
-              <tr>
-                <td colspan="5" class="text-center py-5 text-muted">لا توجد قضايا منتهية لعرضها</td>
-              </tr>
+              <tr><td colspan="5" class="text-center py-5 text-muted">لا توجد قضايا منتهية لعرضها</td></tr>
             }
           </tbody>
-          
         </table>
+      </div>
+    </div>
+  }
+
+  @if (showResolveModal()) {
+    <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+      <div class="modal-dialog modal-dialog-centered" dir="rtl">
+        <div class="modal-content" style="border-radius: 16px;">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title fw-bold text-navy">تأكيد إنهاء النزاع</h5>
+            <button type="button" class="btn-close m-0" (click)="closeResolveModal()"></button>
+          </div>
+          <div class="modal-body">
+            <p class="text-muted" style="font-size: 14px;">
+              أنت على وشك إصدار قرار نهائي لصالح 
+              <span class="fw-bold text-primary">{{ pendingDecision() === 'buyer' ? 'المشتري' : 'البائع' }}</span>.
+              يرجى كتابة أسباب الحكم (ملاحظات الإدارة).
+            </p>
+            <textarea class="form-control bg-light border-0 rounded-3" rows="3" 
+                      placeholder="اكتب تفاصيل وأسباب الحكم ليتم أرشفتها..." 
+                      [value]="resolveNotesText()" 
+                      (input)="updateNotes($event)"></textarea>
+          </div>
+          <div class="modal-footer border-0 pt-0">
+            <button type="button" class="btn btn-light rounded-3 px-4" (click)="closeResolveModal()">إلغاء</button>
+            <button type="button" class="btn btn-primary rounded-3 px-4" style="background-color: #2563EB;" 
+                    (click)="confirmResolution()" [disabled]="isResolving()">
+              {{ isResolving() ? 'جاري التنفيذ...' : 'تأكيد وإغلاق النزاع' }}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   }

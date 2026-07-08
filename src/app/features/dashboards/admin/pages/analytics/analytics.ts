@@ -1,10 +1,12 @@
-import { Component, signal, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, signal, ViewChild, ElementRef, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Chart, registerables } from 'chart.js';
 import { StatCardComponent } from '../../../../../shared/components/stat-card/stat-card';
+import { AnalyticsService } from './analytics.service';
+import { SettingsService } from '../settings/settings.service'; // تأكد من مسار السيرفيس
 
 Chart.register(...registerables);
 
-// ------------- واجهات البيانات -------------
 interface StatCard {
   title: string;
   value: string;
@@ -37,70 +39,142 @@ interface DashboardData {
 
 type TabType = 'performance' | 'sales' | 'activity';
 
-// ------------- مكون الصفحة -------------
 @Component({
   selector: 'app-analytics',
   standalone: true,
-  imports: [StatCardComponent], 
+  imports: [CommonModule, StatCardComponent], 
   templateUrl: './analytics.html',
   styleUrls: ['./analytics.css']
 })
-export class AnalyticsComponent implements AfterViewInit {
+export class AnalyticsComponent implements OnInit {
   @ViewChild('lineChart') lineChartRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('pieChart') pieChartRef!: ElementRef<HTMLCanvasElement>;
 
-  activeTab = signal<TabType>('performance' as TabType);
+  private analyticsService = inject(AnalyticsService);
+  private settingsService = inject(SettingsService);
 
-  // الداتا الوهمية (Mock Data)
+  activeTab = signal<TabType>('performance');
+  
   dashboardData = signal<DashboardData>({
-    stats: [
-      { title: 'العقود النشطة', value: '324 عقدًا', subtitle: '+7.2% مقارنة بالشهر الماضي', icon: 'bi-file-earmark-text', color: '#F59E0B' },
-      { title: 'إجمالي المعاملات', value: '1,248', subtitle: '+8% مقارنة بالشهر الماضي', icon: 'bi-arrow-left-right', color: '#8B5CF6' },
-      { title: 'المستخدمون النشطون', value: '14k مستخدم', subtitle: 'قيد الوساطة الإدارية', icon: 'bi-people', color: '#3B82F6' },
-      { title: 'إجمالي الإيرادات', value: '2,450,720 جم', subtitle: '+8% مقارنة بالشهر الماضي', icon: 'bi-currency-dollar', color: '#10B981' }
-    ],
-    revenueGrowthChart: {
-      labels: ['يناير', 'فبراير', 'مارس', 'ابريل', 'مايو', 'يونيو'],
-      data: [0.9, 1.35, 1.7, 1.55, 2.3, 3.2]
-    },
-    revenueDistributionChart: {
-      labels: ['حديد', 'بلاستيك', 'ورق', 'زجاج', 'نحاس', 'أخرى'],
-      data: [38, 22, 15, 10, 8, 7] 
-    },
-    salesReports: [
-      { name: 'تقرير التداول الشهري للبائعين', period: '1 مايو 2026 - 31 مايو 2026', format: 'PDF / EXCEL' },
-      { name: 'تقرير التداول الشهري للبائعين', period: '1 مايو 2026 - 31 مايو 2026', format: 'PDF / EXCEL' },
-      { name: 'تقرير التداول الشهري للبائعين', period: '1 مايو 2026 - 31 مايو 2026', format: 'PDF / EXCEL' }
-    ],
-    activityLogs: [
-      { entityName: 'مصر للألومنيوم', actionType: 'تسجيل دخول ناجح', device: 'Windows 11 - Chrome', datetime: '2026-06-07 10:14', ipAddress: '197.43.90.12' },
-      { entityName: 'أحمد (مشرف)', actionType: 'مراجعة مستندات شركة النصر للمنسوجات', device: '—', datetime: '10:24:12', ipAddress: '197.34.12.98' },
-      { entityName: 'النظام', actionType: 'إنشاء ملف نزاع تلقائي للطلب 1048-ORD', device: '—', datetime: '10:15:45', ipAddress: '127.0.0.1' },
-      { entityName: 'مصر للألومنيوم', actionType: 'تسجيل دخول ناجح', device: 'Windows 11 - Chrome', datetime: '2026-06-07 10:14', ipAddress: '197.43.90.12' },
-      { entityName: 'مصر للألومنيوم', actionType: 'تسجيل دخول ناجح', device: 'Windows 11 - Chrome', datetime: '2026-06-07 10:14', ipAddress: '197.43.90.12' }
-    ]
+    stats: [],
+    revenueGrowthChart: { labels: [], data: [] },
+    revenueDistributionChart: { labels: [], data: [] },
+    salesReports: [],
+    activityLogs: []
   });
 
-  ngAfterViewInit() {
-    this.renderLineChart();
-    this.renderPieChart();
+  private lineChartInstance: Chart | null = null;
+  private pieChartInstance: Chart | null = null;
+
+  ngOnInit() {
+    this.fetchPerformanceStats();
   }
 
   setTab(tab: TabType) {
     this.activeTab.set(tab);
+    
+    // Lazy Loading للبيانات
     if (tab === 'performance') {
-      setTimeout(() => {
-        this.renderLineChart();
-        this.renderPieChart();
-      }, 0);
+      if (this.dashboardData().stats.length === 0) {
+        this.fetchPerformanceStats();
+      } else {
+        setTimeout(() => {
+          this.renderLineChart();
+          this.renderPieChart();
+        }, 0);
+      }
+    } else if (tab === 'sales') {
+      if (this.dashboardData().salesReports.length === 0) this.fetchSalesReports();
+    } else if (tab === 'activity') {
+      if (this.dashboardData().activityLogs.length === 0) this.fetchActivityLogs();
     }
   }
 
-  // دالة تحميل التقرير (CSV مؤقتاً)
+  fetchPerformanceStats() {
+    this.analyticsService.getPerformanceStats().subscribe({
+      next: (res: any) => {
+        const isSuccess = res.IsSuccess ?? res.isSuccess;
+        const data = res.Data ?? res.data;
+        if (isSuccess && data) {
+          this.dashboardData.update(current => {
+            current.stats = [
+              { title: 'العقود النشطة', value: data.activeContracts?.valueText || '0', subtitle: data.activeContracts?.growthText || '', icon: 'bi-file-earmark-text', color: '#F59E0B' },
+              { title: 'إجمالي المعاملات', value: data.totalTransactions?.valueText || '0', subtitle: data.totalTransactions?.growthText || '', icon: 'bi-arrow-left-right', color: '#8B5CF6' },
+              { title: 'المستخدمون النشطون', value: data.activeUsers?.valueText || '0', subtitle: data.activeUsers?.growthText || '', icon: 'bi-people', color: '#3B82F6' },
+              { title: 'إجمالي الإيرادات', value: data.totalRevenue?.valueText || '0', subtitle: data.totalRevenue?.growthText || '', icon: 'bi-currency-dollar', color: '#10B981' }
+            ];
+            
+            current.revenueGrowthChart = {
+              labels: data.monthlyRevenueChart?.map((x: any) => x.month) || [],
+              data: data.monthlyRevenueChart?.map((x: any) => x.revenue) || []
+            };
+            
+            current.revenueDistributionChart = {
+              labels: data.revenueByCategoryChart?.map((x: any) => x.categoryName) || [],
+              data: data.revenueByCategoryChart?.map((x: any) => x.percentage) || []
+            };
+            
+            return current;
+          });
+          
+          setTimeout(() => {
+            this.renderLineChart();
+            this.renderPieChart();
+          }, 0);
+        }
+      },
+      error: (err) => console.error('خطأ في جلب مؤشرات الأداء:', err)
+    });
+  }
+
+  fetchSalesReports() {
+    this.analyticsService.getSalesReports().subscribe({
+      next: (res: any) => {
+        const isSuccess = res.IsSuccess ?? res.isSuccess;
+        const data = res.Data ?? res.data;
+        if (isSuccess && data) {
+          this.dashboardData.update(current => {
+            current.salesReports = data.map((r: any) => ({
+              name: r.reportName,
+              period: r.period,
+              format: r.formats
+            }));
+            return current;
+          });
+        }
+      },
+      error: (err) => console.error('خطأ في جلب التقارير:', err)
+    });
+  }
+
+  fetchActivityLogs() {
+    this.settingsService.getSystemLogs().subscribe({
+      next: (res: any) => {
+        const isSuccess = res.IsSuccess ?? res.isSuccess;
+        const data = res.Data ?? res.data;
+        if (isSuccess && data) {
+          this.dashboardData.update(current => {
+            current.activityLogs = data.map((l: any) => ({
+              entityName: l.targetEntity,
+              actionType: l.action,
+              device: '—', // بناءً على التصميم
+              datetime: l.time,
+              ipAddress: l.ipAddress
+            }));
+            return current;
+          });
+        }
+      },
+      error: (err) => console.error('خطأ في جلب سجل النشاط:', err)
+    });
+  }
+
   exportReport(report: SalesReport) {
     const csvHeader = "اسم التقرير,الفترة الزمنية,تنسيق التحميل\n";
     const csvRow = `${report.name},${report.period},${report.format}\n`;
     const csvData = csvHeader + csvRow;
+    
+    // إضافة BOM لدعم اللغة العربية في الإكسيل
     const blob = new Blob(['\uFEFF' + csvData], { type: 'text/csv;charset=utf-8;' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -116,7 +190,10 @@ export class AnalyticsComponent implements AfterViewInit {
     if (!this.lineChartRef) return;
     const ctx = this.lineChartRef.nativeElement.getContext('2d');
     if (!ctx) return;
-    new Chart(ctx, {
+    
+    if (this.lineChartInstance) this.lineChartInstance.destroy();
+    
+    this.lineChartInstance = new Chart(ctx, {
       type: 'line',
       data: {
         labels: this.dashboardData().revenueGrowthChart.labels,
@@ -140,7 +217,6 @@ export class AnalyticsComponent implements AfterViewInit {
         scales: {
           y: {
             beginAtZero: true,
-            max: 3.5,
             ticks: { callback: (value: number | string) => 'M ' + value, font: { family: 'Cairo' } },
             border: { dash: [5, 5] },
             grid: { color: '#F1F5F9' }
@@ -155,7 +231,10 @@ export class AnalyticsComponent implements AfterViewInit {
     if (!this.pieChartRef) return;
     const ctx = this.pieChartRef.nativeElement.getContext('2d');
     if (!ctx) return;
-    new Chart(ctx, {
+
+    if (this.pieChartInstance) this.pieChartInstance.destroy();
+    
+    this.pieChartInstance = new Chart(ctx, {
       type: 'pie',
       data: {
         labels: this.dashboardData().revenueDistributionChart.labels,

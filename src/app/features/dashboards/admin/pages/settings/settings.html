@@ -1,67 +1,15 @@
-<div class="settings-container" dir="rtl">
+<div class="settings-container" dir="rtl" style="font-family: 'Cairo', sans-serif;">
   
   <div class="page-header mb-4 text-end">
     <h4 class="fw-bold text-navy mb-1">إعدادات منصة فايض</h4>
-    <p class="text-muted" style="font-size: 14px;">تخصيص نسب العمولات وبوابات الدفع ومراقبة سجلات النظام</p>
+    <p class="text-muted" style="font-size: 14px;">تخصيص بوابات الدفع ومراقبة سجلات النظام</p>
   </div>
 
   <div class="d-flex border-bottom mb-4 gap-4">
-    <button class="btn tab-btn px-2 py-3" [class.active]="activeTab() === 'commissions'" (click)="setTab('commissions')">العمولات</button>
     <button class="btn tab-btn px-2 py-3" [class.active]="activeTab() === 'gateways'" (click)="setTab('gateways')">بوابات الدفع</button>
     <button class="btn tab-btn px-2 py-3" [class.active]="activeTab() === 'systemLog'" (click)="setTab('systemLog')">سجل النظام</button>
   </div>
 
-  <!-- ================= تاب العمولات ================= -->
-  @if (activeTab() === 'commissions') {
-    <div class="card border-0 shadow-sm bg-white p-5 mx-auto" style="border-radius: 16px; max-width: 900px;">
-      <h6 class="fw-bold text-navy mb-5 text-end fs-5">نسب العمولات حسب الفئة (%)</h6>
-      <form [formGroup]="commissionsForm" (ngSubmit)="saveCommissions()">
-        <div class="mb-4">
-          <label class="form-label text-muted fw-semibold mb-2 d-block text-end" style="font-size: 13px;">المعادن (نحاس، حديد، ألومنيوم)</label>
-          <div class="d-flex align-items-center gap-3">
-            <input type="number" step="0.1" class="form-control custom-input text-end fw-bold" formControlName="metals">
-            <span class="text-muted fw-bold">%</span>
-          </div>
-        </div>
-        <div class="mb-4">
-          <label class="form-label text-muted fw-semibold mb-2 d-block text-end" style="font-size: 13px;">البلاستيك (PET، خامات بلاستيكية)</label>
-          <div class="d-flex align-items-center gap-3">
-            <input type="number" step="0.1" class="form-control custom-input text-end fw-bold" formControlName="plastics">
-            <span class="text-muted fw-bold">%</span>
-          </div>
-        </div>
-        <div class="mb-4">
-          <label class="form-label text-muted fw-semibold mb-2 d-block text-end" style="font-size: 13px;">الورق والكرتون (OCC)</label>
-          <div class="d-flex align-items-center gap-3">
-            <input type="number" step="0.1" class="form-control custom-input text-end fw-bold" formControlName="paper">
-            <span class="text-muted fw-bold">%</span>
-          </div>
-        </div>
-        <div class="mb-4">
-          <label class="form-label text-muted fw-semibold mb-2 d-block text-end" style="font-size: 13px;">الكيماويات والزيوت المستعملة</label>
-          <div class="d-flex align-items-center gap-3">
-            <input type="number" step="0.1" class="form-control custom-input text-end fw-bold" formControlName="chemicals">
-            <span class="text-muted fw-bold">%</span>
-          </div>
-        </div>
-        <div class="mb-5">
-          <label class="form-label text-muted fw-semibold mb-2 d-block text-end" style="font-size: 13px;">باقي المواد الأخرى (افتراضي)</label>
-          <div class="d-flex align-items-center gap-3">
-            <input type="number" step="0.1" class="form-control custom-input text-end fw-bold" formControlName="others">
-            <span class="text-muted fw-bold">%</span>
-          </div>
-        </div>
-        <div class="text-start"> 
-          <button type="submit" class="btn btn-save px-4 py-2" [disabled]="isSaving()">
-            @if (isSaving()) { <span class="spinner-border spinner-border-sm ms-2"></span> جارٍ الحفظ... } 
-            @else { <i class="bi bi-floppy ms-2"></i> حفظ نسب العمولات الجديدة }
-          </button>
-        </div>
-      </form>
-    </div>
-  }
-
-  <!-- ================= تاب بوابات الدفع ================= -->
   @if (activeTab() === 'gateways') {
     <div class="card border-0 shadow-sm bg-white p-5 mx-auto" style="border-radius: 16px; max-width: 900px;">
       <form [formGroup]="gatewaysForm" (ngSubmit)="saveGateways()">
@@ -118,14 +66,10 @@
     </div>
   }
 
-  <!-- ================= تاب سجل النظام ================= -->
   @if (activeTab() === 'systemLog') {
     <div class="card border-0 shadow-sm bg-white p-5 mx-auto" style="border-radius: 16px; max-width: 900px;">
       
-      <!-- الهيدر والأزرار -->
       <div class="d-flex justify-content-between align-items-center mb-4">
-        
-        <!-- أزرار التحكم -->
         <div class="d-flex gap-2">
           <button class="btn btn-outline-light-custom px-3 py-2" (click)="clearLogs()">
              مسح <i class="bi bi-x"></i>
@@ -134,36 +78,27 @@
              تنزيل السجل <i class="bi bi-download"></i>
           </button>
         </div>
-
-        <!-- العنوان -->
         <h5 class="fw-bold text-navy mb-0">سجل أحداث النظام</h5>
       </div>
 
-      <!-- شاشة التيرمينال (السجل) -->
       <div class="terminal-container p-4 rounded-4" dir="rtl">
-        
         @for (log of systemLogs(); track $index) {
           <div class="d-flex justify-content-between align-items-start mb-2 log-row">
-            
             <div class="log-content text-end">
               <span class="log-time" dir="ltr">{{ log.time }}</span>
               <span class="log-user ms-2">{{ log.user }}</span>
               <span class="log-action ms-2">{{ log.action }}</span>
             </div>
-
-            <!-- عنوان الـ IP في اليسار -->
             <div class="log-ip" dir="ltr">{{ log.ip }}</div>
           </div>
         }
 
-        <!-- حالة عدم وجود بيانات -->
         @if (systemLogs().length === 0) {
           <div class="text-center text-muted my-5 pb-4">
             <i class="bi bi-terminal fs-1 mb-2 d-block" style="opacity: 0.5;"></i>
-            سجل النظام فارغ حالياً
+            سجل النظام فارغ حاليًا
           </div>
         }
-
       </div>
 
     </div>

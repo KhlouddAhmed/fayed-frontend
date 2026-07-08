@@ -1,35 +1,56 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { UsersService, ApiAdminUser } from './users.service';
 
-interface User {
+// الواجهة اللي الـ HTML بيقرا منها عشان منغيرش تصميمه
+export interface UserUI {
+  dbId: number;
   id: string;
   adminName: string;
   company: string;
   email: string;
   status: 'active' | 'suspended';
-  registrationDate?: string;
+  registrationDate: string;
 }
 
 @Component({
   selector: 'app-users',
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './user-management.html',
   styleUrls: ['./user-management.css']
 })
-export class UsersComponent {
-  activeTab = signal<'all' | 'suspended'>('suspended'); // خلينها تفتح على الموقوفة مؤقتاً عشان تشوفها
+export class UsersComponent implements OnInit {
+  private usersService = inject(UsersService);
+
+  activeTab = signal<'all' | 'suspended'>('all');
   searchQuery = signal<string>('');
+  
+  // الإشارات الأساسية
+  rawUsers = signal<ApiAdminUser[]>([]);
+  isLoading = signal<boolean>(true);
+  isTogglingId = signal<number | null>(null);
 
-  // الداتا مطابقة للصورة الجديدة
-  users = signal<User[]>([
-    { id: 'USR-201', adminName: 'محمد النجار', company: 'السويدي للكابلات', email: 'a.sewedy@sewedy.com', status: 'active', registrationDate: '2026-01-15' },
-    { id: 'USR-202', adminName: 'أحمد محمود', company: 'العالمية للحديد', email: 'ahmed@global-iron.com', status: 'active', registrationDate: '2026-02-20' },
-    { id: 'USR-204', adminName: 'ياسر جلال', company: 'الوطنية للمحولات', email: 'info@watania.com', status: 'suspended', registrationDate: '2026-04-12' },
-    { id: 'USR-204', adminName: 'ياسر جلال', company: 'الوطنية للمحولات', email: 'info@watania.com', status: 'suspended', registrationDate: '2026-04-12' },
-    { id: 'USR-204', adminName: 'ياسر جلال', company: 'الوطنية للمحولات', email: 'info@watania.com', status: 'suspended', registrationDate: '2026-04-12' }
-  ]);
+  // 1. ترجمة الداتا من الـ API لشكل الواجهة (Mapping)
+  mappedUsers = computed<UserUI[]>(() => {
+    return this.rawUsers().map(u => ({
+      dbId: u.userId,
+      id: u.userIdentifier,
+      adminName: u.userName,
+      company: u.factoryName,
+      email: u.email,
+      status: u.isSuspended ? 'suspended' : 'active',
+      registrationDate: u.registrationDate
+    }));
+  });
 
+  // إحصائيات التابات ديناميكياً (هتتربط بالبادجات في الـ HTML)
+  allCount = computed(() => this.mappedUsers().length);
+  suspendedCount = computed(() => this.mappedUsers().filter(u => u.status === 'suspended').length);
+
+  // 2. فلترة المستخدمين بناءً على التابة والبحث
   filteredUsers = computed(() => {
-    let result = this.users();
+    let result = this.mappedUsers();
 
     if (this.activeTab() === 'suspended') {
       result = result.filter(user => user.status === 'suspended');
@@ -38,18 +59,41 @@ export class UsersComponent {
     const query = this.searchQuery().trim().toLowerCase();
     if (query && this.activeTab() === 'all') { 
       result = result.filter(user => 
-        user.adminName.toLowerCase().includes(query) ||
-        user.company.toLowerCase().includes(query) ||
-        user.email.toLowerCase().includes(query)
+        (user.adminName && user.adminName.toLowerCase().includes(query)) ||
+        (user.company && user.company.toLowerCase().includes(query)) ||
+        (user.email && user.email.toLowerCase().includes(query)) ||
+        (user.id && user.id.toLowerCase().includes(query))
       );
     }
 
     return result;
   });
 
+  ngOnInit(): void {
+    this.fetchUsers();
+  }
+
+  fetchUsers(): void {
+    this.isLoading.set(true);
+    this.usersService.getUsers().subscribe({
+      next: (res: any) => {
+        const isSuccess = res.IsSuccess ?? res.isSuccess;
+        const data = res.Data ?? res.data;
+        if (isSuccess && data) {
+          this.rawUsers.set(data);
+        }
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('خطأ في جلب المستخدمين:', err);
+        this.isLoading.set(false);
+      }
+    });
+  }
+
   setTab(tab: 'all' | 'suspended') {
     this.activeTab.set(tab);
-    this.searchQuery.set(''); 
+    this.searchQuery.set('');
   }
 
   updateSearch(event: Event) {
@@ -57,9 +101,22 @@ export class UsersComponent {
     this.searchQuery.set(input.value);
   }
 
-  toggleUserStatus(userId: string) {
-    this.users.update(users => 
-      users.map(user => user.id === userId ? { ...user, status: user.status === 'active' ? 'suspended' : 'active' } : user)
-    );
+  // 3. تغيير حالة المستخدم (حظر / فك حظر)
+  toggleUserStatus(dbId: number) {
+    this.isTogglingId.set(dbId);
+
+    this.usersService.toggleSuspension(dbId).subscribe({
+      next: () => {
+        // تحديث الداتا محلياً بدون ريفريش، وهتنعكس فوراً في الجدول والبادجات
+        this.rawUsers.update(users => 
+          users.map(u => u.userId === dbId ? { ...u, isSuspended: !u.isSuspended } : u)
+        );
+        this.isTogglingId.set(null);
+      },
+      error: (err) => {
+        console.error('خطأ في تغيير حالة المستخدم:', err);
+        this.isTogglingId.set(null);
+      }
+    });
   }
 }

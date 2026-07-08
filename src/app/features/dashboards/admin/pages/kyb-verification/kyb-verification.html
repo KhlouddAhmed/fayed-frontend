@@ -1,18 +1,16 @@
 <div class="kyb-container" dir="rtl" style="font-family: 'Cairo', sans-serif;">
   
-  <!-- عنوان الصفحة -->
   <div class="page-header mb-4 text-end">
     <h4 class="fw-bold text-navy mb-1">التحقق من الهوية (KYB)</h4>
     <p class="text-muted" style="font-size: 14px;">مراجعة وتدقيق مستندات الشركات والمصانع المسجلة حديثاً</p>
   </div>
 
-  <!-- التابات -->
   <div class="d-flex border-bottom mb-4">
     <button class="btn tab-btn px-4 py-3 d-flex align-items-center gap-2" 
             [class.active]="activeTab() === 'pending'" 
             (click)="setTab('pending')">
       طلبات معلقة
-      <span class="badge rounded-pill bg-light-blue text-primary px-2 py-1">3</span>
+      <span class="badge rounded-pill bg-light-blue text-primary px-2 py-1">{{ kybRequests().length }}</span>
     </button>
     <button class="btn tab-btn px-4 py-3" 
             [class.active]="activeTab() === 'reviewed'" 
@@ -21,7 +19,6 @@
     </button>
   </div>
 
-  <!-- 1. تبويب "طلبات معلقة" (الجدول) -->
   @if (activeTab() === 'pending') {
     <div class="card shadow-sm border overflow-hidden" style="border-radius: 16px; border-color: #E2E8F0 !important;">
       <div class="card-body p-0">
@@ -46,12 +43,10 @@
                   <td class="py-4 text-muted" style="font-size: 14px;">{{ request.taxNumber }}</td>
                   <td class="py-4 text-muted" style="font-size: 14px;">{{ request.submissionDate }}</td>
                   <td class="py-4 text-center">
-                    <!-- ربطنا الزرار بالدالة الجديدة عشان تبعت بيانات الصف ده -->
                     <button class="btn btn-primary btn-sm px-3 py-2 rounded-2 fw-medium d-inline-flex align-items-center justify-content-center gap-2" 
                             style="font-size: 12px; background-color: #2563EB; border: none;"
                             (click)="reviewRequest(request)">
-                      <i class="bi bi-eye"></i>
-                      مراجعة المستندات
+                      <i class="bi bi-eye"></i> مراجعة المستندات
                     </button>
                   </td>
                 </tr>
@@ -63,113 +58,128 @@
     </div>
   }
 
-  <!-- 2. تبويب "مراجعة المستندات" -->
   @if (activeTab() === 'reviewed') {
-    
-    <!-- لو فيه شركة تم اختيارها، ارسم التفاصيل -->
     @if (selectedRequest(); as req) {
+      
+      <div class="d-flex gap-2 mb-4 justify-content-end text-start" dir="ltr">
+        <button class="btn px-4 py-2 text-white fw-medium d-flex align-items-center gap-2" 
+                style="background-color: #EF4444; border-radius: 6px; font-size: 14px;" 
+                (click)="submitDecision(false)" [disabled]="isSubmitting()">
+          <i class="bi bi-x-lg" style="font-size: 12px;"></i> رفض المستخدم 
+        </button>
+        <button class="btn px-4 py-2 text-white fw-medium d-flex align-items-center gap-2" 
+                style="background-color: #2563EB; border-radius: 6px; font-size: 14px;" 
+                (click)="submitDecision(true)" [disabled]="isSubmitting()">
+          <i class="bi bi-check-lg"></i> قبول المستخدم
+        </button>
+      </div>
+
       <div class="row g-4">
         
-        <!-- الكارت الأيمن: مراجعة البيانات -->
         <div class="col-12 col-xl-7">
-          <div class="card shadow-sm border h-100 p-4" style="border-radius: 16px; border-color: #E2E8F0 !important;">
-            
-            <h6 class="fw-bold text-navy mb-4 text-end d-flex align-items-center gap-2">
-              <i class="bi bi-building text-primary"></i>
-              مراجعة بيانات: {{ req.companyName }}
+          <div class="card shadow-sm border p-4" style="border-radius: 16px; border-color: #E2E8F0 !important;">
+            <h6 class="fw-bold text-navy mb-4 text-end d-flex align-items-center justify-content-end gap-2">
+              مراجعة بيانات: {{ req.companyName }} <i class="bi bi-building text-primary"></i>
             </h6>
 
-            <!-- الحقول -->
-            <div class="mb-3">
+            <div class="mb-4 text-end">
               <label class="form-label text-muted fw-semibold" style="font-size: 12px;">اسم الشركة القانوني</label>
               <input type="text" class="form-control text-center text-navy fw-bold" style="background-color: #F8FAFC; border-color: #E2E8F0; font-size: 13px;" [value]="req.companyName" readonly>
             </div>
             
-            <div class="row g-3 mb-4">
-              <div class="col-6">
-                <label class="form-label text-muted fw-semibold" style="font-size: 12px;">الرقم الضريبي</label>
-                <input type="text" class="form-control text-center text-navy fw-bold" style="background-color: #F8FAFC; border-color: #E2E8F0; font-size: 13px;" [value]="req.taxNumber" readonly>
-              </div>
+            <div class="row g-3 mb-4 text-end">
               <div class="col-6">
                 <label class="form-label text-muted fw-semibold" style="font-size: 12px;">رقم السجل التجاري</label>
                 <input type="text" class="form-control text-center text-navy fw-bold" style="background-color: #F8FAFC; border-color: #E2E8F0; font-size: 13px;" [value]="req.commercialRecord" readonly>
               </div>
-            </div>
-
-            <!-- نسبة المطابقة AI OCR -->
-            <div class="ai-ocr-box p-3 rounded-3 mb-4" style="background-color: #F8FAFC; border: 1px solid #E2E8F0;">
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="text-muted fw-bold" style="font-size: 12px;">مطابقة الذكاء الاصطناعي (AI OCR)</span>
-                <span class="text-primary fw-bold" style="font-size: 13px;">موثوقية عالية — 87%</span>
-              </div>
-              <div class="progress" style="height: 6px; background-color: #E2E8F0;">
-                <div class="progress-bar rounded-pill" style="width: 87%; background-color: #2563EB;"></div>
+              <div class="col-6">
+                <label class="form-label text-muted fw-semibold" style="font-size: 12px;">الرقم الضريبي</label>
+                <input type="text" class="form-control text-center text-navy fw-bold" style="background-color: #F8FAFC; border-color: #E2E8F0; font-size: 13px;" [value]="req.taxNumber" readonly>
               </div>
             </div>
 
-            <!-- قائمة التحقق -->
-            <div class="verification-list d-flex flex-column gap-2 mt-2">
-              <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-check-circle text-success" style="font-size: 15px;"></i>
-                <span class="text-muted" style="font-size: 13px;">اسم المفوض مطابق لمدير الحساب</span>
+            <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-2 flex-row-reverse">
+                <span class="text-muted fw-bold" style="font-size: 13px;">مطابقة الذكاء الاصطناعي (AI OCR)</span>
+                <span class="fw-bold" [ngClass]="req.aiConfidenceScore >= 50 ? 'text-primary' : 'text-danger'" style="font-size: 14px;">
+                  {{ req.aiConfidenceScore >= 50 ? 'موثوقية عالية' : 'غير موثوق' }} — {{ req.aiConfidenceScore }}%
+                </span>
               </div>
-              <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-check-circle text-success" style="font-size: 15px;"></i>
-                <span class="text-muted" style="font-size: 13px;">تاريخ انتهاء السجل التجاري أبعد من 6 أشهر</span>
-              </div>
-              <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-check-circle text-success" style="font-size: 15px;"></i>
-                <span class="text-muted" style="font-size: 13px;">الكيان مسجل ضمن الغرفة الصناعية بمصر</span>
+              <div class="progress flex-row-reverse" style="height: 8px; background-color: #E2E8F0;">
+                <div class="progress-bar rounded-pill" 
+                     [style.width.%]="req.aiConfidenceScore" 
+                     [ngClass]="req.aiConfidenceScore >= 50 ? 'bg-primary' : 'bg-danger'">
+                </div>
               </div>
             </div>
 
+            <div class="verification-list d-flex flex-column gap-3 mt-4 text-end align-items-end">
+              <div class="d-flex align-items-center gap-2 flex-row-reverse">
+                <i class="bi bi-check-circle text-success" style="font-size: 16px;"></i>
+                <span class="text-muted fw-medium" style="font-size: 13px;">اسم المفوض مطابق لمدير الحساب</span>
+              </div>
+              <div class="d-flex align-items-center gap-2 flex-row-reverse">
+                <i class="bi bi-check-circle text-success" style="font-size: 16px;"></i>
+                <span class="text-muted fw-medium" style="font-size: 13px;">تاريخ انتهاء السجل التجاري أبعد من 6 أشهر</span>
+              </div>
+              <div class="d-flex align-items-center gap-2 flex-row-reverse">
+                <i class="bi bi-check-circle text-success" style="font-size: 16px;"></i>
+                <span class="text-muted fw-medium" style="font-size: 13px;">الكيان مسجل ضمن الغرفة الصناعية بمصر</span>
+              </div>
+            </div>
           </div>
+
+          @if (req.aiMismatches) {
+            <div class="card shadow-sm border mt-4 p-4" style="border-radius: 16px; border-color: #E2E8F0 !important; background-color: #fff;">
+              <h6 class="fw-bold text-navy mb-3 text-end">أسباب الرفض</h6>
+              <ul class="text-danger fw-medium text-end mb-0" style="font-size: 14px; line-height: 2; list-style: none; padding: 0;">
+                <li class="mb-2 d-flex align-items-center justify-content-end gap-2">
+                  {{ req.aiMismatches }} <span style="width: 6px; height: 6px; background-color: #EF4444; border-radius: 50%; display: inline-block;"></span> 
+                </li>
+              </ul>
+            </div>
+          }
         </div>
 
-        <!-- الكارت الأيسر: المستندات المرفقة -->
         <div class="col-12 col-xl-5">
           <div class="card shadow-sm border h-100 p-4" style="border-radius: 16px; border-color: #E2E8F0 !important;">
-            
-            <h6 class="fw-bold text-navy mb-4 text-end d-flex align-items-center gap-2">
-              <i class="bi bi-file-earmark-text text-primary"></i>
-              المستندات المرفقة
+            <h6 class="fw-bold text-navy mb-4 text-end d-flex align-items-center justify-content-end gap-2">
+               المستندات المرفقة <i class="bi bi-file-earmark-text text-primary"></i>
             </h6>
 
-            <div class="d-flex gap-3 h-100 pb-2">
-              
-              <!-- المستند الأول: البطاقة الضريبية -->
-              <div class="doc-box flex-grow-1 border-dashed rounded-4 d-flex flex-column align-items-center justify-content-center p-3 text-center">
-                <i class="bi bi-shield-check mb-2" style="font-size: 28px; color: #94A3B8;"></i>
-                <span class="text-muted fw-semibold mb-3" style="font-size: 12px; line-height: 1.6;">البطاقة الضريبية<br>الملونة.jpg</span>
-                <span class="badge badge-success-light px-3 py-2 rounded-pill fw-bold" style="font-size: 11px;">مستخرج بنجاح</span>
-              </div>
-
-              <!-- المستند الثاني: السجل التجاري -->
-              <div class="doc-box flex-grow-1 border-dashed rounded-4 d-flex flex-column align-items-center justify-content-center p-3 text-center">
-                <i class="bi bi-file-earmark-pdf mb-2" style="font-size: 28px; color: #94A3B8;"></i>
-                <span class="text-muted fw-semibold mb-3" style="font-size: 12px; line-height: 1.6;">شهادة السجل<br>التجاري.pdf</span>
-                <span class="badge badge-success-light px-3 py-2 rounded-pill fw-bold" style="font-size: 11px;">مستخرج بنجاح</span>
-              </div>
-
+            <div class="row g-3">
+              @for (doc of req.documents; track $index) {
+                <div class="col-6">
+                  <div class="doc-box border rounded-3 d-flex flex-column align-items-center justify-content-center p-3 text-center h-100" 
+                       style="border-color: #E2E8F0 !important; border-style: dashed !important; cursor: pointer; transition: 0.2s;"
+                       (click)="downloadDocument(doc.fileUrl)"
+                       onmouseover="this.style.backgroundColor='#F8FAFC'" 
+                       onmouseout="this.style.backgroundColor='transparent'">
+                    
+                    <i class="bi bi-shield-check mb-2" style="font-size: 28px; color: #94A3B8;"></i>
+                    <span class="text-muted fw-bold mb-3" style="font-size: 12px; line-height: 1.6;">{{ doc.documentType }}</span>
+                    <span class="badge px-3 py-2 rounded-pill fw-bold" style="background-color: #DCFCE7; color: #16A34A; font-size: 11px;">مستخرج بنجاح</span>
+                  </div>
+                </div>
+              }
             </div>
-
           </div>
         </div>
 
       </div>
     } 
-    <!-- لو مفيش شركة تم اختيارها، ارسم الـ Empty State -->
     @else {
       <div class="card shadow-sm border d-flex flex-column align-items-center justify-content-center text-center" 
            style="border-radius: 16px; border-color: #E2E8F0 !important; min-height: 450px;">
         <div class="mb-4">
-          <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-            <line x1="16" y1="13" x2="8" y2="13"></line>
-            <line x1="16" y1="17" x2="8" y2="17"></line>
-            <polyline points="10 9 9 9 8 9"></polyline>
-          </svg>
+          <div class="mb-4">
+  <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+    <polyline points="14 2 14 8 20 8"></polyline>
+    <line x1="16" y1="13" x2="8" y2="13"></line>
+    <line x1="16" y1="17" x2="8" y2="17"></line>
+  </svg>
+</div>
         </div>
         <h5 class="fw-bold text-navy mb-2">اختر شركة من قائمة الطلبات المعلقة أولاً</h5>
         <p class="text-muted mb-4" style="font-size: 14px;">انتقل لتبويب "طلبات معلقة" واضغط على مراجعة المستندات</p>
@@ -181,4 +191,4 @@
       </div>
     }
   }
-</div>
+</div>ٍ
