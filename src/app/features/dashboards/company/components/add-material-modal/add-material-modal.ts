@@ -5,9 +5,9 @@ import { CategoriesService, Category } from '../../services/categories.service';
 
 const EMPTY_FORM_VALUE: MaterialFormValue = {
   title: '',
+  description: '',
   categoryId: 0,
   materialCondition: 'New',
-  description: '',
   quantity: 0,
   price: 0,
   mediaFiles: []
@@ -21,7 +21,7 @@ function toFormValue(material: Material): MaterialFormValue {
     description: material.description,
     quantity: material.availableQuantity,
     price: material.pricePerUnit,
-    mediaFiles: [] // الملفات لا يتم جلبها في التعديل عادة
+    mediaFiles: []
   };
 }
 
@@ -69,7 +69,11 @@ export class AddMaterialModal implements OnInit {
   }
 
   protected updateField<K extends keyof MaterialFormValue>(field: K, rawValue: string): void {
-    const numericFields: readonly (keyof MaterialFormValue)[] = ['quantity', 'price', 'categoryId'];
+
+    const numericFields: readonly (keyof MaterialFormValue)[] = [
+      'quantity', 'price', 'categoryId'
+    ];
+
     const parsedValue = numericFields.includes(field) ? Number(rawValue) : rawValue;
     this.formValue.update(current => ({ ...current, [field]: parsedValue }));
   }
