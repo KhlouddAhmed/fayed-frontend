@@ -30,10 +30,10 @@
     </button>
   </div>
 
-  @if (offersResource.isLoading()) {
+  @if (isLoading()) {
     <app-loading-skeleton variant="table" [rows]="5" />
-  } @else if (offersResource.error()) {
-    <app-error-state (retry)="offersResource.reload()" />
+  } @else if (isError()) {
+    <app-error-state (retry)="loadOffers()" />
   } @else if (filteredOffers().length === 0) {
     <app-empty-state
       title="لا توجد عروض حالياً"

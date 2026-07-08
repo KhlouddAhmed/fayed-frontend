@@ -1,6 +1,6 @@
 <div class="overview-page" dir="rtl">
 
-  @if (summaryResource.isLoading()) {
+  @if (isLoading()) {
   <div class="overview-page-greeting-skeleton">
     <app-loading-skeleton variant="text" [rows]="2" />
   </div>
@@ -10,14 +10,13 @@
     <app-loading-skeleton variant="table" [rows]="5" />
   </div>
 
-  } @else if (summaryResource.error()) {
-  <app-error-state message="تعذر تحميل بيانات لوحة التحكم، حاول مرة أخرى" (retry)="summaryResource.reload()" />
+  } @else if (isError()) {
+  <app-error-state message="تعذر تحميل بيانات لوحة التحكم، حاول مرة أخرى" (retry)="ngOnInit()" />
 
-  } @else if (summaryResource.value()) {
+  } @else if (summaryData()) {
 
-  @let summary = summaryResource.value()!;
+  @let summary = summaryData()!;
 
-  <!-- Row 1: Greeting + AI Promo -->
   <div class="overview-page-top-row">
     <header class="overview-page-greeting">
       <h1 class="overview-page-greeting-title">مرحباً، {{ summary.companyName }}</h1>
@@ -29,7 +28,6 @@
     <app-ai-promo-card (startConversation)="onStartConversation()" />
   </div>
 
-  <!-- Row 2: Stat Cards -->
   <div class="overview-page-stats-grid">
     <app-company-stat-card icon="disputes" label="النزاعات المفتوحة" [value]="summary.openDisputesCount" unit="نزاع جديد"
       accent="red" [badgeText]="summary.requiresUrgentAction ? 'تحتاج اجراء عاجل' : null" linkText="اضغط لعرضها"
@@ -42,14 +40,11 @@
       linkText="اضغط لعرضها" (linkClicked)="onNavigate('alerts')" />
   </div>
 
-  <!-- Row 3: Activity + Orders -->
   <div class="overview-page-lower-grid">
     <app-recent-orders-table [orders]="summary.recentOrders" />
-   <!-- <app-recent-activity-feed [activities]="summary.recentActivities" />  -->
-<app-recent-activity-feed [activities]="mockActivities" />
+    <app-recent-activity-feed [activities]="activitiesData()" />
   </div>
 
-  <!-- Row 4: Quick Actions -->
   <section class="overview-page-quick-actions" aria-label="اختصارات سريعة">
     <h2 class="overview-page-quick-actions-title">اختصارات سريعة</h2>
     <div class="overview-page-quick-actions-grid">
