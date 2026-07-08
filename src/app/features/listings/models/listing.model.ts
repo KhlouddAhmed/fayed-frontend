@@ -14,18 +14,23 @@ export interface Listing {
 
 // Backend DTOs
 export interface ListingDto {
-  readonly Id: number;
-  readonly Title: string;
-  readonly CategoryName: string | null;
-  readonly MainImageUrl: string | null;
-  readonly MinPrice: number;
-  readonly MaxPrice: number;
-  readonly Quantity: number;
-  readonly MeasureUnit: string;
-  readonly FactoryAddress: string;
-  readonly MaterialType: string;
-  readonly CreatedAt: string;
+  readonly id: number;
+  readonly title: string;
+  readonly categoryName: string | null;
+  readonly mainImageUrl: string | null;
+  readonly minPrice: number;
+  readonly maxPrice: number;
+  readonly quantity: number;
+  readonly measureUnit: string;
+  readonly factoryAddress: string;
+  readonly materialType: string;
+  readonly materialCondition: string;
+  readonly status: string;
+  readonly createdAt: string;
+  readonly publishedAt: string | null;
+  readonly expiryDate: string | null;
 }
+
 
 export interface ListingDetailsDto extends ListingDto {
   readonly Description: string;

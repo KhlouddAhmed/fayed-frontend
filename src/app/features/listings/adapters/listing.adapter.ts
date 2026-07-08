@@ -2,17 +2,17 @@ import { ListingDto, Listing, ListingDetailsDto, ListingMediaDto } from '../mode
 
 export function adaptListing(dto: ListingDto): Listing {
   return {
-    id: String(dto.Id),
-    title: dto.Title,
-    category: dto.CategoryName,
-    thumbnailUrl: dto.MainImageUrl,
-    price: dto.MaxPrice,
-    minPrice: dto.MinPrice,
-    quantity: dto.Quantity,
-    unit: dto.MeasureUnit,
-    governorate: extractGovernorate(dto.FactoryAddress),
-    postedAgo: formatPostedAgo(dto.CreatedAt),
-    materialTag: dto.MaterialType,
+    id: String(dto.id),
+    title: dto.title,
+    category: dto.categoryName,
+    thumbnailUrl: dto.mainImageUrl,
+    price: dto.maxPrice,
+    minPrice: dto.minPrice,
+    quantity: dto.quantity,
+    unit: dto.measureUnit,
+    governorate: extractGovernorate(dto.factoryAddress),
+    postedAgo: formatPostedAgo(dto.createdAt),
+    materialTag: dto.materialType,
   };
 }
 
@@ -21,16 +21,16 @@ export function adaptListings(dtos: readonly ListingDto[]): Listing[] {
 }
 
 export function adaptListingDetails(dto: ListingDetailsDto): any {
-  const mainImage = dto.Media.find(m => m.IsMain)?.MediaUrl || dto.MainImageUrl;
+  const mainImage = dto.Media.find(m => m.IsMain)?.MediaUrl || dto.mainImageUrl;
 
   return {
-    id: String(dto.Id),
-    title: dto.Title,
-    price: dto.MaxPrice,
-    quantity: dto.Quantity,
-    unit: dto.MeasureUnit,
-    governorate: extractGovernorate(dto.FactoryAddress),
-    publishedAgo: formatPostedAgo(dto.CreatedAt),
+    id: String(dto.id),
+    title: dto.title,
+    price: dto.maxPrice,
+    quantity: dto.quantity,
+    unit: dto.measureUnit,
+    governorate: extractGovernorate(dto.factoryAddress),
+    publishedAgo: formatPostedAgo(dto.createdAt),
     description: dto.Description,
     minOrder: dto.MinOrderQuantity,
     isNegotiable: dto.IsNegotiable,
@@ -40,7 +40,7 @@ export function adaptListingDetails(dto: ListingDetailsDto): any {
       .map(m => m.MediaUrl),
     mainImage,
     specs: [
-      { label: 'الحد الأدنى', value: `${dto.MinOrderQuantity} ${dto.MeasureUnit}` },
+      { label: 'الحد الأدنى', value: `${dto.MinOrderQuantity} ${dto.measureUnit}` },
       { label: 'قابل للتفاوض', value: dto.IsNegotiable ? 'نعم' : 'لا' },
       { label: 'طريقة التسليم', value: dto.DeliveryType },
     ],
