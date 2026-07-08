@@ -18,8 +18,8 @@ export class NotificationDropdownPanel implements OnInit {
   protected readonly notifications = signal<Notification[]>([]);
 
   ngOnInit(): void {
-    this.notificationsService.getAll().subscribe({
-      next: items => this.notifications.set(items.slice(0, 5)),
-    });
-  }
+  this.notificationsService.getAll(1, 5).subscribe({
+    next: ({ items }) => this.notifications.set(items),
+  });
+}
 }

@@ -16,11 +16,11 @@ export class NotificationBell implements OnInit {
   protected readonly isOpen = signal(false);
   protected readonly unreadCount = signal(0);
 
-  ngOnInit(): void {
-    this.notificationsService.getUnreadCount().subscribe({
-      next: count => this.unreadCount.set(count),
-    });
-  }
+ ngOnInit(): void {
+  this.notificationsService.getUnreadCount().subscribe({
+    next: count => this.unreadCount.set(count),
+  });
+}
 
   protected toggle(): void {
     this.isOpen.update((v) => !v);

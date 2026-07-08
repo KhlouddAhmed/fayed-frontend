@@ -1,16 +1,26 @@
-// DTO — matches backend exactly
 export interface NotificationDto {
-  Id: number;
-  Title: string;
-  Message: string;       // backend uses Message not Body
-  Type: string;
-  RelatedLink: string | null;
-  IsRead: boolean;
-  CreatedAt: string;
+  id: number;
+  title: string;
+  message: string;
+  type: string;
+  relatedLink: string | null;
+  isRead: boolean;
+  createdAt: string;
 }
 
-// UI Model
-export type NotificationType = 'order' | 'offer' | 'shipping' | 'payment' | 'system' | 'contract';
+export interface NotificationPageDto {
+  items: NotificationDto[];
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
+}
+
+export type NotificationType =
+  | 'order' | 'offer' | 'shipping' | 'payment'
+  | 'system' | 'contract' | 'account_verified'
+  | 'dispute' | 'delivery' | 'escrow';
+
 export type NotificationFilter = 'all' | 'unread' | 'orders' | 'offers' | 'payments' | 'system';
 
 export interface Notification {

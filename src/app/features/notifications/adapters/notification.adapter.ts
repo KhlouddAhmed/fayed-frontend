@@ -5,28 +5,41 @@ function getTimeAgo(isoDate: string): string {
   const minutes = Math.floor(diff / 60000);
   if (minutes < 60) return `منذ ${minutes} دقيقة`;
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `منذ ${hours} ساعات`;
+  if (hours < 24) return `منذ ${hours} ساعة`;
   const days = Math.floor(hours / 24);
-  return `منذ ${days} أيام`;
+  return `منذ ${days} يوم`;
 }
 
-function normalizeType(raw: string): NotificationType {
-  const map: Record<string, NotificationType> = {
-    order: 'order', offer: 'offer', shipping: 'shipping',
-    payment: 'payment', system: 'system', contract: 'contract',
-  };
-  return map[raw?.toLowerCase()] ?? 'system';
-}
+const TYPE_MAP: Record<string, NotificationType> = {
+  order: 'order',
+  offer: 'offer',
+  shipping: 'shipping',
+  payment: 'payment',
+  system: 'system',
+  contract: 'contract',
+  account_verified: 'account_verified',
+  account_rejected: 'system',
+  dispute_filed: 'dispute',
+  dispute_resolved: 'dispute',
+  delivery_confirmed: 'delivery',
+  escrow_released: 'escrow',
+  down_payment_received: 'payment',
+  order_created: 'order',
+  order_completed: 'order',
+  offer_received: 'offer',
+  offer_accepted: 'offer',
+  offer_rejected: 'offer',
+};
 
 export function adaptNotification(dto: NotificationDto): Notification {
   return {
-    id:          String(dto.Id),
-    title:       dto.Title,
-    body:        dto.Message,
-    timeAgo:     getTimeAgo(dto.CreatedAt),
-    isUnread:    !dto.IsRead,
-    type:        normalizeType(dto.Type),
-    relatedLink: dto.RelatedLink ?? null,
+    id: String(dto.id),
+    title: dto.title,
+    body: dto.message,
+    timeAgo: getTimeAgo(dto.createdAt),
+    isUnread: !dto.isRead,
+    type: TYPE_MAP[dto.type] ?? 'system',
+    relatedLink: dto.relatedLink ?? null,
   };
 }
 
