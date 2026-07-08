@@ -33,23 +33,23 @@ export interface ListingDto {
 
 
 export interface ListingDetailsDto extends ListingDto {
-  readonly Description: string;
-  readonly MinOrderQuantity: number;
-  readonly IsNegotiable: boolean;
-  readonly IsDivisible: boolean;
-  readonly DeliveryType: string;
-  readonly PreferPayMethod: string;
-  readonly CustomCatName?: string;
-  readonly VideoUrl?: string;
-  readonly CertificateUrl?: string;
-  readonly Media: ListingMediaDto[];
+  readonly description: string;
+  readonly minOrderQuantity: number;
+  readonly isNegotiable: boolean;
+  readonly isDivisible: boolean;
+  readonly deliveryType: string;
+  readonly preferPayMethod: string;
+  readonly customCatName?: string;
+  readonly videoUrl?: string;
+  readonly certificateUrl?: string;
+  readonly media: ListingMediaDto[];
 }
 
 export interface ListingMediaDto {
-  readonly Id: number;
-  readonly MediaUrl: string;
-  readonly MediaType: string;
-  readonly IsMain: boolean;
+  readonly id: number;
+  readonly mediaUrl: string;
+  readonly mediaType: string;
+  readonly isMain: boolean;
 }
 
 export interface ListingSearchParams {

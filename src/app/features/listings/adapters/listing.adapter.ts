@@ -21,7 +21,7 @@ export function adaptListings(dtos: readonly ListingDto[]): Listing[] {
 }
 
 export function adaptListingDetails(dto: ListingDetailsDto): any {
-  const mainImage = dto.Media.find(m => m.IsMain)?.MediaUrl || dto.mainImageUrl;
+  const mainImage = dto.media.find(m => m.isMain)?.mediaUrl || dto.mainImageUrl;
 
   return {
     id: String(dto.id),
@@ -31,23 +31,23 @@ export function adaptListingDetails(dto: ListingDetailsDto): any {
     unit: dto.measureUnit,
     governorate: extractGovernorate(dto.factoryAddress),
     publishedAgo: formatPostedAgo(dto.createdAt),
-    description: dto.Description,
-    minOrder: dto.MinOrderQuantity,
-    isNegotiable: dto.IsNegotiable,
-    deliveryType: dto.DeliveryType,
-    images: dto.Media
-      .filter(m => m.MediaType === 'Image')
-      .map(m => m.MediaUrl),
+    description: dto.description,
+    minOrder: dto.minOrderQuantity,
+    isNegotiable: dto.isNegotiable,
+    deliveryType: dto.deliveryType,
+    images: dto.media
+      .filter(m => m.mediaType === 'Image')
+      .map(m => m.mediaUrl),
     mainImage,
     specs: [
-      { label: 'الحد الأدنى', value: `${dto.MinOrderQuantity} ${dto.measureUnit}` },
-      { label: 'قابل للتفاوض', value: dto.IsNegotiable ? 'نعم' : 'لا' },
-      { label: 'طريقة التسليم', value: dto.DeliveryType },
+      { label: 'الحد الأدنى', value: `${dto.minOrderQuantity} ${dto.measureUnit}` },
+      { label: 'قابل للتفاوض', value: dto.isNegotiable ? 'نعم' : 'لا' },
+      { label: 'طريقة التسليم', value: dto.deliveryType },
     ],
-    labFiles: dto.CertificateUrl ? [{
+    labFiles: dto.certificateUrl ? [{
       name: 'شهادة الجودة',
       size: 'غير محدد',
-      url: dto.CertificateUrl
+      url: dto.certificateUrl
     }] : [],
     company: {
       id: 'FYD-XXXX',
