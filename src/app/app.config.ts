@@ -26,8 +26,10 @@ import { OrderService } from './features/dashboards/company/services/orders.serv
 // import { MockOrdersRepository } from './features/dashboards/company/services/mock-orders-repository';
 import { DISPUTE_REPOSITORY } from './features/dashboards/company/services/dispute-repository.token';
 // import { MockDisputeRepository } from './features/dashboards/company/services/mock-dispute-repository';
-import { MESSAGES_REPOSITORY } from './features/dashboards/company/services/messages-repository.token';
-import { MockMessagesRepository } from './features/dashboards/company/services/mock-messages-repository';
+
+// import { MESSAGES_REPOSITORY } from './features/dashboards/company/services/messages-repository.token';
+// import { MockMessagesRepository } from './features/dashboards/company/services/mock-messages-repository';
+
 import { RealMaterialsRepository } from './features/dashboards/company/services/real-materials-repository';
 
 export const appConfig: ApplicationConfig = {
@@ -59,7 +61,7 @@ export const appConfig: ApplicationConfig = {
     { provide: ORDERS_REPOSITORY, useClass: OrderService },
 
     // { provide: DISPUTE_REPOSITORY,   useClass: MockDisputeRepository   },
-    { provide: MESSAGES_REPOSITORY,  useClass: MockMessagesRepository  },
+    // { provide: MESSAGES_REPOSITORY,  useClass: MockMessagesRepository  },
 
     { provide: MATERIALS_REPOSITORY, useClass: RealMaterialsRepository }
   ],

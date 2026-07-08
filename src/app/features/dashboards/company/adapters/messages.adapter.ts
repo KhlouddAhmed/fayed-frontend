@@ -28,58 +28,58 @@ const MESSAGE_TYPE_MAP: Readonly<Record<string, MessageType>> = {
 
 function adaptSignature(dto: ContractSignatureDto | null): ContractSignature | null {
   if (!dto) return null;
-  return { partyCode: dto.PartyCode, signedAt: new Date(dto.SignedAt) };
+  return { partyCode: dto.partyCode, signedAt: new Date(dto.signedAt) };
 }
 
 function adaptAmendment(dto: ContractAmendmentDto | null): ContractAmendment | null {
   if (!dto) return null;
-  return { previousTerms: dto.PreviousTerms, newTerms: dto.NewTerms };
+  return { previousTerms: dto.previousTerms, newTerms: dto.newTerms };
 }
 
 export function adaptConversation(dto: ConversationDto): Conversation {
   return {
-    id: dto.Id,
-    participantCode: dto.ParticipantCode,
-    participantName: dto.ParticipantName,
-    participantInitial: dto.ParticipantInitial,
-    participantColor: dto.ParticipantColor,
-    lastMessage: dto.LastMessage ?? '',
-    lastMessageAt: new Date(dto.LastMessageAt),
-    unreadCount: dto.UnreadCount ?? 0,
+    id: dto.id,
+    participantCode: dto.participantCode,
+    participantName: dto.participantName,
+    participantInitial: dto.participantInitial,
+    participantColor: dto.participantColor,
+    lastMessage: dto.lastMessage ?? '',
+    lastMessageAt: dto.lastMessageAt ? new Date(dto.lastMessageAt) : new Date(),
+    unreadCount: dto.unreadCount ?? 0,
   };
 }
 
 export function adaptMessage(dto: MessageDto): Message {
   return {
-    id: dto.Id,
-    conversationId: dto.ConversationId,
-    senderCode: dto.SenderCode,
-    content: dto.Content,
-    type: MESSAGE_TYPE_MAP[dto.Type] ?? 'text',
-    sentAt: new Date(dto.SentAt),
+    id: dto.id,
+    conversationId: dto.conversationId,
+    senderCode: dto.senderCode,
+    content: dto.content,
+    type: MESSAGE_TYPE_MAP[dto.type] ?? 'text',
+    sentAt: new Date(dto.sentAt),
   };
 }
 
 export function adaptContract(dto: ContractDto): Contract {
   return {
-    id: dto.Id,
-    code: dto.Code,
-    status: CONTRACT_STATUS_MAP[dto.Status] ?? 'draft',
-    sellerName: dto.SellerName,
-    buyerName: dto.BuyerName,
-    dealDate: dto.DealDate,
-    materialName: dto.MaterialName,
-    totalQuantity: dto.TotalQuantity,
-    pricePerTon: dto.PricePerTon,
-    totalValue: dto.TotalValue,
-    deliveryTerms: dto.DeliveryTerms,
-    deliveryLocation: dto.DeliveryLocation,
-    escrowTerms: dto.EscrowTerms,
-    qualityNotes: dto.QualityNotes,
-    additionalTerms: dto.AdditionalTerms ?? null,
-    pendingAmendment: adaptAmendment(dto.PendingAmendment),
-    buyerSignature: adaptSignature(dto.BuyerSignature),
-    sellerSignature: adaptSignature(dto.SellerSignature),
+    id: dto.id,
+    code: dto.code,
+    status: CONTRACT_STATUS_MAP[dto.status] ?? 'draft',
+    sellerName: dto.sellerName,
+    buyerName: dto.buyerName,
+    dealDate: dto.dealDate,
+    materialName: dto.materialName,
+    totalQuantity: dto.totalQuantity,
+    pricePerTon: dto.pricePerTon,
+    totalValue: dto.totalValue,
+    deliveryTerms: dto.deliveryTerms,
+    deliveryLocation: dto.deliveryLocation,
+    escrowTerms: dto.escrowTerms,
+    qualityNotes: dto.qualityNotes,
+    additionalTerms: dto.additionalTerms ?? null,
+    pendingAmendment: adaptAmendment(dto.pendingAmendment),
+    buyerSignature: adaptSignature(dto.buyerSignature),
+    sellerSignature: adaptSignature(dto.sellerSignature),
   };
 }
 

@@ -16,11 +16,7 @@ import {
   ContractSignatureFormValue,
   Message,
 } from '../../models/messages.model';
-import {
-  adaptContract,
-  adaptConversation,
-  adaptMessages,
-} from '../../adapters/messages.adapter';
+import { adaptContract } from '../../adapters/messages.adapter';
 import { ChatService } from '../../services/chat.service';
 import { ConversationList } from '../../components/conversation-list/conversation-list';
 import { MessageThread } from '../../components/message-thread/message-thread';
@@ -55,10 +51,7 @@ export class Messages implements OnInit {
   protected readonly currentDate = new Date();
 
   protected readonly conversationsResource = resource({
-    loader: async () => {
-      const dtos = await firstValueFrom(this.chatService.getConversations());
-      return dtos.map(adaptConversation);
-    },
+    loader: async () => firstValueFrom(this.chatService.getConversations()),
   });
 
   protected readonly activeConversationId = signal<string | null>(null);
@@ -72,8 +65,7 @@ export class Messages implements OnInit {
     params: this.activeConversationId,
     loader: async ({ params: id }): Promise<readonly Message[]> => {
       if (!id) return [];
-      const dtos = await firstValueFrom(this.chatService.getMessages(id));
-      return adaptMessages(dtos);
+      return firstValueFrom(this.chatService.getMessages(id));
     },
   });
 
@@ -147,6 +139,6 @@ export class Messages implements OnInit {
   }
 
   protected onProceedToPayment(_contractId: string): void {
-  this.activeModal.set(null);
-}
+    this.activeModal.set(null);
+  }
 }
