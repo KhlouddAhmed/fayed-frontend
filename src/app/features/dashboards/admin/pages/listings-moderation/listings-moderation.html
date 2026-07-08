@@ -16,33 +16,29 @@
             [class.active]="activeTab() === 'pending'" 
             (click)="setTab('pending')">
       إعلانات معلقة
-      <!-- الرقم مربوط بالـ Signal عشان يقل أوتوماتيك لما تقبل/ترفض إعلان -->
       <span class="badge rounded-pill bg-light-blue text-primary px-2 py-1">{{ pendingCount() }}</span>
     </button>
   </div>
 
   <div class="card shadow-sm border overflow-hidden" style="border-radius: 16px; border-color: #E2E8F0 !important;">
     
-    <!-- شريط البحث يظهر فقط في جميع الإعلانات -->
     @if (activeTab() === 'all') {
       <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-start">
         <div class="search-box position-relative" style="width: 320px;">
           <i class="bi bi-search position-absolute text-muted" style="right: 15px; top: 50%; transform: translateY(-50%); font-size: 14px;"></i>
           <input type="text" class="form-control bg-light border-0 rounded-3" 
                  style="padding-right: 40px; font-size: 13px; height: 42px;" 
-                 placeholder="ابحث باسم المادة أو البائع..."
+                 placeholder="ابحث باسم المادة أو البائع أو المعرِّف..."
                  [value]="searchQuery()"
                  (input)="updateSearch($event)">
         </div>
       </div>
     }
 
-    <!-- بادينج علوي خفيف لو مفيش شريط بحث -->
     <div class="card-body p-0" [class.pt-3]="activeTab() === 'pending'">
       <div class="table-responsive">
         <table class="table table-borderless text-center align-middle mb-0">
           
-          <!-- عناوين الأعمدة الديناميكية -->
           <thead class="text-muted border-bottom custom-thead" style="font-size: 13px;">
             <tr>
               <th class="py-3 fw-semibold text-end pe-4">المعرف</th>
@@ -63,9 +59,9 @@
           </thead>
           
           <tbody>
-            @for (ad of filteredAds(); track ad.id) {
+            @for (ad of filteredAds(); track ad.dbId) {
               <tr class="border-bottom last-no-border">
-                <td class="py-4 fw-bold text-navy text-end pe-4" style="font-size: 13px;">{{ ad.id }}</td>
+                <td class="py-4 fw-bold text-navy text-end pe-4" style="font-size: 13px;">{{ ad.displayId }}</td>
                 <td class="py-4 fw-bold text-navy" style="font-size: 13px;">{{ ad.title }}</td>
                 <td class="py-4 text-muted" style="font-size: 13px;">{{ ad.seller }}</td>
                 
@@ -85,12 +81,12 @@
                     <div class="d-flex align-items-center gap-2 justify-content-center">
                       <button class="btn btn-sm px-3 py-2 rounded-2 fw-medium d-inline-flex align-items-center gap-1" 
                               style="font-size: 12px; background-color: #2563EB; color: white; border: none;"
-                              (click)="changeAdStatus(ad.id, 'active')">
+                              (click)="changeAdStatus(ad.dbId, 'active')">
                         <i class="bi bi-check2"></i> قبول
                       </button>
                       <button class="btn btn-sm px-3 py-2 rounded-2 fw-medium d-inline-flex align-items-center gap-1" 
                               style="font-size: 12px; background-color: #EF4444; color: white; border: none;"
-                              (click)="changeAdStatus(ad.id, 'rejected')">
+                              (click)="changeAdStatus(ad.dbId, 'rejected')">
                         <i class="bi bi-x"></i> رفض
                       </button>
                     </div>
@@ -101,17 +97,19 @@
                     <span class="badge px-3 py-2 rounded-pill fw-bold" 
                           [class.badge-pending]="ad.status === 'pending'"
                           [class.badge-active]="ad.status === 'active'"
+                          [class.badge-rejected]="ad.status === 'rejected'"
                           style="font-size: 12px;">
-                      {{ ad.status === 'pending' ? 'معلق' : 'نشط' }}
+                      {{ ad.status === 'pending' ? 'معلق' : (ad.status === 'active' ? 'نشط' : 'مرفوض') }}
                     </span>
                   </td>
                   
                   <td class="py-4 text-center">
                     <select class="form-select custom-status-select mx-auto" 
                             [value]="ad.status" 
-                            (change)="changeAdStatus(ad.id, 'pending', $event)">
-                      <option value="pending">معلق</option>
+                            (change)="changeAdStatus(ad.dbId, 'active', $event)">
+                      <option value="pending" disabled>اختر حالة</option>
                       <option value="active">نشط</option>
+                      <option value="rejected">مرفوض</option>
                     </select>
                   </td>
                 }

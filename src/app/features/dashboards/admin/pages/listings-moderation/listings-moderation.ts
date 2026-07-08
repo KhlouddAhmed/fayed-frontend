@@ -1,36 +1,39 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ModerationService, ApiAdListing } from './moderation.service';
 
-interface AdListing {
-  id: string;
+// الواجهة اللي الـ HTML هيقرا منها
+export interface AdListingUI {
+  dbId: number;          // الـ ID الرقمي للباك إند
+  displayId: string;     // المعرف النصي للعرض (زي ORD-123)
   title: string;
   seller: string;
   category: string;
   quantity: string;
   price: string;
-  status: 'pending' | 'active' | 'rejected'; 
+  status: 'pending' | 'active' | 'rejected';
 }
 
 @Component({
   selector: 'app-moderation',
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './listings-moderation.html',
   styleUrls: ['./listings-moderation.css']
 })
-export class ModerationComponent {
-  // خلينا التاب الافتراضي هو 'pending' عشان تشوف التصميم الجديد أول ما تفتح
-  activeTab = signal<'all' | 'pending'>('pending');
+export class ModerationComponent implements OnInit {
+  private moderationService = inject(ModerationService);
+
+  activeTab = signal<'all' | 'pending'>('all');
   searchQuery = signal<string>('');
+  isLoading = signal<boolean>(true);
 
-  // الداتا تم تحديثها لتطابق الصورة تماماً، مع فصل السعر والكمية
-  adListings = signal<AdListing[]>([
-    { id: 'LST-502', title: 'خردة كابلات نحاس أحمر صناعي', seller: 'السويدي للكابلات', category: 'معادن', quantity: '2 طن', price: '18,000 ج.م', status: 'pending' },
-    { id: 'LST-503', title: 'حبيبات بلاستيك PET معاد تدويرها مغسولة', seller: 'الوطنية للبلاستيك', category: 'بلاستيك', quantity: '10 طن', price: '24,000 ج.م', status: 'pending' },
-    { id: 'LST-504', title: 'كرتون مستعمل مضغوط بالية OCC', seller: 'مصر للتعبئة', category: 'ورق وكرتون', quantity: '15 طن', price: '4,200 ج.م', status: 'pending' }
-  ]);
+  adListings = signal<AdListingUI[]>([]);
 
-  // حساب عدد الإعلانات المعلقة بشكل ديناميكي للبادج اللي في التاب
+  // حساب عدد الإعلانات المعلقة للبادج
   pendingCount = computed(() => this.adListings().filter(ad => ad.status === 'pending').length);
 
+  // الفلترة الديناميكية
   filteredAds = computed(() => {
     const tab = this.activeTab();
     const query = this.searchQuery().toLowerCase().trim();
@@ -40,14 +43,48 @@ export class ModerationComponent {
       const matchesTab = tab === 'all' || ad.status === tab;
       const matchesSearch = !query || 
                             ad.title.toLowerCase().includes(query) || 
-                            ad.seller.toLowerCase().includes(query);
+                            ad.seller.toLowerCase().includes(query) ||
+                            ad.displayId.toLowerCase().includes(query);
       return matchesTab && matchesSearch;
     });
   });
 
+  ngOnInit() {
+    this.fetchPendingAds();
+  }
+
+  fetchPendingAds() {
+    this.isLoading.set(true);
+    this.moderationService.getPendingListings().subscribe({
+      next: (res: any) => {
+        const isSuccess = res.IsSuccess ?? res.isSuccess;
+        const data = res.Data ?? res.data;
+
+        if (isSuccess && data) {
+          const mappedData: AdListingUI[] = data.map((item: ApiAdListing) => ({
+            dbId: item.listingId,
+            displayId: item.listingIdentifier, // المعرف النصي
+            title: item.title,
+            seller: item.sellerName,
+            category: item.categoryName,
+            quantity: item.quantityText,
+            price: item.priceText,
+            status: 'pending' 
+          }));
+          this.adListings.set(mappedData);
+        }
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('فشل جلب الإعلانات المعلقة:', err);
+        this.isLoading.set(false);
+      }
+    });
+  }
+
   setTab(tab: 'all' | 'pending') {
     this.activeTab.set(tab);
-    this.searchQuery.set(''); // تفريغ البحث عند تغيير التاب
+    this.searchQuery.set('');
   }
 
   updateSearch(event: Event) {
@@ -55,12 +92,29 @@ export class ModerationComponent {
     this.searchQuery.set(input);
   }
 
-  // دالة لتعديل الحالة (شغالة لزراير القبول/الرفض وللقائمة المنسدلة كمان)
-  changeAdStatus(id: string, newStatus: 'pending' | 'active' | 'rejected', event?: Event) {
-    const finalStatus = event ? (event.target as HTMLSelectElement).value as 'pending' | 'active' : newStatus;
-    
-    this.adListings.update(ads => 
-      ads.map(ad => ad.id === id ? { ...ad, status: finalStatus } : ad)
-    );
+  // دالة القرار شغالة مع الزراير ومع الـ Select Dropdown
+  changeAdStatus(dbId: number, newStatus: 'active' | 'rejected', event?: Event) {
+    if (event) {
+      const selectElement = event.target as HTMLSelectElement;
+      newStatus = selectElement.value as 'active' | 'rejected';
+    }
+
+    const isApproved = newStatus === 'active';
+    const payload = { isApproved: isApproved };
+
+    this.moderationService.decideListing(dbId, payload).subscribe({
+      next: (res: any) => {
+        const isSuccess = res.IsSuccess ?? res.isSuccess;
+        if (isSuccess) {
+          // تحديث الحالة في الواجهة فوراً
+          this.adListings.update(ads => 
+            ads.map(ad => ad.dbId === dbId ? { ...ad, status: newStatus } : ad)
+          );
+        }
+      },
+      error: (err) => {
+        console.error('فشل اتخاذ القرار:', err);
+      }
+    });
   }
 }
