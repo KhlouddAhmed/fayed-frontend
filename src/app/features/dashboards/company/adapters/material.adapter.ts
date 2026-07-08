@@ -1,40 +1,20 @@
-import { LabCertificate, Material, MaterialDto, MaterialStatus } from '../models/material.model';
-
-const MATERIAL_STATUS_MAP: Readonly<Record<string, MaterialStatus>> = {
-  Active: 'active',
-  UnderReview: 'underReview',
-  Paused: 'paused',
-  Rejected: 'rejected',
-};
-
-const DEFAULT_MATERIAL_STATUS: MaterialStatus = 'active';
-
-function adaptLabCertificate(dto: MaterialDto): LabCertificate | null {
-  if (!dto.LabCertificateUrl) return null;
-  return {
-    url: dto.LabCertificateUrl,
-    fileName: dto.LabCertificateFileName ?? '',
-    fileSizeKb: dto.LabCertificateFileSizeKb ?? 0,
-  };
-}
+import { Material, MaterialDto } from '../models/material.model';
 
 export function adaptMaterial(dto: MaterialDto): Material {
   return {
-    id: dto.Id,
-    name: dto.Name,
-    category: dto.Category,
-    categoryId: dto.CategoryId,
-    status: MATERIAL_STATUS_MAP[dto.Status] ?? DEFAULT_MATERIAL_STATUS,
-    description: dto.Description ?? '',
-    availableQuantity: dto.AvailableQuantity ?? 0,
-    minOrderQuantity: dto.MinOrderQuantity ?? 0,
-    unit: dto.Unit,
-    pricePerUnit: dto.PricePerUnit ?? 0,
-    imageUrls: dto.ImageUrls ?? [],
-    videoUrl: dto.VideoUrl ?? null,
-    labCertificate: adaptLabCertificate(dto),
-    publishedAt: new Date(dto.PublishedAt),
-    updatedAt: new Date(dto.UpdatedAt),
+    id: dto.id.toString(),
+    name: dto.title,
+    category: dto.categoryName || 'غير محدد',
+    categoryId: dto.categoryId,
+    status: dto.status,
+    description: dto.description || '',
+    availableQuantity: dto.quantity || 0,
+    unit: dto.measureUnit || 'كجم',
+    pricePerUnit: dto.price || dto.minPrice || 0,
+    imageUrls: dto.imageUrls?.length ? dto.imageUrls : (dto.mainImageUrl ? [dto.mainImageUrl] : []),
+    publishedAt: dto.publishedAt ? new Date(dto.publishedAt) : null,
+    updatedAt: new Date(dto.createdAt),
+    condition: dto.materialCondition || 'New'
   };
 }
 

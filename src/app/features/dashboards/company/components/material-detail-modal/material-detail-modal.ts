@@ -9,10 +9,11 @@ interface MaterialStatusConfig {
 }
 
 const MATERIAL_STATUS_DISPLAY_MAP: Readonly<Record<string, MaterialStatusConfig>> = {
-  active: { labelKey: 'نشط', variant: 'success' },
-  underReview: { labelKey: 'قيد المراجعة', variant: 'warning' },
-  paused: { labelKey: 'متوقف', variant: 'neutral' },
-  rejected: { labelKey: 'مرفوض', variant: 'danger' },
+  Draft: { labelKey: 'مسودة', variant: 'neutral' },
+  PendingApproval: { labelKey: 'قيد المراجعة', variant: 'warning' },
+  Published: { labelKey: 'منشور', variant: 'success' },
+  Rejected: { labelKey: 'مرفوض', variant: 'danger' },
+  Sold: { labelKey: 'مباع', variant: 'success' },
 };
 
 @Component({
