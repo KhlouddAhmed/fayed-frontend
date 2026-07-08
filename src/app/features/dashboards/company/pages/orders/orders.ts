@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, resource, signal } from '@angular/core';
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { adaptOrders } from '../../adapters/order.adapter';
 import { ORDERS_REPOSITORY } from '../../services/orders-repository.token';
 import { OrderRow } from '../../components/order-row/order-row';
@@ -13,7 +13,7 @@ type OrderTab = 'sent' | 'received';
 
 @Component({
   selector: 'app-orders',
-  imports: [OrderRow, LoadingSkeleton, ErrorState, EmptyState, DatePipe, StatusBadge, DecimalPipe],
+  imports: [OrderRow, LoadingSkeleton, ErrorState, EmptyState, StatusBadge, DecimalPipe],
   templateUrl: './orders.html',
   styleUrl: './orders.css',
 })
@@ -28,7 +28,6 @@ export class Orders {
     loader: async () => adaptOrders(await this.repository.getSales()),
   });
 
-  protected readonly currentDate = new Date();
   protected readonly activeTab = signal<OrderTab>('sent');
   protected readonly selectedOrder = signal<Order | null>(null);
 

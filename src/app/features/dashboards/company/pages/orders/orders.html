@@ -2,9 +2,6 @@
     <header class="orders-page-header">
         <h1 class="orders-page-title">الطلبات النشطة</h1>
         <p class="orders-page-subtitle">الطلبات النشطة، التفاصيل، الضمان، الشحن، والفواتير</p>
-        <p class="orders-page-date">
-            التاريخ الحالي {{ currentDate | date: 'h:mma, yyyy MMMM d' }}
-        </p>
     </header>
 
     <div class="orders-page-tabs" role="tablist">
@@ -23,7 +20,6 @@
     } @else if (hasError()) {
     <app-error-state (retry)="reloadActive()" />
     } @else if (filteredOrders().length === 0) {
-    ...
     <app-empty-state title="لا توجد طلبات حالياً" description="ستظهر هنا الطلبات المرسلة والمستلمة فور توافرها" />
     } @else {
     <div class="orders-page-table-wrapper">
@@ -37,7 +33,8 @@
         </div>
 
         @for (order of filteredOrders(); track order.id) {
-        <app-order-row [order]="order" (viewDetails)="onViewDetails($event)" /> }
+        <app-order-row [order]="order" (viewDetails)="onViewDetails($event)" />
+        }
     </div>
     }
 
@@ -57,21 +54,16 @@
 
                 <div class="orders-modal-meta">
                     <span class="orders-modal-code">{{ order.code }}</span>
-                    <span class="orders-modal-date">تاريخ الطلب: {{ order.orderDate | date: 'yyyy/MM/dd' }}</span>
                 </div>
 
                 <div class="orders-modal-info-grid">
                     <div class="orders-modal-info-card">
                         <span class="orders-modal-info-label">المورد</span>
-                        <span class="orders-modal-info-value">{{ order.supplierCode }}</span>
+                        <span class="orders-modal-info-value">{{ order.sellerCode }}</span>
                     </div>
                     <div class="orders-modal-info-card">
                         <span class="orders-modal-info-label">المنتج</span>
                         <span class="orders-modal-info-value">{{ order.productName }}</span>
-                    </div>
-                    <div class="orders-modal-info-card">
-                        <span class="orders-modal-info-label">الكمية</span>
-                        <span class="orders-modal-info-value">{{ order.quantity }} طن</span>
                     </div>
                     <div class="orders-modal-info-card">
                         <span class="orders-modal-info-label">القيمة الإجمالية</span>
@@ -82,21 +74,19 @@
                 <div class="orders-modal-tracker-section">
                     <h3 class="orders-modal-section-title">تتبع حالة الطلب</h3>
                     <div class="orders-modal-tracker">
-                        <div class="tracker-step" [class.tracker-step--done]="isStepDone(order.status, 'accepted')">
+                        <div class="tracker-step" [class.tracker-step--done]="isStepDone(order.status, 'pendingShipment')">
                             <div class="tracker-dot">
-                                @if (isStepDone(order.status, 'accepted')) {
+                                @if (isStepDone(order.status, 'pendingShipment')) {
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white"
                                     stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                                     <polyline points="20 6 9 17 4 12" />
                                 </svg>
                                 }
                             </div>
-                            <span class="tracker-label">قبول العرض</span>
+                            <span class="tracker-label">قيد الشحن</span>
                         </div>
-                        <div class="tracker-line"
-                            [class.tracker-line--done]="isStepDone(order.status, 'inPreparation')"></div>
-                        <div class="tracker-step"
-                            [class.tracker-step--done]="isStepDone(order.status, 'inPreparation')">
+                        <div class="tracker-line" [class.tracker-line--done]="isStepDone(order.status, 'inPreparation')"></div>
+                        <div class="tracker-step" [class.tracker-step--done]="isStepDone(order.status, 'inPreparation')">
                             <div class="tracker-dot">
                                 @if (isStepDone(order.status, 'inPreparation')) {
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white"
@@ -107,11 +97,29 @@
                             </div>
                             <span class="tracker-label">قيد التجهيز</span>
                         </div>
-                        <div class="tracker-line" [class.tracker-line--done]="isStepDone(order.status, 'delivered')">
-                        </div>
+                        <div class="tracker-line" [class.tracker-line--done]="isStepDone(order.status, 'delivered')"></div>
                         <div class="tracker-step" [class.tracker-step--done]="isStepDone(order.status, 'delivered')">
-                            <div class="tracker-dot"></div>
+                            <div class="tracker-dot">
+                                @if (isStepDone(order.status, 'delivered')) {
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white"
+                                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                                }
+                            </div>
                             <span class="tracker-label">تم التسليم</span>
+                        </div>
+                        <div class="tracker-line" [class.tracker-line--done]="isStepDone(order.status, 'completed')"></div>
+                        <div class="tracker-step" [class.tracker-step--done]="isStepDone(order.status, 'completed')">
+                            <div class="tracker-dot">
+                                @if (isStepDone(order.status, 'completed')) {
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white"
+                                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                                }
+                            </div>
+                            <span class="tracker-label">مكتمل</span>
                         </div>
                     </div>
                 </div>
@@ -127,12 +135,10 @@
                             <div class="orders-modal-action-icon orders-modal-action-icon--blue">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#155DFC"
                                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <path
-                                        d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                                     <polyline points="22,6 12,13 2,6" />
                                 </svg>
                             </div>
-
                         </button>
 
                         <button type="button" class="orders-modal-action-card">
@@ -148,7 +154,6 @@
                                     <line x1="12" y1="16" x2="12.01" y2="16" />
                                 </svg>
                             </div>
-
                         </button>
                     </div>
                 </div>
