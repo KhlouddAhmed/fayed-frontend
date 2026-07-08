@@ -61,7 +61,7 @@ function adaptChatToConversation(chat: ChatDto): ConversationDto {
   return {
     Id: String(chat.Id),
     ParticipantCode: chat.OtherParticipantCode,
-    ParticipantName: chat.ListingTitle,
+    ParticipantName: chat.OtherParticipantCode,
     ParticipantInitial: initialFromName(chat.ListingTitle),
     ParticipantColor: colorFromId(chat.OtherParticipantId),
     LastMessage: chat.LastMessage ?? '',
