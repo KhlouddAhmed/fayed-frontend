@@ -58,7 +58,7 @@ export class NotificationCenterPage implements OnInit {
 
   ngOnInit(): void {
     this.notificationsService.getAll().subscribe({
-      next: items => { this.notifications.set(items); this.isLoading.set(false); },
+      next: ({ items }) => { this.notifications.set(items); this.isLoading.set(false); },
       error: () => this.isLoading.set(false),
     });
   }
