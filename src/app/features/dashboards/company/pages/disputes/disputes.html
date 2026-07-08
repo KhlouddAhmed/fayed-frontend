@@ -64,7 +64,7 @@
   @if (isCreateModalOpen()) {
     <app-dispute-create-modal
       [isSubmitting]="isSubmittingDispute()"
-      (closeModal)="onCloseCreateModal()"
+      (close)="onCloseCreateModal()"
       (submitDispute)="onCreateDispute($event)"
     />
   }

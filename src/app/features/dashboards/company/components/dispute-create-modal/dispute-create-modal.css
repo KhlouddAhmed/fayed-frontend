@@ -1,12 +1,39 @@
+/* فرض التحكم على العنصر المضيف ليكسر الـ Flow الخاص بالصفحة */
+:host {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background-color: rgba(0, 0, 0, 0.5) !important; /* خلفية داكنة شفافة تغطي الشاشة */
+  display: flex !important;
+  justify-content: center !important; /* توسيط أفقي */
+  align-items: center !important;     /* توسيط رأسي */
+  z-index: 9999 !important;           /* فوق كل شيء في الصفحة */
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* الكارد الداخلي للـ Pop-up نفسه */
 .dispute-create-modal {
     background-color: var(--white);
     border-radius: 16px;
     box-shadow: var(--shadow-window);
     width: 100%;
     max-width: 660px;
-    max-height: 95vh;
-    overflow-y: auto;
+    max-height: 90vh; /* يمنع خروج الـ Pop-up عن حدود الشاشة عمودياً */
+    overflow-y: auto; /* يظهر سكرول داخلي مرن إذا كانت الشاشة صغيرة */
     padding: 28px;
+    animation: scaleUp 0.2s ease-out; /* تفعيل تأثير الـ Pop الناعم عند الفتح */
 }
 
 .dispute-create-modal-header {
@@ -80,32 +107,48 @@
 
 .dispute-create-modal-textarea {
     resize: vertical;
-    min-height: 110px;
 }
 
 .dispute-create-modal-error {
     font-size: 0.8125rem;
+    font-weight: 500;
     color: var(--danger);
 }
 
 .dispute-create-modal-attachment {
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 10px;
-    border: 1px dashed var(--border-input);
-    border-radius: 10px;
-    padding: 14px;
+    border: 2px dashed var(--border-input);
+    border-radius: 12px;
+    padding: 24px;
     background-color: var(--bg-muted);
+    cursor: pointer;
     color: var(--text-muted);
     font-size: 0.875rem;
-    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.dispute-create-modal-attachment:hover {
+    border-color: var(--primary);
+    background-color: var(--bg-soft);
+}
+
+.dispute-create-modal-attachment i {
+    font-size: 1.5rem;
+    color: var(--text-muted);
 }
 
 .dispute-create-modal-attachment-input {
     display: none;
 }
 
-.dispute-create-modal-submit {
-    width: 100%;
-    margin-block-start: 4px;
+.dispute-create-modal-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-block-start: 12px;
 }
