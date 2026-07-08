@@ -5,9 +5,9 @@ import { PaginationComponent } from '../../../../shared/components/pagination/pa
 import { SmartSearchBarComponent } from '../../../../shared/components/smart-search-bar/smart-search-bar';
 import { MarketplaceService } from '../../services/marketplace';
 import { Listing } from '../../models/listing.model';
-import { NavbarComponent } from "../../../../layout/navbar/navbar";
-import { Footer } from "../../../../layout/footer/footer";
-import { ChatbotWidget } from "../../../ai/components/chatbot-widget/chatbot-widget";
+import { NavbarComponent } from '../../../../layout/navbar/navbar';
+import { Footer } from '../../../../layout/footer/footer';
+import { ChatbotWidget } from '../../../ai/components/chatbot-widget/chatbot-widget';
 
 const PAGE_SIZE = 6;
 
@@ -20,31 +20,39 @@ const PAGE_SIZE = 6;
     SmartSearchBarComponent,
     NavbarComponent,
     Footer,
-    ChatbotWidget
+    ChatbotWidget,
   ],
   templateUrl: './marketplace-page.html',
-  styleUrl: './marketplace-page.css'
+  styleUrl: './marketplace-page.css',
 })
 export class MarketplacePageComponent implements OnInit {
   private readonly marketplaceService = inject(MarketplaceService);
 
-  listings = signal<Listing[]>([]);
-  isLoading = signal(true);
-  currentViewMode = signal<'grid' | 'list'>('grid');
-  currentPage = signal(1);
-  totalCount = signal(0);
-  currentSort = signal('newest');
-  currentFilters = signal<Partial<ListingFiltersValue>>({});
+  protected readonly listings = signal<Listing[]>([]);
+  protected readonly isLoading = signal(true);
+  protected readonly isSmartSearchActive = signal(false);
+  protected readonly currentViewMode = signal<'grid' | 'list'>('grid');
+  protected readonly currentPage = signal(1);
+  protected readonly totalCount = signal(0);
+  protected readonly currentSort = signal('newest');
+  protected readonly currentFilters = signal<Partial<ListingFiltersValue>>({});
 
-  startItem = computed(() => this.totalCount() > 0 ? (this.currentPage() - 1) * PAGE_SIZE + 1 : 0);
-  endItem = computed(() => Math.min(this.currentPage() * PAGE_SIZE, this.totalCount()));
-  totalPages = computed(() => Math.ceil(this.totalCount() / PAGE_SIZE));
+  protected readonly startItem = computed(() =>
+    this.totalCount() > 0 ? (this.currentPage() - 1) * PAGE_SIZE + 1 : 0
+  );
+  protected readonly endItem = computed(() =>
+    Math.min(this.currentPage() * PAGE_SIZE, this.totalCount())
+  );
+  protected readonly totalPages = computed(() =>
+    Math.ceil(this.totalCount() / PAGE_SIZE)
+  );
 
   ngOnInit(): void {
     this.loadListings();
   }
 
   onApplyFilters(filters: ListingFiltersValue): void {
+    this.isSmartSearchActive.set(false);
     this.currentFilters.set(filters);
     this.currentPage.set(1);
     this.loadListings();
@@ -63,52 +71,49 @@ export class MarketplacePageComponent implements OnInit {
 
   onPageChange(page: number): void {
     this.currentPage.set(page);
+    if (this.isSmartSearchActive()) return;
     this.loadListings();
   }
 
-  // onSmartSearch(query: string): void {
-  //   console.log('Smart Search query:', query);
-  // }
-
   onSmartSearch(query: string): void {
-  if (!query) return;
+    if (!query.trim()) return;
 
-  this.isLoading.set(true);
-  this.marketplaceService.smartSearch(query, this.currentPage()).subscribe({
-    next: (response) => {
-      this.listings.set(response.items || []);
-      this.totalCount.set(response.totalCount || 0);
-      this.isLoading.set(false);
-    },
-    error: (err) => {
-      console.error(err);
-      this.isLoading.set(false);
-    }
-  });
-}
+    this.isLoading.set(true);
+    this.isSmartSearchActive.set(true);
+    this.currentPage.set(1);
+
+    this.marketplaceService.smartSearch(query, this.currentPage(), PAGE_SIZE).subscribe({
+      next: response => {
+        this.listings.set([...response.items]);
+        this.totalCount.set(response.totalCount);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.isLoading.set(false);
+        this.isSmartSearchActive.set(false);
+      },
+    });
+  }
 
   private loadListings(): void {
     this.isLoading.set(true);
 
-    const filters: any = {
+    const filters = {
       ...this.currentFilters(),
-      sortBy: this.currentSort()
+      sortBy: this.currentSort(),
     };
 
-    this.marketplaceService.getListings(
-      this.currentPage(),
-      PAGE_SIZE,
-      filters
-    ).subscribe({
-      next: (response) => {
-        this.listings.set(response.items || []);
-        this.totalCount.set(response.totalCount || 0);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        console.error('Error loading listings', err);
-        this.isLoading.set(false);
-      }
-    });
+    this.marketplaceService
+      .getListings(this.currentPage(), PAGE_SIZE, filters)
+      .subscribe({
+        next: response => {
+          this.listings.set([...response.items]);
+          this.totalCount.set(response.totalCount);
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.isLoading.set(false);
+        },
+      });
   }
 }
