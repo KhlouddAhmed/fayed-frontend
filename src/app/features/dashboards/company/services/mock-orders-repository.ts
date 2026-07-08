@@ -66,11 +66,23 @@ function createMockOrders(): OrderDto[] {
 
 @Injectable()
 export class MockOrdersRepository implements OrdersRepository {
-  private orders = createMockOrders();
+  private readonly orders = createMockOrders();
 
-  getAll(): Promise<readonly OrderDto[]> {
+  getPurchases(): Promise<readonly OrderDto[]> {
     return new Promise((resolve) => {
-      setTimeout(() => resolve([...this.orders]), MOCK_DELAY_MS);
+      setTimeout(
+        () => resolve(this.orders.filter((o) => o.Direction === 'Sent')),
+        MOCK_DELAY_MS,
+      );
+    });
+  }
+
+  getSales(): Promise<readonly OrderDto[]> {
+    return new Promise((resolve) => {
+      setTimeout(
+        () => resolve(this.orders.filter((o) => o.Direction === 'Received')),
+        MOCK_DELAY_MS,
+      );
     });
   }
 }

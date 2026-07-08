@@ -19,7 +19,10 @@ import { MATERIALS_REPOSITORY } from './features/dashboards/company/services/mat
 // import { MockMaterialsRepository } from './features/dashboards/company/services/mock-materials-repository';
 import { RFQ_OFFER_REPOSITORY } from './features/dashboards/company/services/rfq-offer-repository.token';
 import { MockRfqOfferRepository } from './features/dashboards/company/services/mock-rfq-offer-repository';
+
 import { ORDERS_REPOSITORY } from './features/dashboards/company/services/orders-repository.token';
+import { OrderService } from './features/dashboards/company/services/orders.service';
+
 import { MockOrdersRepository } from './features/dashboards/company/services/mock-orders-repository';
 import { DISPUTE_REPOSITORY } from './features/dashboards/company/services/dispute-repository.token';
 // import { MockDisputeRepository } from './features/dashboards/company/services/mock-dispute-repository';
@@ -50,7 +53,11 @@ export const appConfig: ApplicationConfig = {
     { provide: OVERVIEW_REPOSITORY,  useClass: MockOverviewRepository  },
     // { provide: MATERIALS_REPOSITORY, useClass: MockMaterialsRepository },
     { provide: RFQ_OFFER_REPOSITORY, useClass: MockRfqOfferRepository  },
-    { provide: ORDERS_REPOSITORY,    useClass: MockOrdersRepository    },
+
+    // { provide: ORDERS_REPOSITORY,    useClass: MockOrdersRepository    },
+
+    { provide: ORDERS_REPOSITORY, useClass: OrderService },
+
     // { provide: DISPUTE_REPOSITORY,   useClass: MockDisputeRepository   },
     { provide: MESSAGES_REPOSITORY,  useClass: MockMessagesRepository  },
 

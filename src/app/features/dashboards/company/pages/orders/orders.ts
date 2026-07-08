@@ -13,39 +13,39 @@ type OrderTab = 'sent' | 'received';
 
 @Component({
   selector: 'app-orders',
-  standalone: true,
   imports: [OrderRow, LoadingSkeleton, ErrorState, EmptyState, DatePipe, StatusBadge, DecimalPipe],
   templateUrl: './orders.html',
   styleUrl: './orders.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Orders {
   private readonly repository = inject(ORDERS_REPOSITORY);
 
-  // جلب كافة الطلبات من الـ API عبر الـ Repository Token الخاص بك
-  protected readonly ordersResource = resource({
-    loader: async () => {
-      const data = await this.repository.getAll();
-      return adaptOrders(data);
-    },
+  protected readonly purchasesResource = resource({
+    loader: async () => adaptOrders(await this.repository.getPurchases()),
+  });
+
+  protected readonly salesResource = resource({
+    loader: async () => adaptOrders(await this.repository.getSales()),
   });
 
   protected readonly currentDate = new Date();
   protected readonly activeTab = signal<OrderTab>('sent');
   protected readonly selectedOrder = signal<Order | null>(null);
 
-  // فلترة الطلبات بشكل ريأكتف بناءً على التبويب النشط
-  protected readonly filteredOrders = computed(() => {
-    const orders = this.ordersResource.value() ?? [];
-    return orders.filter((order) => order.direction === this.activeTab());
-  });
+  protected readonly activeResource = computed(() =>
+    this.activeTab() === 'sent' ? this.purchasesResource : this.salesResource
+  );
+
+  protected readonly isLoading = computed(() => this.activeResource().isLoading());
+  protected readonly hasError = computed(() => this.activeResource().error());
+  protected readonly filteredOrders = computed(() => this.activeResource().value() ?? []);
 
   protected onTabChange(tab: OrderTab): void {
     this.activeTab.set(tab);
   }
 
   protected onViewDetails(orderId: string): void {
-    const order = this.ordersResource.value()?.find((o) => o.id === orderId) ?? null;
+    const order = this.activeResource().value()?.find(o => o.id === orderId) ?? null;
     this.selectedOrder.set(order);
   }
 
@@ -53,7 +53,10 @@ export class Orders {
     this.selectedOrder.set(null);
   }
 
-  // خريطة الحالات المتوافقة مع الكومبوننت الخاص بك Shared StatusBadge
+  protected reloadActive(): void {
+    this.activeResource().reload();
+  }
+
   protected readonly statusDisplayMap = {
     pendingShipment: { labelKey: 'قيد الشحن', variant: 'warning' as StatusBadgeVariant },
     inPreparation: { labelKey: 'قيد التجهيز', variant: 'warning' as StatusBadgeVariant },
@@ -61,17 +64,16 @@ export class Orders {
     completed: { labelKey: 'مكتمل', variant: 'success' as StatusBadgeVariant },
   };
 
-  // مصفوفة تتبع خطوات الطلب مطابقة لترتيب الستاتس الأصلي بالملفات
-  protected readonly STEP_ORDER: readonly OrderStatus[] = [
+  private readonly STEP_ORDER: readonly OrderStatus[] = [
     'pendingShipment',
     'inPreparation',
     'delivered',
     'completed',
   ];
 
-  protected isStepDone(currentStatus: OrderStatus, step: OrderStatus): boolean {
+  protected isStepDone(currentStatus: OrderStatus, step: string): boolean {
     const currentIndex = this.STEP_ORDER.indexOf(currentStatus);
-    const stepIndex = this.STEP_ORDER.indexOf(step);
-    return currentIndex >= stepIndex;
+    const stepIndex = this.STEP_ORDER.indexOf(step as OrderStatus);
+    return stepIndex <= currentIndex;
   }
 }
