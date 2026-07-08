@@ -62,7 +62,7 @@ export class DisputeCreateModal {
       this.submitDispute.emit({
         orderId:     Number(value.orderId),
         reason:      value.reason,
-        title:       value.title,
+        // title:       value.title,
         description: value.description,
       });
       return undefined;

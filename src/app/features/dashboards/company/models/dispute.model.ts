@@ -1,47 +1,58 @@
 // =============================================
-// API DTOs (.NET 8 — PascalCase as received from backend)
+// API DTOs — matches actual backend response (camelCase)
 // =============================================
 
 export interface DisputeDto {
-  readonly Id: string;
-  readonly Code: string;
-  readonly OrderReference: string;
-  readonly Reason: string;
-  readonly ReasonLabel: string;
-  readonly Description: string;
-  readonly FiledAt: string;
-  readonly Status: string;
-  readonly ArbitrationStatusLabel: string | null;
+  // camelCase (actual)
+  readonly id?: number;
+  readonly orderId?: number;
+  readonly reason?: string;
+  readonly description?: string;
+  readonly status?: string;
+  readonly createdAt?: string;
+  readonly resolvedAt?: string | null;
+  readonly resolutionNotes?: string | null;
+  // PascalCase (fallback)
+  readonly Id?: number;
+  readonly OrderId?: number;
+  readonly Reason?: string;
+  readonly Description?: string;
+  readonly Status?: string;
+  readonly CreatedAt?: string;
 }
 
 export interface NegotiationMessageDto {
-  readonly Id: string;
-  readonly SenderType: string;
-  readonly SenderLabel: string;
-  readonly Content: string;
-  readonly SentAt: string;
+  readonly id?: string;
+  readonly Id?: string;
+  readonly SenderType?: string;
+  readonly senderType?: string;
+  readonly SenderLabel?: string;
+  readonly senderLabel?: string;
+  readonly Content?: string;
+  readonly content?: string;
+  readonly SentAt?: string;
+  readonly sentAt?: string;
 }
 
 export interface CreateDisputeRequestDto {
-  readonly OrderId: number;
-  readonly Reason: string;
-  readonly Title: string;
-  readonly Description: string;
+  readonly orderId: number;
+  readonly reason: string;
+  readonly description: string;
 }
 
 // =============================================
-// UI Models (camelCase, normalized, display-ready)
+// UI Models
 // =============================================
 
-export type DisputeStatus = 'activeOpen' | 'underReview' | 'resolved';
-
+export type DisputeStatus = 'activeOpen' | 'underReview' | 'resolved' | 'cancelled';
 export type DisputeReason =
   | 'productNotAsDescribed'
   | 'lateDelivery'
   | 'quantityShortfall'
-  | 'delay';
-
-export type NegotiationSenderType = 'system' | 'buyer' | 'seller';
+  | 'delay'
+  | 'nonPayment'
+  | 'other';
+export type NegotiationSenderType = 'system' | 'buyer' | 'seller' | 'admin';
 
 export interface Dispute {
   readonly id: string;
@@ -66,6 +77,5 @@ export interface NegotiationMessage {
 export interface CreateDisputeRequest {
   readonly orderId: number;
   readonly reason: DisputeReason;
-  readonly title: string;
   readonly description: string;
 }

@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, inject, resource, signal } from '@angular/core';
-import { DISPUTE_REPOSITORY } from '../../services/dispute-repository.token';
-import { adaptDisputes, adaptNegotiationMessages, adaptCreateDisputeRequest } from '../../adapters/dispute.adapter';
-import { CreateDisputeRequest } from '../../models/dispute.model';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { DisputeService } from '../../services/dispute.service';
+import { adaptCreateDisputeRequest } from '../../adapters/dispute.adapter';
+import { CreateDisputeRequest, Dispute, NegotiationMessage } from '../../models/dispute.model';
 import { DisputeRow } from '../../components/dispute-row/dispute-row';
 import { DisputeDetailSection } from '../../components/dispute-detail-section/dispute-detail-section';
 import { DisputeCreateModal } from '../../components/dispute-create-modal/dispute-create-modal';
@@ -12,39 +12,38 @@ import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-disputes',
-  imports: [ DatePipe, DisputeRow, DisputeDetailSection, DisputeCreateModal, LoadingSkeleton, ErrorState, EmptyState],
+  imports: [DatePipe, DisputeRow, DisputeDetailSection, DisputeCreateModal, LoadingSkeleton, ErrorState, EmptyState],
   templateUrl: './disputes.html',
   styleUrl: './disputes.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Disputes {
-  private readonly repository = inject(DISPUTE_REPOSITORY);
-
-  protected readonly disputesResource = resource({
-    loader: async () => adaptDisputes(await this.repository.getAll()),
-  });
+  private readonly disputeService = inject(DisputeService);
 
   protected readonly currentDate = new Date();
-
+  protected readonly isLoading = signal(true);
+  protected readonly hasError = signal(false);
+  protected readonly disputes = signal<readonly Dispute[]>([]);
   protected readonly selectedDisputeId = signal<string | null>(null);
   protected readonly isCreateModalOpen = signal(false);
   protected readonly isSubmittingDispute = signal(false);
 
-  protected readonly negotiationLogResource = resource({
-    params: () => this.selectedDisputeId() ?? undefined,
-    loader: async ({ params: disputeId }) =>
-      adaptNegotiationMessages(await this.repository.getNegotiationLog(disputeId)),
-  });
-
-  protected readonly disputes = computed(() => this.disputesResource.value() ?? []);
+  // Signals لتغطية سجل المحادثات والمفاوضات الخاصة بالنزاع المفتوح
+  protected readonly negotiationMessages = signal<readonly NegotiationMessage[]>([]);
+  protected readonly isNegotiationLoading = signal(false);
+  protected readonly negotiationError = signal(false);
 
   protected readonly selectedDispute = computed(() => {
     const id = this.selectedDisputeId();
-    return this.disputes().find((dispute) => dispute.id === id) ?? null;
+    return this.disputes().find(d => d.id === id) ?? null;
   });
 
+  constructor() {
+    this.loadDisputes();
+  }
+
   protected onToggleDetails(disputeId: string): void {
-    this.selectedDisputeId.update((current) => (current === disputeId ? null : disputeId));
+    this.selectedDisputeId.update(current => current === disputeId ? null : disputeId);
   }
 
   protected onOpenCreateModal(): void {
@@ -55,11 +54,39 @@ export class Disputes {
     this.isCreateModalOpen.set(false);
   }
 
-  protected async onCreateDispute(request: CreateDisputeRequest): Promise<void> {
+  protected onCreateDispute(request: CreateDisputeRequest): void {
     this.isSubmittingDispute.set(true);
-    await this.repository.create(adaptCreateDisputeRequest(request));
-    this.isSubmittingDispute.set(false);
-    this.isCreateModalOpen.set(false);
-    this.disputesResource.reload();
+    const dto = adaptCreateDisputeRequest(request);
+
+    this.disputeService.create(dto).subscribe({
+      next: () => {
+        this.isSubmittingDispute.set(false);
+        this.isCreateModalOpen.set(false);
+        this.loadDisputes();
+      },
+      error: () => {
+        this.isSubmittingDispute.set(false);
+      },
+    });
+  }
+
+  protected reload(): void {
+    this.loadDisputes();
+  }
+
+  private loadDisputes(): void {
+    this.isLoading.set(true);
+    this.hasError.set(false);
+
+    this.disputeService.getAll().subscribe({
+      next: (dtos) => {
+        this.disputes.set(dtos); 
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.hasError.set(true);
+        this.isLoading.set(false);
+      },
+    });
   }
 }
