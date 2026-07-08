@@ -10,11 +10,11 @@
     <div class="orders-page-tabs" role="tablist">
         <button type="button" role="tab" class="orders-page-tab"
             [class.orders-page-tab--active]="activeTab() === 'sent'" (click)="onTabChange('sent')">
-            الطلبات المرسلة (المشتريات)
+            الطلبات المرسلة
         </button>
         <button type="button" role="tab" class="orders-page-tab"
             [class.orders-page-tab--active]="activeTab() === 'received'" (click)="onTabChange('received')">
-            الطلبات المستلمة (المبيعات)
+            الطلبات المستلمة
         </button>
     </div>
 
@@ -61,7 +61,7 @@
                     }
                 </div>
 
-                <div class="order-financial-summary">
+                <div class="order-financial-summary" style="margin-bottom: 24px;">
                     <p><strong>اسم المنتج:</strong> {{ order.productName }}</p>
                     <p><strong>الكمية المطلوبة:</strong> {{ order.quantity | number }} وحدة</p>
                     <p><strong>إجمالي القيمة:</strong> {{ order.totalValue | number }} ج.م</p>
@@ -69,19 +69,36 @@
                 </div>
 
                 <div class="orders-modal-actions-grid">
+                    
                     <button type="button" class="orders-modal-action-card">
                         <div class="orders-modal-action-text">
-                            <span class="orders-modal-action-title">فتح نزاع مالي</span>
-                            <span class="orders-modal-action-subtitle">الإبلاغ عن مشكلة في الشحنة أو جودة البضاعة</span>
+                            <span class="orders-modal-action-title">مراسلة الطرف الآخر</span>
+                            <span class="orders-modal-action-subtitle">فتح محادثة مباشرة بخصوص الطلب</span>
+                        </div>
+                        <div class="orders-modal-action-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary, #155dfc)"
+                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                <polyline points="22,6 12,13 2,6" />
+                            </svg>
+                        </div>
+                    </button>
+
+                    <button type="button" class="orders-modal-action-card">
+                        <div class="orders-modal-action-text">
+                            <span class="orders-modal-action-title">فتح نزاع</span>
+                            <span class="orders-modal-action-subtitle">الإبلاغ عن مشكلة في الطلب</span>
                         </div>
                         <div class="orders-modal-action-icon orders-modal-action-icon--red">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EF4444"
+                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="12" cy="12" r="10" />
                                 <line x1="12" y1="8" x2="12" y2="12" />
                                 <line x1="12" y1="16" x2="12.01" y2="16" />
                             </svg>
                         </div>
                     </button>
+
                 </div>
             </div>
         </div>

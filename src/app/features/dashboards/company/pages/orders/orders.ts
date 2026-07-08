@@ -22,7 +22,7 @@ type OrderTab = 'sent' | 'received';
 export class Orders {
   private readonly repository = inject(ORDERS_REPOSITORY);
 
-  // جلب كافة الطلبات من الـ API عبر الدالة الوحيدة المعرفة في الـ Token الخاص بك
+  // جلب كافة الطلبات من الـ API عبر الـ Repository Token الخاص بك
   protected readonly ordersResource = resource({
     loader: async () => {
       const data = await this.repository.getAll();
@@ -34,7 +34,7 @@ export class Orders {
   protected readonly activeTab = signal<OrderTab>('sent');
   protected readonly selectedOrder = signal<Order | null>(null);
 
-  // فلترة الطلبات برمجياً وبشكل ريأكتف بناءً على التبويب النشط (sent أو received)
+  // فلترة الطلبات بشكل ريأكتف بناءً على التبويب النشط
   protected readonly filteredOrders = computed(() => {
     const orders = this.ordersResource.value() ?? [];
     return orders.filter((order) => order.direction === this.activeTab());
@@ -53,17 +53,18 @@ export class Orders {
     this.selectedOrder.set(null);
   }
 
+  // خريطة الحالات المتوافقة مع الكومبوننت الخاص بك Shared StatusBadge
   protected readonly statusDisplayMap = {
-    inPreparation: { labelKey: 'قيد التجهيز', variant: 'warning' as StatusBadgeVariant },
     pendingShipment: { labelKey: 'قيد الشحن', variant: 'warning' as StatusBadgeVariant },
+    inPreparation: { labelKey: 'قيد التجهيز', variant: 'warning' as StatusBadgeVariant },
     delivered: { labelKey: 'تم التسليم', variant: 'info' as StatusBadgeVariant },
     completed: { labelKey: 'مكتمل', variant: 'success' as StatusBadgeVariant },
   };
 
- 
+  // مصفوفة تتبع خطوات الطلب مطابقة لترتيب الستاتس الأصلي بالملفات
   protected readonly STEP_ORDER: readonly OrderStatus[] = [
-    'inPreparation',
     'pendingShipment',
+    'inPreparation',
     'delivered',
     'completed',
   ];
