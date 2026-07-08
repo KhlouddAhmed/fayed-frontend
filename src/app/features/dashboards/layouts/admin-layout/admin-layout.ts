@@ -2,6 +2,8 @@ import { Component, signal, inject, ChangeDetectionStrategy } from '@angular/cor
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { NotificationBell } from '../../../notifications/components/notification-bell/notification-bell';
 import { NgOptimizedImage } from '@angular/common';
+import { AuthService } from '../../../auth/services/auth';
+import { AuthStateService } from '../../../../core/services/auth-state.service';
 
 interface AdminNavItem {
   readonly label: string;
@@ -30,6 +32,10 @@ const ADMIN_NAV_ITEMS: readonly AdminNavItem[] = [
 })
 export class AdminLayoutComponent {
   private readonly router = inject(Router);
+  
+  //for logout
+  private readonly authState = inject(AuthStateService);
+  private readonly authService = inject(AuthService);
 
   protected readonly navItems = ADMIN_NAV_ITEMS;
   protected readonly isSidebarOpen = signal(false);
@@ -54,10 +60,10 @@ export class AdminLayoutComponent {
   }
 
   protected confirmLogout(): void {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userData');
-    sessionStorage.clear();
+    // this.isLogoutModalOpen.set(false);
+    // // Perform logout logic and redirect
+    // this.router.navigate(['/']);
     this.isLogoutModalOpen.set(false);
-    this.router.navigate(['/home']);
+    this.authService.logout();
   }
 }
