@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { SettingsService } from './settings.service';
 
-type SettingsTab = 'commissions' | 'gateways' | 'systemLog';
+// تم إزالة 'commissions'
+type SettingsTab = 'gateways' | 'systemLog';
 
-// واجهة السجلات بعد التعديل لتطابق الـ HTML
 export interface SystemLogUI {
   logId: number;
   user: string;
@@ -25,24 +25,17 @@ export class SettingsComponent implements OnInit {
   private fb = inject(FormBuilder);
   private settingsService = inject(SettingsService);
 
-  activeTab = signal<SettingsTab>('commissions');
+  // تم تعيين بوابات الدفع لتكون التابة الافتراضية
+  activeTab = signal<SettingsTab>('gateways');
   
-  commissionsForm: FormGroup;
   gatewaysForm: FormGroup;
 
-  isSaving = signal<boolean>(false); 
   isSavingGateways = signal<boolean>(false);
   isLoadingLogs = signal<boolean>(false);
   
-  // نستخدم الواجهة المعدلة هنا
   systemLogs = signal<SystemLogUI[]>([]);
 
   constructor() {
-    this.commissionsForm = this.fb.group({
-      metals: [3.5], plastics: [5], paper: [4], chemicals: [4.5], others: [5]
-    });
-
-    // أسماء الـ Controls تطابق الـ formControlName في الـ HTML
     this.gatewaysForm = this.fb.group({
       fawryEnabled: [false], fawryMerchantId: [''],
       paymobEnabled: [false], paymobSecretKey: [''],
@@ -51,8 +44,8 @@ export class SettingsComponent implements OnInit {
   }
 
   ngOnInit() {
-    const savedCommissions = localStorage.getItem('mockCommissions');
-    if (savedCommissions) this.commissionsForm.patchValue(JSON.parse(savedCommissions));
+    // جلب بيانات بوابات الدفع فور فتح الصفحة
+    this.fetchGateways();
   }
 
   setTab(tab: SettingsTab) {
@@ -65,17 +58,6 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  // ---------------- دوال العمولات ----------------
-  saveCommissions() {
-    if (this.commissionsForm.valid) {
-      this.isSaving.set(true);
-      setTimeout(() => {
-        localStorage.setItem('mockCommissions', JSON.stringify(this.commissionsForm.value));
-        this.isSaving.set(false); 
-      }, 1000);
-    }
-  }
-
   // ---------------- دوال بوابات الدفع ----------------
   fetchGateways() {
     this.settingsService.getPaymentSettings().subscribe({
@@ -83,7 +65,6 @@ export class SettingsComponent implements OnInit {
         const isSuccess = res.IsSuccess ?? res.isSuccess;
         const data = res.Data ?? res.data;
         if (isSuccess && data) {
-          // Mapping الداتا اللي جاية من السيرفر للفورم
           this.gatewaysForm.patchValue({
             fawryEnabled: data.isFawryEnabled,
             fawryMerchantId: data.fawryMerchantId,
@@ -103,7 +84,6 @@ export class SettingsComponent implements OnInit {
       this.isSavingGateways.set(true);
       
       const formVal = this.gatewaysForm.value;
-      // Mapping الداتا من الفورم لشكل الـ API قبل الإرسال
       const payload = {
         isFawryEnabled: formVal.fawryEnabled,
         fawryMerchantId: formVal.fawryMerchantId,
@@ -135,7 +115,6 @@ export class SettingsComponent implements OnInit {
         const isSuccess = res.IsSuccess ?? res.isSuccess;
         const data = res.Data ?? res.data;
         if (isSuccess && data) {
-          // Mapping السجلات عشان تطابق الـ HTML
           const mappedLogs = data.map((log: any) => ({
             logId: log.logId,
             user: log.adminName,
