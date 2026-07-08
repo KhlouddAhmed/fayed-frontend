@@ -6,42 +6,30 @@
     </button>
   </header>
 
-  <app-status-badge
-    class="material-modal-status"
-    [statusMap]="statusMap"
-    [status]="material().status"
-  />
+  <app-status-badge class="material-modal-status" [statusMap]="statusMap" [status]="material().status" />
 
   <h3 class="material-modal-name">{{ material().name }}</h3>
 
   <div class="material-modal-main-image">
     @if (material().imageUrls.length > 0) {
-      <img
-        [ngSrc]="material().imageUrls[selectedImageIndex()]"
-        [alt]="material().name"
-        fill
-        class="material-modal-main-image-el"
-      />
+    <img [ngSrc]="material().imageUrls[selectedImageIndex()]" [alt]="material().name" fill
+      class="material-modal-main-image-el" />
     } @else {
-      <div class="material-modal-image-placeholder" aria-hidden="true">
-        <i class="lucide-image"></i>
-      </div>
+    <div class="material-modal-image-placeholder" aria-hidden="true">
+      <i class="lucide-image"></i>
+    </div>
     }
   </div>
 
   @if (material().imageUrls.length > 1) {
-    <div class="material-modal-thumbnails">
-      @for (image of material().imageUrls; track image; let index = $index) {
-        <button
-          type="button"
-          class="material-modal-thumbnail"
-          [class.material-modal-thumbnail--active]="selectedImageIndex() === index"
-          (click)="selectImage(index)"
-        >
-          <img [ngSrc]="image" [alt]="material().name + ' صورة ' + (index + 1)" fill />
-        </button>
-      }
-    </div>
+  <div class="material-modal-thumbnails">
+    @for (image of material().imageUrls; track image; let index = $index) {
+    <button type="button" class="material-modal-thumbnail"
+      [class.material-modal-thumbnail--active]="selectedImageIndex() === index" (click)="selectImage(index)">
+      <img [ngSrc]="image" [alt]="material().name + ' صورة ' + (index + 1)" fill />
+    </button>
+    }
+  </div>
   }
 
   <section class="material-modal-section">
@@ -73,7 +61,8 @@
   <div class="material-modal-dates">
     <div>
       <span class="material-modal-stat-label">تاريخ النشر</span>
-      <span class="material-modal-stat-value">{{ material().publishedAt ? (material().publishedAt | date: 'd/M/y') : 'لم ينشر بعد' }}</span>
+      <span class="material-modal-stat-value">{{ material().publishedAt ? (material().publishedAt | date: 'd/M/y') : 'لم
+        ينشر بعد' }}</span>
     </div>
     <div>
       <span class="material-modal-stat-label">آخر تحديث</span>
@@ -82,12 +71,14 @@
   </div>
 
   <footer class="material-modal-footer">
-    <button type="button" class="btn-fayed btn-blue" (click)="onPublishClick()" *ngIf="material().status === 'Draft'">
+    @if (material().status === 'Draft') {
+    <button type="button" class="btn-fayed btn-blue" (click)="onPublishClick()">
       نشر الإعلان
     </button>
-    <button type="button" class="btn-fayed btn-blue" (click)="onEditClick()" *ngIf="material().status === 'Draft'">
+    <button type="button" class="btn-fayed btn-blue" (click)="onEditClick()">
       تعديل الإعلان
     </button>
+    }
     <button type="button" class="btn-fayed btn-white" (click)="onDeleteClick()">
       حذف الإعلان
     </button>

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { MaterialDto, MaterialFormValue } from '../models/material.model';
 import { MaterialsRepository } from './materials-repository.token';
+import { environment } from '../../../../environments/environment';
 
 interface BaseResponse<T> {
   statusCode: number;
@@ -15,7 +16,7 @@ interface BaseResponse<T> {
 @Injectable({ providedIn: 'root' })
 export class RealMaterialsRepository implements MaterialsRepository {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = '/api/listings';
+ private readonly baseUrl = `${environment.apiUrl}/listings`;
 
   async getAll(): Promise<readonly MaterialDto[]> {
     const res = await firstValueFrom(this.http.get<BaseResponse<MaterialDto[]>>(`${this.baseUrl}/my-listings`));
