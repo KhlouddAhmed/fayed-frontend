@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { Conversation, Message } from '../../models/messages.model';
-
-const CURRENT_COMPANY_CODE = 'FYD-2586';
+import { AuthStateService } from '../../../../../core/services/auth-state.service';
 
 @Component({
   selector: 'app-message-thread',
@@ -10,6 +9,8 @@ const CURRENT_COMPANY_CODE = 'FYD-2586';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MessageThread {
+  private readonly authState = inject(AuthStateService);
+
   readonly conversation = input.required<Conversation>();
   readonly messages = input.required<readonly Message[]>();
   readonly isSending = input<boolean>(false);
@@ -18,10 +19,9 @@ export class MessageThread {
   readonly startContract = output<void>();
 
   protected readonly inputText = signal('');
-  protected readonly currentCompanyCode = CURRENT_COMPANY_CODE;
 
   protected isOwnMessage(senderCode: string): boolean {
-    return senderCode === CURRENT_COMPANY_CODE;
+    return senderCode === this.authState.currentUser()?.id;
   }
 
   protected onSend(): void {
