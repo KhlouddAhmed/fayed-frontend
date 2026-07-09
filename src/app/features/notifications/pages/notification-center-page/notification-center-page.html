@@ -83,8 +83,8 @@
             />
           </div>
 
-          <!-- Content -->
-          <div class="notif-list-item-content">
+          <!-- Content — الضغط ينقل لصفحة الحدث (مراجعة العقد / الدفع / المحادثة...) -->
+          <div class="notif-list-item-content" style="cursor: pointer;" (click)="onNotificationClick(item)">
             <div class="notif-list-item-header">
               @if (item.isUnread) {
                 <span class="notif-unread-dot"></span>

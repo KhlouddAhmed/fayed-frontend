@@ -1,92 +1,76 @@
 import {
-  Contract,
-  ContractAmendment,
-  ContractAmendmentDto,
-  ContractDto,
-  ContractSignature,
-  ContractSignatureDto,
-  ContractStatus,
+  ChatDetailsDto,
+  ChatDto,
+  ChatMessageDto,
+  ChatThreadInfo,
   Conversation,
-  ConversationDto,
   Message,
-  MessageDto,
   MessageType,
 } from '../models/messages.model';
 
-const CONTRACT_STATUS_MAP: Readonly<Record<string, ContractStatus>> = {
-  Draft: 'draft',
-  PendingAmendment: 'pending_amendment',
-  PendingSignatures: 'pending_signatures',
-  Signed: 'signed',
-};
-
 const MESSAGE_TYPE_MAP: Readonly<Record<string, MessageType>> = {
   Text: 'text',
-  AiSuggestion: 'ai_suggestion',
-  ContractEvent: 'contract_event',
+  Offer: 'offer',
+  System: 'system',
 };
 
-function adaptSignature(dto: ContractSignatureDto | null): ContractSignature | null {
-  if (!dto) return null;
-  return { partyCode: dto.partyCode, signedAt: new Date(dto.signedAt) };
+const PARTICIPANT_COLORS = [
+  '#F87171', '#FBBF24', '#34D399', '#A78BFA', '#EF4444',
+  '#60A5FA', '#F472B6', '#FB923C',
+];
+
+function colorFromId(id: number): string {
+  return PARTICIPANT_COLORS[Math.abs(id) % PARTICIPANT_COLORS.length];
 }
 
-function adaptAmendment(dto: ContractAmendmentDto | null): ContractAmendment | null {
-  if (!dto) return null;
-  return { previousTerms: dto.previousTerms, newTerms: dto.newTerms };
+function initialFromName(name: string): string {
+  return name?.trim()?.[0]?.toUpperCase() ?? '?';
 }
 
-export function adaptConversation(dto: ConversationDto): Conversation {
+export function adaptConversation(dto: ChatDto): Conversation {
   return {
-    id: dto.id,
-    participantCode: dto.participantCode,
-    participantName: dto.participantName,
-    participantInitial: dto.participantInitial,
-    participantColor: dto.participantColor,
+    id: String(dto.id),
+    listingId: dto.listingId,
+    participantCode: dto.otherParticipantCode,
+    participantName: dto.listingTitle,
+    participantInitial: initialFromName(dto.listingTitle),
+    participantColor: colorFromId(dto.otherParticipantId),
     lastMessage: dto.lastMessage ?? '',
     lastMessageAt: dto.lastMessageAt ? new Date(dto.lastMessageAt) : new Date(),
     unreadCount: dto.unreadCount ?? 0,
+    status: dto.status,
   };
 }
 
-export function adaptMessage(dto: MessageDto): Message {
+export function adaptMessage(dto: ChatMessageDto, chatId: number): Message {
   return {
-    id: dto.id,
-    conversationId: dto.conversationId,
-    senderCode: dto.senderCode,
-    content: dto.content,
-    type: MESSAGE_TYPE_MAP[dto.type] ?? 'text',
+    id: String(dto.id),
+    conversationId: String(chatId),
+    senderId: dto.senderId,
+    senderName: dto.senderName,
+    content: dto.content ?? '',
+    type: MESSAGE_TYPE_MAP[dto.messageType] ?? 'text',
     sentAt: new Date(dto.sentAt),
   };
 }
 
-export function adaptContract(dto: ContractDto): Contract {
+export function adaptThreadInfo(dto: ChatDetailsDto): ChatThreadInfo {
   return {
-    id: dto.id,
-    code: dto.code,
-    status: CONTRACT_STATUS_MAP[dto.status] ?? 'draft',
-    sellerName: dto.sellerName,
+    chatId: dto.id,
+    listingId: dto.listingId,
+    listingTitle: dto.listingTitle,
+    buyerId: dto.buyerId,
     buyerName: dto.buyerName,
-    dealDate: dto.dealDate,
-    materialName: dto.materialName,
-    totalQuantity: dto.totalQuantity,
-    pricePerTon: dto.pricePerTon,
-    totalValue: dto.totalValue,
-    deliveryTerms: dto.deliveryTerms,
-    deliveryLocation: dto.deliveryLocation,
-    escrowTerms: dto.escrowTerms,
-    qualityNotes: dto.qualityNotes,
-    additionalTerms: dto.additionalTerms ?? null,
-    pendingAmendment: adaptAmendment(dto.pendingAmendment),
-    buyerSignature: adaptSignature(dto.buyerSignature),
-    sellerSignature: adaptSignature(dto.sellerSignature),
+    sellerId: dto.sellerId,
+    sellerName: dto.sellerName,
+    status: dto.status,
   };
 }
 
-export function adaptConversations(dtos: readonly ConversationDto[]): readonly Conversation[] {
+export function adaptConversations(dtos: readonly ChatDto[]): readonly Conversation[] {
   return dtos.map(adaptConversation);
 }
 
-export function adaptMessages(dtos: readonly MessageDto[]): readonly Message[] {
-  return dtos.map(adaptMessage);
+export function adaptMessages(dtos: readonly ChatMessageDto[], chatId: number): readonly Message[] {
+  return dtos.map(dto => adaptMessage(dto, chatId));
 }
