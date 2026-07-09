@@ -3,7 +3,7 @@
     <div>
       <h1 class="messages-page-title">صندوق الرسائل والمحادثات</h1>
       <p class="messages-page-subtitle">
-        تواصل مباشرة مع المشترين، الموردين، وموظفي الدعم والتحكيم المالي.
+        تفاوض مباشرة مع المشترين والموردين — وعند الاتفاق ينشئ المشتري العقد من داخل المحادثة.
       </p>
       <p class="messages-page-date"> التاريخ الحالي {{ currentDate | date: 'h:mma, yyyy MMMM d' }}</p>
     </div>
@@ -16,7 +16,7 @@
   } @else if (conversationsResource.value(); as conversations) {
   @if (conversations.length === 0) {
   <app-empty-state title="لا توجد محادثات بعد"
-    description="ستظهر هنا محادثاتك مع المشترين والموردين بمجرد بدء التواصل" />
+    description="تُفتح محادثة تفاوض تلقائياً عندما يقبل المورد عرض الشراء المبدئي" />
   } @else {
   <div class="messages-page-body">
     <div class="messages-page-conv-list">
@@ -26,13 +26,19 @@
 
     <div class="messages-page-thread-panel" [class.messages-page-thread-panel--open]="activeConversationId()">
       @if (activeConversation(); as conversation) {
-      @if (messagesResource.isLoading()) {
+      @if (threadResource.isLoading()) {
       <app-loading-skeleton variant="feed" [rows]="4" />
-      } @else if (messagesResource.error()) {
-      <app-error-state (retry)="messagesResource.reload()" />
+      } @else if (threadResource.error()) {
+      <app-error-state (retry)="threadResource.reload()" />
       } @else {
-      <app-message-thread [conversation]="conversation" [messages]="messagesResource.value() ?? []"
-        [isSending]="isSending()" (sendMessage)="onSendMessage($event)" (startContract)="onStartContract()" />
+      <app-message-thread
+        [conversation]="conversation"
+        [messages]="threadMessages()"
+        [isSending]="isSending()"
+        [currentUserId]="currentUserId()"
+        [canGenerateContract]="canGenerateContract()"
+        (sendMessage)="onSendMessage($event)"
+        (startContract)="onStartContract()" />
       }
       } @else {
       <div class="messages-page-empty-thread">
@@ -46,27 +52,11 @@
   }
   }
 
-  @if (activeModal() === 'contract_prompt') {
+  @if (showContractPrompt()) {
   <div class="messages-page-overlay" (click)="onDismissContractPrompt()">
     <div (click)="$event.stopPropagation()">
       <app-contract-prompt-modal (confirm)="onConfirmCreateContract()" (dismiss)="onDismissContractPrompt()" />
     </div>
   </div>
   }
-
- @if (activeModal() === 'contract_panel' && activeContract(); as contract) {
-  <div class="messages-page-overlay messages-page-overlay--wide">
-    <div (click)="$event.stopPropagation()">
-      
-      <app-contract-panel 
-        [contract]="contract" 
-        [isSubmitting]="isContractSubmitting()" 
-        (close)="closeContractPanel()"
-        (acceptAmendment)="onAcceptAmendment($event)" 
-        (requestAmendment)="onRequestAmendment($event)"
-        (signContract)="onSignContract($event)"
-        (proceedToPayment)="onProceedToPayment(contract.id)"  />
-    </div>
-  </div>
-}
 </div>

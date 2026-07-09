@@ -1,20 +1,18 @@
-import { Offer, OfferDirection, OfferDto, OfferStatus } from '../models/rfq-offer.model';
+import {
+  Offer,
+  OfferStatus,
+  PurchaseOfferWithDirection,
+} from '../models/rfq-offer.model';
 
+// Backend OfferStatus enum names → UI statuses
 const OFFER_STATUS_MAP: Readonly<Record<string, OfferStatus>> = {
-  Negotiating: 'negotiating',
-  AwaitingResponse: 'awaitingResponse',
+  Pending: 'pending',
   Accepted: 'accepted',
   Rejected: 'rejected',
-  Completed: 'completed',
+  Withdrawn: 'withdrawn',
 };
 
-const OFFER_DIRECTION_MAP: Readonly<Record<string, OfferDirection>> = {
-  Sent: 'sent',
-  Received: 'received',
-};
-
-const DEFAULT_OFFER_STATUS: OfferStatus = 'negotiating';
-const DEFAULT_OFFER_DIRECTION: OfferDirection = 'received';
+const DEFAULT_OFFER_STATUS: OfferStatus = 'pending';
 
 function adaptOfferStatus(rawStatus: string | undefined | null): OfferStatus {
   if (!rawStatus) {
@@ -24,31 +22,25 @@ function adaptOfferStatus(rawStatus: string | undefined | null): OfferStatus {
   return OFFER_STATUS_MAP[rawStatus] ?? DEFAULT_OFFER_STATUS;
 }
 
-function adaptOfferDirection(rawDirection: string | undefined | null): OfferDirection {
-  if (!rawDirection) {
-    return DEFAULT_OFFER_DIRECTION;
-  }
-
-  return OFFER_DIRECTION_MAP[rawDirection] ?? DEFAULT_OFFER_DIRECTION;
-}
-
-export function adaptOffer(dto: OfferDto): Offer {
+export function adaptOffer(dto: PurchaseOfferWithDirection): Offer {
   return {
-    id: dto.Id,
-    code: dto.Code,
-    clientCode: dto.ClientCode,
-    productName: dto.ProductName,
-    requestedQuantity: dto.RequestedQuantity ?? 0,
-    unit: dto.Unit,
-    pricePerUnit: dto.PricePerUnit ?? 0,
-    totalValue: dto.TotalValue ?? 0,
-    status: adaptOfferStatus(dto.Status),
-    direction: adaptOfferDirection(dto.Direction),
-    message: dto.Message ?? null,
-    sentAt: new Date(dto.SentAt),
+    id: String(dto.id),
+    code: `OFF-${dto.id + 400}`,
+    listingId: dto.listingId,
+    clientCode: dto.counterpartyCode,
+    productName: dto.listingTitle,
+    requestedQuantity: dto.requestedQuantity ?? 0,
+    unit: 'طن',
+    pricePerUnit: dto.offeredPricePerTon ?? 0,
+    totalValue: dto.totalValue ?? 0,
+    status: adaptOfferStatus(dto.status),
+    direction: dto.direction,
+    message: dto.buyerMessage ?? null,
+    sentAt: new Date(dto.createdAt),
+    chatId: dto.chatId ?? null,
   };
 }
 
-export function adaptOffers(dtos: readonly OfferDto[]): readonly Offer[] {
+export function adaptOffers(dtos: readonly PurchaseOfferWithDirection[]): readonly Offer[] {
   return dtos.map(adaptOffer);
 }

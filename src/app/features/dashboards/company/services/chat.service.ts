@@ -1,148 +1,68 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map, firstValueFrom } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { ApiResponseWithData } from '../../../../core/models/api-response.model';
-import { ConversationDto, MessageDto, ContractDto } from '../models/messages.model';
-import { AuthStateService } from '../../../../core/services/auth-state.service';
+import {
+  ChatDetailsDto,
+  ChatDto,
+  ChatMessageDto,
+  GenerateContractFromChatResponse,
+} from '../models/messages.model';
 
-// Backend DTOs
-interface ChatDto {
-  readonly Id: number;
-  readonly ListingId: number;
-  readonly ListingTitle: string;
-  readonly OtherParticipantId: number;
-  readonly OtherParticipantCode: string;
-  readonly LastMessage: string | null;
-  readonly LastMessageAt: string | null;
-  readonly UnreadCount: number;
-  readonly Status: string;
-}
-
-interface BackendMessageDto {
-  readonly Id: number;
-  readonly SenderId: number;
-  readonly SenderName: string;
-  readonly Content: string | null;
-  readonly MessageType: string;
-  readonly ActionUrl: string | null;
-  readonly AttachmentUrl: string | null;
-  readonly IsRead: boolean;
-  readonly SentAt: string;
-}
-
-interface ChatDetailsDto {
-  readonly Id: number;
-  readonly ListingId: number;
-  readonly ListingTitle: string;
-  readonly BuyerId: number;
-  readonly BuyerName: string;
-  readonly SellerId: number;
-  readonly SellerName: string;
-  readonly Status: string;
-  readonly StartedAt: string;
-  readonly Messages: readonly BackendMessageDto[];
-}
-
-const PARTICIPANT_COLORS = [
-  '#F87171', '#FBBF24', '#34D399', '#A78BFA', '#EF4444',
-  '#60A5FA', '#F472B6', '#FB923C',
-];
-
-function colorFromId(id: number): string {
-  return PARTICIPANT_COLORS[id % PARTICIPANT_COLORS.length];
-}
-
-function initialFromName(name: string): string {
-  return name?.trim()?.[0]?.toUpperCase() ?? '?';
-}
-
-function adaptChatToConversation(chat: ChatDto): ConversationDto {
-  return {
-    Id: String(chat.Id),
-    ParticipantCode: chat.OtherParticipantCode,
-    ParticipantName: chat.ListingTitle,
-    ParticipantInitial: initialFromName(chat.ListingTitle),
-    ParticipantColor: colorFromId(chat.OtherParticipantId),
-    LastMessage: chat.LastMessage ?? '',
-    LastMessageAt: chat.LastMessageAt ?? new Date().toISOString(),
-    UnreadCount: chat.UnreadCount,
-  };
-}
-
-function adaptBackendMessage(msg: BackendMessageDto, chatId: number): MessageDto {
-  return {
-    Id: String(msg.Id),
-    ConversationId: String(chatId),
-    SenderCode: String(msg.SenderId),
-    Content: msg.Content ?? '',
-    Type: msg.MessageType === 'Text' ? 'Text' : 'Text',
-    SentAt: msg.SentAt,
-  };
-}
-
+/**
+ * المحادثات — mirrors /api/chats on the backend.
+ * The negotiation chat is opened automatically when the seller accepts
+ * a preliminary offer; the buyer generates the contract from inside it.
+ */
 @Injectable({ providedIn: 'root' })
 export class ChatService {
   private readonly http = inject(HttpClient);
-  private readonly authState = inject(AuthStateService);
+  private readonly baseUrl = `${environment.apiUrl}/chats`;
 
-  getConversations(): Observable<readonly ConversationDto[]> {
+  getChats(): Observable<readonly ChatDto[]> {
     return this.http
-      .get<ApiResponseWithData<readonly ChatDto[]>>(`${environment.apiUrl}/chats`)
-      .pipe(map(res => (res.data ?? []).map(adaptChatToConversation)));
+      .get<ApiResponseWithData<readonly ChatDto[]>>(this.baseUrl)
+      .pipe(map(res => res.data ?? []));
   }
 
-  getMessages(chatId: string): Observable<readonly MessageDto[]> {
+  getChatDetails(chatId: number): Observable<ChatDetailsDto> {
     return this.http
-      .get<ApiResponseWithData<ChatDetailsDto>>(`${environment.apiUrl}/chats/${chatId}`)
-      .pipe(
-        map(res => (res.data?.Messages ?? []).map(msg =>
-          adaptBackendMessage(msg, res.data!.Id)
-        ))
-      );
+      .get<ApiResponseWithData<ChatDetailsDto>>(`${this.baseUrl}/${chatId}`)
+      .pipe(map(res => res.data!));
   }
 
-  sendMessage(chatId: string, content: string): Observable<MessageDto> {
+  sendMessage(chatId: number, content: string): Observable<ChatMessageDto> {
     return this.http
-      .post<ApiResponseWithData<BackendMessageDto>>(
-        `${environment.apiUrl}/chats/${chatId}/messages`,
-        { content }
+      .post<ApiResponseWithData<ChatMessageDto>>(`${this.baseUrl}/${chatId}/messages`, {
+        content,
+        messageType: 'Text',
+      })
+      .pipe(map(res => res.data!));
+  }
+
+  markAsRead(chatId: number): Observable<void> {
+    return this.http
+      .put<ApiResponseWithData<boolean>>(`${this.baseUrl}/${chatId}/read`, {})
+      .pipe(map(() => void 0));
+  }
+
+  createChat(listingId: number): Observable<ChatDetailsDto> {
+    return this.http
+      .post<ApiResponseWithData<ChatDetailsDto>>(this.baseUrl, { listingId })
+      .pipe(map(res => res.data!));
+  }
+
+  /**
+   * زر "إنشاء عقد" (يظهر للمشتري فقط داخل المحادثة):
+   * ينشئ طلباً جديداً من المحادثة ويرجع رابط التوجيه إلى نموذج العقد.
+   */
+  generateContract(chatId: number): Observable<GenerateContractFromChatResponse> {
+    return this.http
+      .post<ApiResponseWithData<GenerateContractFromChatResponse>>(
+        `${this.baseUrl}/${chatId}/generate-contract`,
+        {}
       )
-      .pipe(map(res => adaptBackendMessage(res.data!, Number(chatId))));
-  }
-
-  markAsRead(chatId: string): Observable<void> {
-    return this.http.put<void>(`${environment.apiUrl}/chats/${chatId}/read`, {});
-  }
-
-  createChat(listingId: number): Observable<ConversationDto> {
-    return this.http
-      .post<ApiResponseWithData<ChatDto>>(`${environment.apiUrl}/chats`, { ListingId: listingId })
-      .pipe(map(res => adaptChatToConversation(res.data!)));
-  }
-
-  // Contract endpoints
-  getContract(orderId: string): Observable<ContractDto | null> {
-    return this.http
-      .get<ApiResponseWithData<ContractDto>>(`${environment.apiUrl}/orders/${orderId}/contract`)
-      .pipe(map(res => res.data ?? null));
-  }
-
-  createContract(orderId: string): Observable<ContractDto> {
-    return this.http
-      .get<ApiResponseWithData<ContractDto>>(`${environment.apiUrl}/orders/${orderId}/contract/form`)
-      .pipe(map(res => res.data!));
-  }
-
-  acceptAmendment(orderId: string): Observable<ContractDto> {
-    return this.http
-      .put<ApiResponseWithData<ContractDto>>(`${environment.apiUrl}/orders/${orderId}/contract/accept`, {})
-      .pipe(map(res => res.data!));
-  }
-
-  declineAmendment(orderId: string): Observable<ContractDto> {
-    return this.http
-      .put<ApiResponseWithData<ContractDto>>(`${environment.apiUrl}/orders/${orderId}/contract/decline`, {})
       .pipe(map(res => res.data!));
   }
 }

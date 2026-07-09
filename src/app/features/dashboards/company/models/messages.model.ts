@@ -1,72 +1,65 @@
 // =============================================
-// API DTOs (.NET 8 — PascalCase)
+// API DTOs — mirror BLL/DTOs/Chat/* on the backend (camelCase JSON)
 // =============================================
 
-export interface ConversationDto {
-  readonly Id: string;
-  readonly ParticipantCode: string;
-  readonly ParticipantName: string;
-  readonly ParticipantInitial: string;
-  readonly ParticipantColor: string;
-  readonly LastMessage: string;
-  readonly LastMessageAt: string;
-  readonly UnreadCount: number;
+/** Matches backend ChatDto (list item from GET /api/chats) */
+export interface ChatDto {
+  readonly id: number;
+  readonly listingId: number;
+  readonly listingTitle: string;
+  readonly otherParticipantId: number;
+  readonly otherParticipantCode: string;
+  readonly lastMessage: string | null;
+  readonly lastMessageAt: string | null;
+  readonly unreadCount: number;
+  /** Open | Closed | Archived */
+  readonly status: string;
 }
 
-export interface MessageDto {
-  readonly Id: string;
-  readonly ConversationId: string;
-  readonly SenderCode: string;
-  readonly Content: string;
-  readonly Type: string;
-  readonly SentAt: string;
+/** Matches backend MessageDto */
+export interface ChatMessageDto {
+  readonly id: number;
+  readonly senderId: number;
+  readonly senderName: string;
+  readonly content: string | null;
+  /** Text | Offer | System */
+  readonly messageType: string;
+  readonly actionUrl: string | null;
+  readonly attachmentUrl: string | null;
+  readonly isRead: boolean;
+  readonly sentAt: string;
 }
 
-export interface ContractDto {
-  readonly Id: string;
-  readonly Code: string;
-  readonly Status: string;
-  readonly SellerName: string;
-  readonly BuyerName: string;
-  readonly DealDate: string;
-  readonly MaterialName: string;
-  readonly TotalQuantity: number;
-  readonly PricePerTon: number;
-  readonly TotalValue: number;
-  readonly DeliveryTerms: string;
-  readonly DeliveryLocation: string;
-  readonly EscrowTerms: string;
-  readonly QualityNotes: string;
-  readonly AdditionalTerms: string | null;
-  readonly PendingAmendment: ContractAmendmentDto | null;
-  readonly BuyerSignature: ContractSignatureDto | null;
-  readonly SellerSignature: ContractSignatureDto | null;
+/** Matches backend ChatDetailsDto (GET /api/chats/{id}) */
+export interface ChatDetailsDto {
+  readonly id: number;
+  readonly listingId: number;
+  readonly listingTitle: string;
+  readonly buyerId: number;
+  readonly buyerName: string;
+  readonly sellerId: number;
+  readonly sellerName: string;
+  readonly status: string;
+  readonly startedAt: string;
+  readonly messages: readonly ChatMessageDto[];
 }
 
-export interface ContractAmendmentDto {
-  readonly PreviousTerms: string;
-  readonly NewTerms: string;
-}
-
-export interface ContractSignatureDto {
-  readonly PartyCode: string;
-  readonly SignedAt: string;
+/** Matches backend GenerateContractFromChatResponseDto */
+export interface GenerateContractFromChatResponse {
+  readonly orderId: number;
+  readonly chatId: number;
+  readonly redirectUrl: string;
 }
 
 // =============================================
 // UI Models
 // =============================================
 
-export type MessageType = 'text' | 'ai_suggestion' | 'contract_event';
-
-export type ContractStatus =
-  | 'draft'
-  | 'pending_amendment'
-  | 'pending_signatures'
-  | 'signed';
+export type MessageType = 'text' | 'offer' | 'system';
 
 export interface Conversation {
   readonly id: string;
+  readonly listingId: number;
   readonly participantCode: string;
   readonly participantName: string;
   readonly participantInitial: string;
@@ -74,49 +67,27 @@ export interface Conversation {
   readonly lastMessage: string;
   readonly lastMessageAt: Date;
   readonly unreadCount: number;
+  readonly status: string;
 }
 
 export interface Message {
   readonly id: string;
   readonly conversationId: string;
-  readonly senderCode: string;
+  readonly senderId: number;
+  readonly senderName: string;
   readonly content: string;
   readonly type: MessageType;
   readonly sentAt: Date;
 }
 
-export interface ContractAmendment {
-  readonly previousTerms: string;
-  readonly newTerms: string;
-}
-
-export interface ContractSignature {
-  readonly partyCode: string;
-  readonly signedAt: Date;
-}
-
-export interface Contract {
-  readonly id: string;
-  readonly code: string;
-  readonly status: ContractStatus;
-  readonly sellerName: string;
+/** Details of the open chat needed for flow logic (who is the buyer?) */
+export interface ChatThreadInfo {
+  readonly chatId: number;
+  readonly listingId: number;
+  readonly listingTitle: string;
+  readonly buyerId: number;
   readonly buyerName: string;
-  readonly dealDate: string;
-  readonly materialName: string;
-  readonly totalQuantity: number;
-  readonly pricePerTon: number;
-  readonly totalValue: number;
-  readonly deliveryTerms: string;
-  readonly deliveryLocation: string;
-  readonly escrowTerms: string;
-  readonly qualityNotes: string;
-  readonly additionalTerms: string | null;
-  readonly pendingAmendment: ContractAmendment | null;
-  readonly buyerSignature: ContractSignature | null;
-  readonly sellerSignature: ContractSignature | null;
-}
-
-export interface ContractSignatureFormValue {
-  readonly authorizedName: string;
-  readonly signatureDataUrl: string;
+  readonly sellerId: number;
+  readonly sellerName: string;
+  readonly status: string;
 }

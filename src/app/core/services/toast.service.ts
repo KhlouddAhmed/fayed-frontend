@@ -7,6 +7,10 @@ export interface Toast {
   readonly type: ToastType;
   readonly message: string;
   readonly duration: number;
+  /** عنوان اختياري يظهر بخط أعرض فوق الرسالة (يُستخدم لإشعارات SignalR) */
+  readonly title?: string;
+  /** يُنفَّذ عند الضغط على التوست (مثلاً: الانتقال لصفحة الإشعار) */
+  readonly onClick?: () => void;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -28,6 +32,11 @@ export class ToastService {
 
   info(message: string, duration = 4000): void {
     this.add({ type: 'info', message, duration });
+  }
+
+  /** توست إشعار فوري قابل للنقر (يُستخدم عند وصول ReceiveNotification عبر SignalR) */
+  notification(title: string, message: string, onClick?: () => void, duration = 6000): void {
+    this.add({ type: 'info', title, message, duration, onClick });
   }
 
   dismiss(id: number): void {

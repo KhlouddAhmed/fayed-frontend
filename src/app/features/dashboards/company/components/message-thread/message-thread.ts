@@ -1,8 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { Conversation, Message } from '../../models/messages.model';
 
-const CURRENT_COMPANY_CODE = 'FYD-2586';
-
 @Component({
   selector: 'app-message-thread',
   templateUrl: './message-thread.html',
@@ -14,14 +12,19 @@ export class MessageThread {
   readonly messages = input.required<readonly Message[]>();
   readonly isSending = input<boolean>(false);
 
+  /** معرف المستخدم الحالي — لتمييز رسائلي عن رسائل الطرف الآخر */
+  readonly currentUserId = input.required<number>();
+
+  /** يظهر زر "إنشاء عقد" للمشتري فقط (بحسب buyerId في تفاصيل المحادثة) وطالما المحادثة مفتوحة */
+  readonly canGenerateContract = input<boolean>(false);
+
   readonly sendMessage = output<string>();
   readonly startContract = output<void>();
 
   protected readonly inputText = signal('');
-  protected readonly currentCompanyCode = CURRENT_COMPANY_CODE;
 
-  protected isOwnMessage(senderCode: string): boolean {
-    return senderCode === CURRENT_COMPANY_CODE;
+  protected isOwnMessage(senderId: number): boolean {
+    return senderId === this.currentUserId();
   }
 
   protected onSend(): void {

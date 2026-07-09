@@ -6,11 +6,12 @@ import { ApiResponseWithData, PagedResult, getPagedItems, getPagedTotalCount } f
 import { Listing, ListingDto, ListingDetailsDto, ListingSearchParams } from '../models/listing.model';
 import { adaptListings, adaptListingDetails } from '../adapters/listing.adapter';
 
+/** Matches backend CreatePurchaseOfferDto — field names must bind 1:1 */
 export interface SubmitOfferRequest {
-  readonly ListingId: number;
-  readonly OfferedQuantity: number;
-  readonly OfferedPricePerUnit: number;
-  readonly Notes: string;
+  readonly listingId: number;
+  readonly requestedQuantity: number;
+  readonly offeredPricePerTon: number;
+  readonly buyerMessage?: string | null;
 }
 
 export interface CreateChatResponse {

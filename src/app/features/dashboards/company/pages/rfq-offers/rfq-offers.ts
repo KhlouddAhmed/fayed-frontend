@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, resource, signal } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { adaptOffers } from '../../adapters/rfq-offer.adapter';
 import { RFQ_OFFER_REPOSITORY } from '../../services/rfq-offer-repository.token';
 import { OfferRow } from '../../components/offer-row/offer-row';
@@ -7,6 +8,7 @@ import { LoadingSkeleton } from '../../../../../shared/components/loading-skelet
 import { ErrorState } from '../../../../../shared/components/error-state/error-state';
 import { EmptyState } from '../../../../../shared/components/empty-state/empty-state';
 import { DatePipe } from '@angular/common';
+import { ToastService } from '../../../../../core/services/toast.service';
 
 type OfferTab = 'sent' | 'received';
 
@@ -19,13 +21,18 @@ type OfferTab = 'sent' | 'received';
 })
 export class RfqOffers {
   private readonly repository = inject(RFQ_OFFER_REPOSITORY);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly toast = inject(ToastService);
 
   protected readonly offersResource = resource({
     loader: async () => adaptOffers(await this.repository.getAll()),
   });
 
   protected readonly currentDate = new Date();
-  protected readonly activeTab = signal<OfferTab>('sent');
+  protected readonly activeTab = signal<OfferTab>(
+    this.route.snapshot.queryParamMap.get('tab') === 'received' ? 'received' : 'sent'
+  );
   protected readonly selectedOfferId = signal<string | null>(null);
   protected readonly isSubmitting = signal(false);
 
@@ -51,27 +58,58 @@ export class RfqOffers {
     this.selectedOfferId.set(null);
   }
 
+  /** المورد يقبل العرض المبدئي → الباك إند يفتح محادثة التفاوض ويرجع chatId */
   protected async onAccept(offerId: string): Promise<void> {
-    await this.runAction(() => this.repository.accept(offerId));
+    this.isSubmitting.set(true);
+    try {
+      const result = await this.repository.accept(Number(offerId));
+      this.toast.success('تم قبول العرض وفتح محادثة التفاوض مع المشتري');
+      this.closeModal();
+      this.offersResource.reload();
+      if (result.chatId != null) {
+        await this.router.navigate(['/dashboard/company/messages'], {
+          queryParams: { chatId: String(result.chatId) },
+        });
+      }
+    } catch {
+      this.toast.error('تعذر قبول العرض. حاول مرة أخرى.');
+    } finally {
+      this.isSubmitting.set(false);
+    }
   }
 
   protected async onReject(offerId: string): Promise<void> {
-    await this.runAction(() => this.repository.reject(offerId));
+    this.isSubmitting.set(true);
+    try {
+      await this.repository.reject(Number(offerId));
+      this.toast.success('تم رفض العرض وإخطار المشتري');
+      this.closeModal();
+      this.offersResource.reload();
+    } catch {
+      this.toast.error('تعذر رفض العرض. حاول مرة أخرى.');
+    } finally {
+      this.isSubmitting.set(false);
+    }
   }
 
   protected async onWithdraw(offerId: string): Promise<void> {
-    await this.runAction(() => this.repository.withdraw(offerId));
-  }
-
-  protected onEditOffer(offerId: string): void {
-    // TODO(rfq-offers): navigate to an edit-offer flow once that page/modal is defined.
-  }
-
-  private async runAction(action: () => Promise<unknown>): Promise<void> {
     this.isSubmitting.set(true);
-    await action();
-    this.isSubmitting.set(false);
-    this.closeModal();
-    this.offersResource.reload();
+    try {
+      await this.repository.withdraw(Number(offerId));
+      this.toast.success('تم سحب العرض بنجاح');
+      this.closeModal();
+      this.offersResource.reload();
+    } catch {
+      this.toast.error('تعذر سحب العرض. العروض المعلقة فقط يمكن سحبها.');
+    } finally {
+      this.isSubmitting.set(false);
+    }
+  }
+
+  /** فتح محادثة التفاوض لعرض مقبول */
+  protected onOpenChat(chatId: number): void {
+    this.router.navigate(['/dashboard/company/messages'], {
+      queryParams: { chatId: String(chatId) },
+    });
   }
 }

@@ -1,0 +1,180 @@
+<div class="contract-page" dir="rtl">
+
+  @if (contractResource.isLoading()) {
+    <app-loading-skeleton variant="feed" [rows]="6" />
+  } @else if (contractResource.error()) {
+    <app-error-state (retry)="contractResource.reload()" />
+  } @else if (contractResource.value(); as contract) {
+
+    <header class="contract-page-header">
+      <div>
+        <h1 class="contract-page-title">عقد توريد — {{ contract.orderCode }}</h1>
+        <p class="contract-page-subtitle">{{ contract.listingTitle }}</p>
+      </div>
+      <span class="contract-status-chip" [attr.data-status]="contract.statusCode">
+        {{ contract.status }}
+      </span>
+    </header>
+
+    <!-- سبب رفض المورد (إن وجد) -->
+    @if (contract.declineReason && contract.statusCode === 'InProgress') {
+      <div class="contract-banner contract-banner--warning">
+        <strong>طلب المورد تعديل العقد.</strong>
+        <p>السبب: {{ contract.declineReason }}</p>
+        @if (canEditAfterDecline()) {
+          <div class="contract-banner-actions">
+            <button type="button" class="btn-fayed btn-blue" (click)="goToEditForm()">تعديل العقد وإعادة تقديمه</button>
+            <button type="button" class="btn-fayed btn-white" (click)="goToMessages()">مواصلة التفاوض في المحادثة</button>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- أطراف التعاقد -->
+    <section class="contract-card">
+      <h2 class="contract-card-title">أطراف التعاقد</h2>
+      <div class="contract-parties">
+        <div class="contract-party">
+          <h3 class="contract-party-role">الطرف الأول (المشتري)</h3>
+          <dl class="contract-dl">
+            <div><dt>الاسم</dt><dd>{{ contract.buyer.name }}</dd></div>
+            <div><dt>المصنع</dt><dd>{{ contract.buyer.factoryName }}</dd></div>
+            <div><dt>الكود</dt><dd>{{ contract.buyer.factoryCode }}</dd></div>
+          </dl>
+          <p class="contract-signature" [class.contract-signature--signed]="contract.isSignedByBuyer">
+            {{ contract.isSignedByBuyer ? '✅ وقّع المشتري' : '⬜ لم يوقّع المشتري بعد' }}
+          </p>
+        </div>
+        <div class="contract-party">
+          <h3 class="contract-party-role">الطرف الثاني (المورد)</h3>
+          <dl class="contract-dl">
+            <div><dt>الاسم</dt><dd>{{ contract.seller.name }}</dd></div>
+            <div><dt>المصنع</dt><dd>{{ contract.seller.factoryName }}</dd></div>
+            <div><dt>الكود</dt><dd>{{ contract.seller.factoryCode }}</dd></div>
+          </dl>
+          <p class="contract-signature" [class.contract-signature--signed]="contract.isSignedBySeller">
+            {{ contract.isSignedBySeller ? '✅ وقّع المورد' : '⬜ لم يوقّع المورد بعد' }}
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- تفاصيل الصفقة -->
+    <section class="contract-card">
+      <h2 class="contract-card-title">تفاصيل الصفقة</h2>
+      <dl class="contract-dl contract-dl--financial">
+        <div><dt>الكمية</dt><dd>{{ contract.agreedQuantity | number: '1.0-2' }} طن</dd></div>
+        <div><dt>سعر الوحدة</dt><dd>{{ contract.agreedPricePerUnit | number: '1.0-2' }} ج.م / طن</dd></div>
+        <div><dt>إجمالي قيمة الصفقة</dt><dd>{{ contract.agreedTotalPrice | number: '1.0-2' }} ج.م</dd></div>
+        @if (contract.deliveryDate) {
+          <div><dt>تاريخ التسليم</dt><dd>{{ contract.deliveryDate | date: 'yyyy/MM/dd' }}</dd></div>
+        }
+        @if (contract.deliveryAddress) {
+          <div><dt>عنوان التسليم</dt><dd>{{ contract.deliveryAddress }}</dd></div>
+        }
+      </dl>
+    </section>
+
+    <!-- الشروط المالية -->
+    <section class="contract-card">
+      <h2 class="contract-card-title">الشروط المالية</h2>
+      <dl class="contract-dl contract-dl--financial">
+        <div>
+          <dt>العربون ({{ contract.downPaymentPercentage | percent }})</dt>
+          <dd class="contract-highlight">{{ contract.downPaymentAmount | number: '1.0-2' }} ج.م</dd>
+        </div>
+        <div>
+          <dt>عمولة المنصة ({{ contract.commissionRate | percent }})</dt>
+          <dd>{{ contract.platformCommission | number: '1.0-2' }} ج.م</dd>
+        </div>
+        <div>
+          <dt>حالة العربون</dt>
+          <dd>{{ contract.isDownPaymentPaid ? '✅ مدفوع (في حساب الضمان)' : 'غير مدفوع بعد' }}</dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- البنود الجزائية -->
+    <section class="contract-card">
+      <h2 class="contract-card-title">البنود والجزاءات</h2>
+      <ol class="contract-clauses">
+        @for (clause of contract.penaltyClauses; track clause.title) {
+          <li class="contract-clause">{{ clause.arabicText }}</li>
+        }
+      </ol>
+    </section>
+
+    <!-- الإجراءات -->
+    <footer class="contract-actions">
+      @if (canReview()) {
+        <!-- المورد يراجع العقد: قبول أو رفض بسبب -->
+        <div class="contract-actions-row">
+          <button type="button" class="btn-fayed btn-blue" [disabled]="isSubmitting()" (click)="onAccept()">
+            {{ isSubmitting() ? 'جارٍ التنفيذ...' : 'قبول العقد وتوقيعه' }}
+          </button>
+          <button type="button" class="btn-fayed btn-white contract-decline-btn" [disabled]="isSubmitting()" (click)="openDeclineModal()">
+            رفض العقد مع ذكر السبب
+          </button>
+        </div>
+        <p class="contract-actions-hint">بقبولك للعقد سيصل إشعار للمشتري لدفع العربون وتفعيل الصفقة.</p>
+      }
+
+      @if (canPay()) {
+        <!-- المشتري يدفع العربون -->
+        <div class="contract-actions-row">
+          <button type="button" class="btn-fayed btn-blue" (click)="goToPayment()">
+            دفع العربون ({{ contract.downPaymentAmount | number: '1.0-2' }} ج.م)
+          </button>
+        </div>
+        <p class="contract-actions-hint">بعد الدفع تتحول حالة الطلب إلى "قيد التجهيز" ويبدأ المورد تجهيز الشحنة.</p>
+      }
+
+      @if (contract.statusCode === 'BuyerPaid') {
+        <div class="contract-banner contract-banner--success">
+          <strong>العقد ساري المفعول — الطلب "قيد التجهيز".</strong>
+          <div class="contract-banner-actions">
+            <button type="button" class="btn-fayed btn-blue" (click)="goToOrders()">متابعة الطلب النشط</button>
+          </div>
+        </div>
+      }
+
+      @if (contract.contractUrl) {
+        <a class="contract-pdf-link" [href]="contract.contractUrl" target="_blank" rel="noopener">
+          📄 تحميل نسخة العقد PDF
+        </a>
+      }
+    </footer>
+
+    <!-- مودال الرفض مع السبب -->
+    @if (showDeclineModal()) {
+      <div class="contract-modal-overlay" (click)="closeDeclineModal()">
+        <div class="contract-modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+          <h3 class="contract-modal-title">رفض العقد</h3>
+          <p class="contract-modal-desc">
+            اكتب سبب الرفض بوضوح — سيصل للمشتري في إشعار ليعدّل العقد أو يفاوضك في المحادثة.
+          </p>
+          <textarea
+            class="contract-modal-textarea"
+            rows="4"
+            maxlength="500"
+            placeholder="مثال: السعر المتفق عليه غير مناسب. نرجو إعادة التفاوض."
+            [value]="declineReason()"
+            (input)="declineReason.set($any($event.target).value)"
+          ></textarea>
+          <div class="contract-actions-row">
+            <button
+              type="button"
+              class="btn-fayed btn-blue"
+              [disabled]="!declineReason().trim() || isSubmitting()"
+              (click)="onDecline()"
+            >
+              {{ isSubmitting() ? 'جارٍ الإرسال...' : 'تأكيد الرفض' }}
+            </button>
+            <button type="button" class="btn-fayed btn-white" (click)="closeDeclineModal()">إلغاء</button>
+          </div>
+        </div>
+      </div>
+    }
+
+  }
+</div>

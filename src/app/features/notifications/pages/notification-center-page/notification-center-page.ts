@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Notification, NotificationFilter, NotificationType } from '../../models/notification.model';
 import { NotificationsService } from '../../services/notifications.service';
+import { mapRelatedLinkToRoute } from '../../adapters/notification.adapter';
 import { firstValueFrom } from 'rxjs';
 
 const FILTER_TYPE_MAP: Partial<Record<NotificationFilter, NotificationType>> = {
@@ -17,6 +18,7 @@ const FILTER_TYPE_MAP: Partial<Record<NotificationFilter, NotificationType>> = {
 })
 export class NotificationCenterPage implements OnInit {
   private readonly notificationsService = inject(NotificationsService);
+  private readonly router = inject(Router);
 
   protected readonly searchQuery  = signal('');
   protected readonly activeFilter = signal<NotificationFilter>('all');
@@ -97,4 +99,20 @@ export class NotificationCenterPage implements OnInit {
 
   protected isSelected(id: string): boolean { return this.selectedIds().has(id); }
   protected hasSelection(): boolean { return this.selectedIds().size > 0; }
+
+  /**
+   * الضغط على الإشعار = تعليمه مقروءاً + الانتقال لصفحة الحدث المرتبط
+   * (مراجعة العقد للمورد، دفع العربون للمشتري، محادثة التفاوض...)
+   */
+  protected onNotificationClick(item: Notification): void {
+    if (item.isUnread) {
+      this.notificationsService.markAsRead(item.id).subscribe({ error: () => void 0 });
+      this.notifications.update(list =>
+        list.map(n => (n.id === item.id ? { ...n, isUnread: false } : n))
+      );
+    }
+
+    const route = mapRelatedLinkToRoute(item.relatedLink);
+    this.router.navigate([route.path], { queryParams: route.queryParams });
+  }
 }

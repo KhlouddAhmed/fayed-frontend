@@ -40,15 +40,19 @@ OFFER DETAIL MODAL
     </div>
     <div class="offer-modal-detail-row">
       <dt>الكمية المطلوبة</dt>
-      <dd>{{ offer().requestedQuantity }} {{ offer().unit }}</dd>
+      <dd>{{ offer().requestedQuantity | number }} {{ offer().unit }}</dd>
     </div>
     <div class="offer-modal-detail-row">
       <dt>سعر العرض</dt>
-      <dd>{{ offer().pricePerUnit }} ج.م / {{ offer().unit }}</dd>
+      <dd>{{ offer().pricePerUnit | number }} ج.م / {{ offer().unit }}</dd>
     </div>
     <div class="offer-modal-detail-row">
       <dt>إجمالي القيمة</dt>
-      <dd>{{ offer().totalValue }} ج.م</dd>
+      <dd>{{ offer().totalValue | number }} ج.م</dd>
+    </div>
+    <div class="offer-modal-detail-row">
+      <dt>الحالة</dt>
+      <dd>{{ statusMap[offer().status].labelKey }}</dd>
     </div>
   </dl>
 
@@ -56,7 +60,7 @@ OFFER DETAIL MODAL
   @if (offer().message) {
     <div>
       <span class="offer-modal-message-label">
-        {{ offer().direction === 'sent' ? 'رسالة المرسل' : 'رسالتك للمورد' }}
+        {{ offer().direction === 'received' ? 'رسالة المشتري' : 'رسالتك للمورد' }}
       </span>
       <p class="offer-modal-message-box">{{ offer().message }}</p>
     </div>
@@ -64,19 +68,23 @@ OFFER DETAIL MODAL
 
   <!-- Footer -->
   <footer class="offer-modal-footer">
-    @if (offer().direction === 'received') {
+    @if (offer().direction === 'received' && offer().status === 'pending') {
+      <!-- المورد يرد على العرض المبدئي: القبول يفتح محادثة التفاوض تلقائياً -->
       <button type="button" class="btn-fayed btn-blue" [disabled]="isSubmitting()" (click)="onAcceptClick()">
-        قبول العرض
+        قبول وبدء التفاوض
       </button>
       <button type="button" class="btn-fayed btn-white" [disabled]="isSubmitting()" (click)="onRejectClick()">
         رفض العرض
       </button>
-    } @else {
-      <button type="button" class="btn-fayed btn-blue" [disabled]="isSubmitting()" (click)="onEditClick()">
-        تعديل العرض
-      </button>
+    } @else if (offer().direction === 'sent' && offer().status === 'pending') {
       <button type="button" class="btn-fayed btn-white" [disabled]="isSubmitting()" (click)="onWithdrawClick()">
         سحب العرض
+      </button>
+    }
+
+    @if (offer().status === 'accepted' && offer().chatId != null) {
+      <button type="button" class="btn-fayed btn-blue" (click)="onOpenChatClick()">
+        فتح محادثة التفاوض
       </button>
     }
   </footer>

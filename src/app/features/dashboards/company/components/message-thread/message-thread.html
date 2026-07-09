@@ -10,29 +10,34 @@
       <span class="thread-participant-code">{{ conversation().participantCode }}</span>
       <span class="thread-participant-name">{{ conversation().participantName }}</span>
     </div>
+
+    <!-- زر إنشاء العقد — يظهر للمشتري فقط: يوثّق نتيجة التفاوض في عقد رسمي -->
+    @if (canGenerateContract()) {
+      <button
+        type="button"
+        class="btn-fayed btn-blue thread-contract-btn"
+        style="margin-inline-start: auto;"
+        (click)="startContract.emit()"
+      >
+        📄 إنشاء عقد
+      </button>
+    }
   </header>
 
   <div class="thread-messages">
     @for (message of messages(); track message.id) {
-      @if (message.type === 'ai_suggestion') {
+      @if (message.type === 'system') {
         <div class="thread-ai-suggestion">
           <p class="thread-ai-suggestion-text">{{ message.content }}</p>
-          <button
-            type="button"
-            class="btn-fayed btn-blue thread-ai-action-btn"
-            (click)="startContract.emit()"
-          >
-            بدء الاجراءات
-          </button>
         </div>
       } @else {
         <div
           class="thread-bubble-wrapper"
-          [class.thread-bubble-wrapper--own]="isOwnMessage(message.senderCode)"
+          [class.thread-bubble-wrapper--own]="isOwnMessage(message.senderId)"
         >
           <div
             class="thread-bubble"
-            [class.thread-bubble--own]="isOwnMessage(message.senderCode)"
+            [class.thread-bubble--own]="isOwnMessage(message.senderId)"
           >
             {{ message.content }}
           </div>
