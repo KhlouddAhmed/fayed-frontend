@@ -2,7 +2,7 @@
 
   <header class="add-material-modal-header">
     <h2 id="add-material-modal-title" class="add-material-modal-title">
-      {{ isEditMode() ? 'تعديل خامة' : 'اضافة خامة جديدة' }}
+      {{ isEditMode() ? 'تعديل إعلان' : 'إضافة إعلان جديد' }}
     </h2>
     <button type="button" class="add-material-modal-close-btn" (click)="cancel.emit()" aria-label="إغلاق">
       <img src="assets/icons/dashboard/close.svg" alt="" width="42" height="42" />
@@ -10,7 +10,6 @@
   </header>
 
   <div class="add-material-modal-body">
-
     <form class="add-material-modal-form" (submit)="onSubmit(); $event.preventDefault()">
 
       <section class="form-section">
@@ -18,13 +17,12 @@
 
         <div class="form-row-2" style="margin-block-end: 16px;">
           <label class="add-material-modal-field">
-            <span>اسم الخامة</span>
-            <input type="text" [value]="formValue().name"
-              (input)="updateField('name', $any($event.target).value)"
+            <span>عنوان الإعلان (اسم الخامة)</span>
+            <input type="text" [value]="formValue().title"
+              (input)="updateField('title', $any($event.target).value)"
               placeholder="مثال: PET معاد تدويره شفاف" />
           </label>
 
-          <!-- Category dropdown from API -->
           <label class="add-material-modal-field">
             <span>تصنيف الخامة</span>
             <select [value]="formValue().categoryId"
@@ -39,31 +37,19 @@
 
         <div class="form-row-2" style="margin-block-end: 16px;">
           <label class="add-material-modal-field">
-            <span>نوع الخامة</span>
-            <select [value]="formValue().materialType"
-              (change)="updateField('materialType', $any($event.target).value)">
-              <option value="" disabled>مثال: معاد تدوير (Recycled)</option>
-              <option value="recycled">معاد تدوير (Recycled)</option>
-              <option value="surplus">فائض إنتاج (Surplus)</option>
-              <option value="byproduct">مخلفات تصنيع (By-product)</option>
-              <option value="virgin">خام أصلي (Virgin)</option>
-            </select>
-          </label>
-
-          <label class="add-material-modal-field">
             <span>حالة الخامة</span>
-            <select [value]="formValue().condition"
-              (change)="updateField('condition', $any($event.target).value)">
-              <option value="" disabled>مثال: ممتاز</option>
-              <option value="excellent">ممتاز</option>
-              <option value="good">جيد</option>
-              <option value="fair">مقبول</option>
+            <select [value]="formValue().materialCondition"
+              (change)="updateField('materialCondition', $any($event.target).value)">
+              <option value="New">جديد (New)</option>
+              <option value="Used">مستعمل (Used)</option>
+              <option value="Scrap">سكراب (Scrap)</option>
+              <option value="ByProduct">مخلفات تصنيع (ByProduct)</option>
             </select>
           </label>
         </div>
 
         <label class="add-material-modal-field">
-          <span>وصف الخامة</span>
+          <span>وصف الإعلان</span>
           <div class="textarea-wrapper">
             <textarea rows="4" [value]="formValue().description"
               (input)="updateField('description', $any($event.target).value)"
@@ -81,84 +67,44 @@
           <label class="add-material-modal-field">
             <span>الكمية المتاحة</span>
             <div class="form-row-3" style="gap: 8px;">
-              <input type="number" min="0" [value]="formValue().availableQuantity"
-                (input)="updateField('availableQuantity', $any($event.target).value)"
+              <input type="number" min="0" [value]="formValue().quantity"
+                (input)="updateField('quantity', $any($event.target).value)"
                 placeholder="مثال: 30" style="grid-column: 1 / 3;" />
-              <div class="unit-badge">طن</div>
             </div>
           </label>
 
           <label class="add-material-modal-field">
-            <span>اقل كمية للبيع</span>
-            <div class="form-row-3" style="gap: 8px;">
-              <input type="number" min="0" [value]="formValue().minOrderQuantity"
-                (input)="updateField('minOrderQuantity', $any($event.target).value)"
-                placeholder="مثال: 5" style="grid-column: 1 / 3;" />
-              <div class="unit-badge">طن</div>
-            </div>
+            <span>السعر (ج.م)</span>
+            <input type="number" min="0" [value]="formValue().price"
+              (input)="updateField('price', $any($event.target).value)" placeholder="أدخل السعر للوحدة" />
           </label>
         </div>
-
-        <label class="add-material-modal-field">
-          <span>نطاق السعر (ج.م / طن)</span>
-          <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center;">
-            <input type="number" min="0" [value]="formValue().pricePerUnit"
-              (input)="updateField('pricePerUnit', $any($event.target).value)" placeholder="من" />
-            <span class="range-separator" style="padding-block-start: 0;">الى</span>
-            <input type="number" min="0" [value]="formValue().maxPricePerUnit"
-              (input)="updateField('maxPricePerUnit', $any($event.target).value)" placeholder="الي" />
-          </div>
-        </label>
       </section>
-
     </form>
 
     <aside class="add-material-modal-sidebar">
       <div>
-        <h3 class="sidebar-section-title">الصور والفيديو</h3>
-
-        <p style="font-size: 0.8125rem; color: var(--text-soft); margin: 0 0 10px 0; text-align: right;">صور المادة</p>
+        <h3 class="sidebar-section-title">صور الخامة</h3>
+        <p style="font-size: 0.8125rem; color: var(--text-soft); margin: 0 0 10px 0; text-align: right;">ارفع صور واضحة للخامة المتاحة</p>
         <div class="upload-zone" role="button" tabindex="0" aria-label="رفع صور المادة"
           (click)="imageInput.click()" (keydown.enter)="imageInput.click()">
           <input #imageInput type="file" accept="image/png,image/jpeg" multiple style="display:none"
             (change)="onImagesSelected($any($event.target).files)" />
           <span class="upload-zone-icon"><i class="lucide-image"></i></span>
           <span class="upload-zone-label">اضغط لرفع الصور</span>
-          <span class="upload-zone-hint">PNG, JPG حتى 5MB</span>
-        </div>
-
-        <p style="font-size: 0.8125rem; color: var(--text-soft); margin: 16px 0 10px 0; text-align: right;">فيديو المادة</p>
-        <div class="upload-zone" role="button" tabindex="0" aria-label="رفع فيديو المادة"
-          (click)="videoInput.click()" (keydown.enter)="videoInput.click()">
-          <input #videoInput type="file" accept="video/*" style="display:none"
-            (change)="onVideoSelected($any($event.target).files)" />
-          <span class="upload-zone-icon"><i class="lucide-video"></i></span>
-          <span class="upload-zone-label">اضغط لرفع الفيديو</span>
-          <span class="upload-zone-hint">MP4, MOV حتى 50MB</span>
-        </div>
-
-        <p style="font-size: 0.8125rem; color: var(--text-soft); margin: 16px 0 10px 0; text-align: right;">رفع شهادة التحليل</p>
-        <div class="upload-zone" role="button" tabindex="0" aria-label="رفع شهادة التحليل"
-          (click)="docInput.click()" (keydown.enter)="docInput.click()">
-          <input #docInput type="file" accept=".pdf,.doc,.docx,image/png,image/jpeg" style="display:none"
-            (change)="onDocSelected($any($event.target).files)" />
-          <span class="upload-zone-icon"><i class="lucide-file-text"></i></span>
-          <span class="upload-zone-label">اضغط لرفع المستند</span>
-          <span class="upload-zone-hint">PDF, PNG, JPG حتى 5MB</span>
+          <span class="upload-zone-hint">PNG, JPG</span>
         </div>
       </div>
 
-      <footer class="add-material-modal-footer" style="padding: 0; border: none; margin-block-start: 4px;">
+      <footer class="add-material-modal-footer" style="padding: 0; border: none; margin-block-start: auto; padding-top: 20px;">
         <button type="submit" class="btn-fayed btn-blue" [disabled]="isSubmitting() || !isFormValid()"
           (click)="onSubmit()">
-          {{ isSubmitting() ? 'جاري الحفظ...' : 'حفظ' }}
+          {{ isSubmitting() ? 'جاري الحفظ...' : 'حفظ كمسودة' }}
         </button>
         <button type="button" class="btn-fayed btn-white" (click)="cancel.emit()">
-          الغاء
+          إلغاء
         </button>
       </footer>
     </aside>
-
   </div>
-
 </div>

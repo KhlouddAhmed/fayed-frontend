@@ -3,7 +3,7 @@ import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-empty-state',
-  imports: [NgOptimizedImage],
+  imports: [],
   templateUrl: './empty-state.html',
   styleUrl: './empty-state.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

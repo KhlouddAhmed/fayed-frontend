@@ -1,37 +1,27 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, OnInit, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Material, MaterialFormValue, MaterialStatus } from '../../models/material.model';
+import { Material, MaterialFormValue } from '../../models/material.model';
 import { CategoriesService, Category } from '../../services/categories.service';
 
 const EMPTY_FORM_VALUE: MaterialFormValue = {
-  name: '',
-  category: '',
-  categoryId: 0,
-  materialType: '',
-  condition: '',
-  status: 'active',
+  title: '',
   description: '',
-  availableQuantity: 0,
-  minOrderQuantity: 0,
-  unit: 'طن',
-  pricePerUnit: 0,
-  maxPricePerUnit: 0,
+  categoryId: 0,
+  materialCondition: 'New',
+  quantity: 0,
+  price: 0,
+  mediaFiles: []
 };
 
 function toFormValue(material: Material): MaterialFormValue {
   return {
-    name: material.name,
-    category: material.category,
+    title: material.name,
     categoryId: material.categoryId ?? 0,
-    materialType: material.materialType ?? '',
-    condition: material.condition ?? '',
-    status: material.status,
+    materialCondition: material.condition ?? 'New',
     description: material.description,
-    availableQuantity: material.availableQuantity,
-    minOrderQuantity: material.minOrderQuantity,
-    unit: material.unit,
-    pricePerUnit: material.pricePerUnit,
-    maxPricePerUnit: material.maxPricePerUnit ?? 0,
+    quantity: material.availableQuantity,
+    price: material.pricePerUnit,
+    mediaFiles: []
   };
 }
 
@@ -58,11 +48,10 @@ export class AddMaterialModal implements OnInit {
   protected readonly isFormValid = computed(() => {
     const value = this.formValue();
     return (
-      value.name.trim().length > 0 &&
+      value.title.trim().length > 0 &&
       value.categoryId > 0 &&
-      value.availableQuantity > 0 &&
-      value.minOrderQuantity > 0 &&
-      value.pricePerUnit > 0
+      value.quantity > 0 &&
+      value.price > 0
     );
   });
 
@@ -80,15 +69,13 @@ export class AddMaterialModal implements OnInit {
   }
 
   protected updateField<K extends keyof MaterialFormValue>(field: K, rawValue: string): void {
+
     const numericFields: readonly (keyof MaterialFormValue)[] = [
-      'availableQuantity', 'minOrderQuantity', 'pricePerUnit', 'maxPricePerUnit', 'categoryId',
+      'quantity', 'price', 'categoryId'
     ];
+
     const parsedValue = numericFields.includes(field) ? Number(rawValue) : rawValue;
     this.formValue.update(current => ({ ...current, [field]: parsedValue }));
-  }
-
-  protected updateStatus(status: MaterialStatus): void {
-    this.formValue.update(current => ({ ...current, status }));
   }
 
   protected onSubmit(): void {
@@ -98,16 +85,6 @@ export class AddMaterialModal implements OnInit {
 
   protected onImagesSelected(files: FileList | null): void {
     if (!files) return;
-    this.formValue.update(current => ({ ...current, imageFiles: Array.from(files) }));
-  }
-
-  protected onVideoSelected(files: FileList | null): void {
-    if (!files || files.length === 0) return;
-    this.formValue.update(current => ({ ...current, videoFile: files[0] }));
-  }
-
-  protected onDocSelected(files: FileList | null): void {
-    if (!files || files.length === 0) return;
-    this.formValue.update(current => ({ ...current, labCertificateFile: files[0] }));
+    this.formValue.update(current => ({ ...current, mediaFiles: Array.from(files) }));
   }
 }

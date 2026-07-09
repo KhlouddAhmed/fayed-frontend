@@ -1,66 +1,46 @@
-export interface MaterialDto {
-  readonly Id: string;
-  readonly Name: string;
-  readonly Category: string;
-  readonly CategoryId: number;
-  readonly Status: string;
-  readonly Description: string;
-  readonly AvailableQuantity: number;
-  readonly MinOrderQuantity: number;
-  readonly Unit: string;
-  readonly PricePerUnit: number;
-  readonly ImageUrls: readonly string[];
-  readonly VideoUrl: string | null;
-  readonly LabCertificateUrl: string | null;
-  readonly LabCertificateFileName: string | null;
-  readonly LabCertificateFileSizeKb: number | null;
-  readonly PublishedAt: string;
-  readonly UpdatedAt: string;
-}
+export type MaterialStatus = 'Draft' | 'PendingApproval' | 'Published' | 'Rejected' | 'Sold';
 
-export type MaterialStatus = 'active' | 'underReview' | 'paused' | 'rejected';
+export interface MaterialDto {
+  readonly id: number;
+  readonly title: string;
+  readonly categoryName?: string;
+  readonly categoryId?: number;
+  readonly status: MaterialStatus;
+  readonly description?: string;
+  readonly quantity: number;
+  readonly measureUnit?: string;
+  readonly minPrice?: number;
+  readonly maxPrice?: number;
+  readonly price?: number;
+  readonly mainImageUrl?: string;
+  readonly imageUrls?: string[];
+  readonly publishedAt?: string;
+  readonly createdAt: string;
+  readonly materialCondition?: string;
+}
 
 export interface Material {
   readonly id: string;
-  readonly name: string;
+  readonly name: string; 
   readonly category: string;
   readonly categoryId?: number;
   readonly status: MaterialStatus;
   readonly description: string;
   readonly availableQuantity: number;
-  readonly minOrderQuantity: number;
   readonly unit: string;
   readonly pricePerUnit: number;
   readonly imageUrls: readonly string[];
-  readonly videoUrl: string | null;
-  readonly labCertificate: LabCertificate | null;
-  readonly publishedAt: Date;
+  readonly publishedAt: Date | null;
   readonly updatedAt: Date;
-  materialType?: string;
-  condition?: string;
-  maxPricePerUnit?: number;
-}
-
-export interface LabCertificate {
-  readonly url: string;
-  readonly fileName: string;
-  readonly fileSizeKb: number;
+  readonly condition: string;
 }
 
 export interface MaterialFormValue {
-  readonly name: string;
-  readonly category: string;
-  readonly categoryId: number;
-  readonly status: MaterialStatus;
-  readonly description: string;
-  readonly availableQuantity: number;
-  readonly minOrderQuantity: number;
-  readonly unit: string;
-  readonly pricePerUnit: number;
-  materialType: string;
-  condition: string;
-  maxPricePerUnit: number;
-  imageFiles?: File[];
-  videoFile?: File | null;
-  labCertificateFile?: File | null;
+  title: string;
+  description: string;
+  price: number;
+  quantity: number;
+  categoryId: number;
+  materialCondition: string;
+  mediaFiles?: File[];
 }

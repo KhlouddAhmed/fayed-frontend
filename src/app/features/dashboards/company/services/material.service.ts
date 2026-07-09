@@ -1,42 +1,71 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
+import { MaterialsRepository } from './materials-repository.token';
+import { MaterialDto, MaterialFormValue } from '../models/material.model';
 import { environment } from '../../../../environments/environment';
-import { ApiResponseWithData } from '../../../../core/models/api-response.model';
-import {
-  DisputeDto,
-  Dispute,
-  NegotiationMessageDto,
-  NegotiationMessage,
-  CreateDisputeRequestDto,
-} from '../models/dispute.model';
-import {
-  adaptDisputes,
-  adaptDispute,
-  adaptNegotiationMessages,
-} from '../adapters/dispute.adapter';
 
-@Injectable({ providedIn: 'root' })
-export class DisputeService {
+interface BaseResponse<T> {
+  statusCode: number;
+  isSuccess: boolean;
+  message: string;
+  data: T;
+  errors: string[] | null;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class MaterialsService implements MaterialsRepository {
   private readonly http = inject(HttpClient);
+  private readonly baseUrl = `${environment.apiUrl}/api/listings`;
 
-  getAll(): Observable<readonly Dispute[]> {
-    return this.http
-      .get<ApiResponseWithData<readonly DisputeDto[]>>(`${environment.apiUrl}/disputes`)
-      .pipe(map(res => adaptDisputes(res.data ?? [])));
+  async getAll(): Promise<readonly MaterialDto[]> {
+    const response = await firstValueFrom(
+      this.http.get<BaseResponse<MaterialDto[]>>(`${this.baseUrl}/my-listings`)
+    );
+    return response.data;
   }
 
-  getNegotiationLog(disputeId: string): Observable<readonly NegotiationMessage[]> {
-    return this.http
-      .get<ApiResponseWithData<readonly NegotiationMessageDto[]>>(
-        `${environment.apiUrl}/disputes/${disputeId}`
-      )
-      .pipe(map(res => adaptNegotiationMessages(res.data ?? [])));
+  async create(value: MaterialFormValue): Promise<MaterialDto> {
+    const formData = this.buildFormData(value);
+    const response = await firstValueFrom(
+      this.http.post<BaseResponse<MaterialDto>>(this.baseUrl, formData)
+    );
+    return response.data;
   }
 
-  create(request: CreateDisputeRequestDto): Observable<Dispute> {
-    return this.http
-      .post<ApiResponseWithData<DisputeDto>>(`${environment.apiUrl}/disputes`, request)
-      .pipe(map(res => adaptDispute(res.data!)));
+  async update(id: string, value: MaterialFormValue): Promise<MaterialDto> {
+    const formData = this.buildFormData(value);
+    const response = await firstValueFrom(
+      this.http.put<BaseResponse<MaterialDto>>(`${this.baseUrl}/${id}`, formData)
+    );
+    return response.data;
+  }
+
+  async delete(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete<BaseResponse<null>>(`${this.baseUrl}/${id}`));
+  }
+
+  async publish(id: string): Promise<void> {
+    await firstValueFrom(this.http.post<BaseResponse<null>>(`${this.baseUrl}/${id}/publish`, {}));
+  }
+
+  private buildFormData(value: MaterialFormValue): FormData {
+    const formData = new FormData();
+    formData.append('title', value.title);
+    formData.append('description', value.description);
+    formData.append('price', value.price.toString());
+    formData.append('quantity', value.quantity.toString());
+    formData.append('categoryId', value.categoryId.toString());
+    formData.append('materialCondition', value.materialCondition);
+
+    if (value.mediaFiles && value.mediaFiles.length > 0) {
+      value.mediaFiles.forEach(file => {
+        formData.append('mediaFiles', file);
+      });
+    }
+
+    return formData;
   }
 }

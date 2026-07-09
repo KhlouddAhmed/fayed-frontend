@@ -1,4 +1,4 @@
-import { Component, signal, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal, inject, ChangeDetectionStrategy, computed } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { NotificationBell } from '../../../notifications/components/notification-bell/notification-bell';
 import { NgOptimizedImage } from '@angular/common';
@@ -12,14 +12,14 @@ interface AdminNavItem {
 }
 
 const ADMIN_NAV_ITEMS: readonly AdminNavItem[] = [
-  { label: 'الرئيسية',               route: '/admin/overview',   icon: 'bi bi-house' },
-  { label: 'التحقق من الهوية',       route: '/admin/kyb',        icon: 'bi bi-person-check' },
-  { label: 'إدارة الإعلانات',        route: '/admin/moderation', icon: 'bi bi-clipboard-check' },
-  { label: 'الطلبات والمدفوعات',     route: '/admin/orders',     icon: 'bi bi-inbox' },
-  { label: 'إدارة النزاعات',         route: '/admin/disputes',   icon: 'bi bi-exclamation-triangle' },
-  { label: 'إدارة المستخدمين',       route: '/admin/users',      icon: 'bi bi-people' },
-  { label: 'التحليلات والإحصائيات',  route: '/admin/analytics',  icon: 'bi bi-bar-chart-line' },
-  { label: 'إعدادات المنصة',         route: '/admin/settings',   icon: 'bi bi-gear' },
+  { label: 'الرئيسية', route: '/admin/overview', icon: 'bi bi-house' },
+  { label: 'التحقق من الهوية', route: '/admin/kyb', icon: 'bi bi-person-check' },
+  { label: 'إدارة الإعلانات', route: '/admin/moderation', icon: 'bi bi-clipboard-check' },
+  { label: 'الطلبات والمدفوعات', route: '/admin/orders', icon: 'bi bi-inbox' },
+  { label: 'إدارة النزاعات', route: '/admin/disputes', icon: 'bi bi-exclamation-triangle' },
+  { label: 'إدارة المستخدمين', route: '/admin/users', icon: 'bi bi-people' },
+  { label: 'التحليلات والإحصائيات', route: '/admin/analytics', icon: 'bi bi-bar-chart-line' },
+  { label: 'إعدادات المنصة', route: '/admin/settings', icon: 'bi bi-gear' },
 ] as const;
 
 @Component({
@@ -32,7 +32,7 @@ const ADMIN_NAV_ITEMS: readonly AdminNavItem[] = [
 })
 export class AdminLayoutComponent {
   private readonly router = inject(Router);
-  
+
   //for logout
   private readonly authState = inject(AuthStateService);
   private readonly authService = inject(AuthService);
@@ -41,10 +41,13 @@ export class AdminLayoutComponent {
   protected readonly isSidebarOpen = signal(false);
   protected readonly isLogoutModalOpen = signal(false);
 
-  protected readonly currentUser = signal({
-    name: 'أحمد ممدوح',
-    role: 'مسؤول',
-    avatarUrl: 'assets/icons/logo-icon.png',
+  protected readonly currentUser = computed(() => {
+    const user = this.authState.currentUser();
+    return {
+      name: user?.name ?? 'المسؤول',
+      role: 'مسؤول',
+      avatarUrl: user?.logoUrl || 'assets/icons/logo-icon.png',
+    };
   });
 
   protected toggleSidebar(): void {
