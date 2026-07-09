@@ -4,13 +4,14 @@
   height: 100%;
   background-color: var(--white);
   overflow: hidden;
+  direction: rtl;
 }
 
 .thread-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
+  gap: 10px;
+  padding: 12px 16px;
   border-block-end: 1px solid var(--border-light);
   flex-shrink: 0;
   flex-direction: row-reverse;
@@ -18,12 +19,12 @@
 }
 
 .thread-avatar {
-  inline-size: 44px;
-  block-size: 44px;
+  inline-size: 36px;
+  block-size: 36px;
   border-radius: 50%;
   color: var(--white);
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.875rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -32,24 +33,24 @@
 
 .thread-participant-code {
   display: block;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 700;
   color: var(--text-main);
 }
 
 .thread-participant-name {
   display: block;
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
 }
 
 .thread-messages {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .thread-bubble-wrapper {
@@ -63,10 +64,10 @@
 
 .thread-bubble {
   max-inline-size: 65%;
-  padding: 12px 16px;
-  border-radius: 16px;
+  padding: 10px 14px;
+  border-radius: 14px;
   border-end-inline-end-radius: 4px;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   line-height: 1.6;
   background-color: #F3F4F6;
   color: var(--text-main);
@@ -76,25 +77,25 @@
 .thread-bubble--own {
   background-color: var(--primary, #155DFC);
   color: var(--white);
-  border-radius: 16px;
+  border-radius: 14px;
   border-end-inline-start-radius: 4px;
   text-align: right;
 }
 
 .thread-ai-suggestion {
   border: 1.5px dashed var(--primary);
-  border-radius: 12px;
-  padding: 14px 16px;
+  border-radius: 10px;
+  padding: 12px 14px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
   background-color: #EFF6FF;
   flex-direction: row-reverse;
 }
 
 .thread-ai-suggestion-text {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: var(--text-soft);
   margin: 0;
   line-height: 1.6;
@@ -103,16 +104,16 @@
 }
 
 .thread-ai-action-btn {
-  font-size: 0.875rem;
-  padding: 8px 18px;
+  font-size: 0.8125rem;
+  padding: 6px 14px;
   flex-shrink: 0;
 }
 
 .thread-input-area {
   display: flex;
   align-items: flex-end;
-  gap: 12px;
-  padding: 14px 20px;
+  gap: 10px;
+  padding: 10px 16px;
   border-block-start: 1px solid var(--border-light);
   flex-shrink: 0;
   flex-direction: row-reverse;
@@ -123,12 +124,12 @@
   border: none;
   background: none;
   font-family: inherit;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   color: var(--text-main);
   resize: none;
   line-height: 1.5;
   min-block-size: 24px;
-  max-block-size: 120px;
+  max-block-size: 100px;
   text-align: right;
   direction: rtl;
 }
@@ -142,7 +143,7 @@
 }
 
 .thread-send-btn {
-  font-size: 0.9375rem;
-  padding: 10px 20px;
+  font-size: 0.875rem;
+  padding: 8px 16px;
   flex-shrink: 0;
 }

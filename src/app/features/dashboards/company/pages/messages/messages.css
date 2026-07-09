@@ -1,40 +1,41 @@
 .messages-page {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   height: 100%;
 }
 
 .messages-page-title {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 800;
   color: var(--text-main);
-  margin: 0 0 4px;
+  margin: 0 0 2px;
 }
 
 .messages-page-subtitle {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin: 2px 0 0;
+}
+
+.messages-page-date {
+  font-size: 0.75rem;
   color: var(--text-muted);
   margin: 4px 0 0;
 }
 
-.messages-page-date {
-  font-size: 0.8125rem;
-  color: var(--text-muted);
-  margin: 6px 0 0;
-}
-
 .messages-page-body {
   display: grid;
-  grid-template-columns: 320px 1fr;
+  grid-template-columns: 280px 1fr;
   gap: 0;
   flex: 1;
   min-block-size: 0;
   block-size: calc(100vh - 200px);
   background: var(--white);
-  border-radius: 16px;
+  border-radius: 14px;
   box-shadow: var(--shadow-card);
   overflow: hidden;
+  direction: rtl;
 }
 
 .messages-page-conv-list {
@@ -42,7 +43,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding: 8px;
+  padding: 6px;
 }
 
 .messages-page-thread-panel {
@@ -57,7 +58,7 @@
   justify-content: center;
   height: 100%;
   color: var(--text-muted);
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
 }
 
 .messages-page-overlay {

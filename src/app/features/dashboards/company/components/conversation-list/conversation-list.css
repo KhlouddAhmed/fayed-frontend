@@ -9,10 +9,10 @@
 .conv-list-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 12px;
+  gap: 10px;
+  padding: 10px 10px;
   cursor: pointer;
-  border-radius: 12px;
+  border-radius: 10px;
   transition: background-color 0.15s ease;
   margin-block-end: 2px;
   flex-direction: row-reverse;
@@ -27,12 +27,12 @@
 }
 
 .conv-list-avatar {
-  inline-size: 48px;
-  block-size: 48px;
+  inline-size: 38px;
+  block-size: 38px;
   border-radius: 50%;
   color: var(--white);
   font-weight: 700;
-  font-size: 1.125rem;
+  font-size: 0.875rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,18 +44,18 @@
   min-inline-size: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   text-align: right;
 }
 
 .conv-list-code {
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: var(--text-main);
 }
 
 .conv-list-last-msg {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -71,7 +71,7 @@
 }
 
 .conv-list-time {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   color: var(--text-muted);
   white-space: nowrap;
 }
@@ -80,11 +80,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  inline-size: 20px;
-  block-size: 20px;
+  inline-size: 18px;
+  block-size: 18px;
   border-radius: 50%;
   background-color: var(--primary);
   color: var(--white);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   font-weight: 700;
 }
