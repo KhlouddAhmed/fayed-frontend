@@ -50,6 +50,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  min-block-size: 0; 
 }
 
 .messages-page-empty-thread {
