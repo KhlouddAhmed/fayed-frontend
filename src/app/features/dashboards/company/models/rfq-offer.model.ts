@@ -1,38 +1,62 @@
 // =============================================
-// API DTOs (.NET 8 — PascalCase as received from backend)
+// API DTOs — mirror BLL/DTOs/Offers/* on the backend (camelCase JSON)
 // =============================================
 
-export interface OfferDto {
-  readonly Id: string;
-  readonly Code: string;
-  readonly ClientCode: string;
-  readonly ProductName: string;
-  readonly RequestedQuantity: number;
-  readonly Unit: string;
-  readonly PricePerUnit: number;
-  readonly TotalValue: number;
-  readonly Status: string;
-  readonly Direction: string;
-  readonly Message: string | null;
-  readonly SentAt: string;
+/** Matches backend PurchaseOfferDto */
+export interface PurchaseOfferDto {
+  readonly id: number;
+  readonly listingId: number;
+  readonly listingTitle: string;
+  readonly buyerId: number;
+  readonly requestedQuantity: number;
+  readonly offeredPricePerTon: number;
+  readonly totalValue: number;
+  readonly buyerMessage: string | null;
+  /** Pending | Accepted | Rejected | Withdrawn */
+  readonly status: string;
+  /** كود الطرف الآخر (للمشتري: كود المورد — للمورد: كود المشتري) */
+  readonly counterpartyCode: string;
+  readonly createdAt: string;
+  /** معرف محادثة التفاوض إن وُجدت (تظهر بعد قبول العرض) */
+  readonly chatId: number | null;
+}
+
+/** Matches backend CreatePurchaseOfferDto */
+export interface CreatePurchaseOfferRequest {
+  readonly listingId: number;
+  readonly requestedQuantity: number;
+  readonly offeredPricePerTon: number;
+  readonly buyerMessage?: string | null;
+}
+
+/** Matches backend RespondToPurchaseOfferResponseDto */
+export interface RespondToPurchaseOfferResponse {
+  readonly offerId: number;
+  readonly isAccepted: boolean;
+  readonly chatId: number | null;
+}
+
+/** DTO tagged with the endpoint it came from (sent = my-sent-offers, received = my-received-offers) */
+export interface PurchaseOfferWithDirection extends PurchaseOfferDto {
+  readonly direction: OfferDirection;
 }
 
 // =============================================
-// UI Models (camelCase, normalized, display-ready)
+// UI Models (normalized, display-ready)
 // =============================================
 
 export type OfferDirection = 'sent' | 'received';
 
 export type OfferStatus =
-  | 'negotiating'
-  | 'awaitingResponse'
+  | 'pending'
   | 'accepted'
   | 'rejected'
-  | 'completed';
+  | 'withdrawn';
 
 export interface Offer {
   readonly id: string;
   readonly code: string;
+  readonly listingId: number;
   readonly clientCode: string;
   readonly productName: string;
   readonly requestedQuantity: number;
@@ -43,4 +67,5 @@ export interface Offer {
   readonly direction: OfferDirection;
   readonly message: string | null;
   readonly sentAt: Date;
+  readonly chatId: number | null;
 }

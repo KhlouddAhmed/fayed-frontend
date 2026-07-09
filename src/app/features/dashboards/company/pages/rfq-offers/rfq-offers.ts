@@ -1,66 +1,49 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
-import { DatePipe } from '@angular/common';
-
-import { OffersService, RfqOffer } from './rfq-offers.service'; // تأكد إن ده اسم ملف السيرفيس بتاعك
+import { ChangeDetectionStrategy, Component, computed, inject, resource, signal } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { adaptOffers } from '../../adapters/rfq-offer.adapter';
+import { RFQ_OFFER_REPOSITORY } from '../../services/rfq-offer-repository.token';
 import { OfferRow } from '../../components/offer-row/offer-row';
 import { OfferDetailModal } from '../../components/offer-detail-modal/offer-detail-modal';
 import { LoadingSkeleton } from '../../../../../shared/components/loading-skeleton/loading-skeleton';
 import { ErrorState } from '../../../../../shared/components/error-state/error-state';
 import { EmptyState } from '../../../../../shared/components/empty-state/empty-state';
+import { DatePipe } from '@angular/common';
+import { ToastService } from '../../../../../core/services/toast.service';
 
 type OfferTab = 'sent' | 'received';
 
 @Component({
   selector: 'app-rfq-offers',
-  standalone: true,
   imports: [DatePipe, OfferRow, OfferDetailModal, LoadingSkeleton, ErrorState, EmptyState],
   templateUrl: './rfq-offers.html',
   styleUrl: './rfq-offers.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RfqOffers implements OnInit {
-  private readonly offersService = inject(OffersService);
+export class RfqOffers {
+  private readonly repository = inject(RFQ_OFFER_REPOSITORY);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly toast = inject(ToastService);
 
-  // حالات الصفحة المستقرة
-  isLoading = signal<boolean>(true);
-  isError = signal<boolean>(false);
-  offersData = signal<RfqOffer[]>([]);
+  protected readonly offersResource = resource({
+    loader: async () => adaptOffers(await this.repository.getAll()),
+  });
 
   protected readonly currentDate = new Date();
-  protected readonly activeTab = signal<OfferTab>('sent');
+  protected readonly activeTab = signal<OfferTab>(
+    this.route.snapshot.queryParamMap.get('tab') === 'received' ? 'received' : 'sent'
+  );
   protected readonly selectedOfferId = signal<string | null>(null);
   protected readonly isSubmitting = signal(false);
 
-  ngOnInit(): void {
-    this.loadOffers();
-  }
-
-  // دالة جلب البيانات (بنناديها في البداية وبعد كل أكشن)
-  loadOffers(): void {
-    this.isLoading.set(true);
-    this.isError.set(false);
-    
-    this.offersService.getAllOffers().subscribe({
-      next: (data: RfqOffer[]) => {
-        this.offersData.set(data);
-        this.isLoading.set(false);
-      },
-      error: (err: any) => {
-        console.error('API Error:', err);
-        this.isError.set(true);
-        this.isLoading.set(false);
-      }
-    });
-  }
-
   protected readonly filteredOffers = computed(() => {
-    return this.offersData().filter((offer) => offer.direction === this.activeTab()) as any[];
+    const offers = this.offersResource.value() ?? [];
+    return offers.filter((offer) => offer.direction === this.activeTab());
   });
 
-  
   protected readonly selectedOffer = computed(() => {
     const id = this.selectedOfferId();
-    return (this.offersData().find((offer) => offer.id === id) as any) ?? null;
+    return this.offersResource.value()?.find((offer) => offer.id === id) ?? null;
   });
 
   protected onTabChange(tab: OfferTab): void {
@@ -75,40 +58,58 @@ export class RfqOffers implements OnInit {
     this.selectedOfferId.set(null);
   }
 
-  protected onAccept(offerId: string): void {
-    this.runAction(() => this.offersService.acceptOffer(offerId));
-  }
-
-  protected onReject(offerId: string): void {
-    this.runAction(() => this.offersService.rejectOrCancelOffer(offerId));
-  }
-
-  protected onWithdraw(offerId: string): void {
-    this.runAction(() => this.offersService.rejectOrCancelOffer(offerId));
-  }
-
-  protected onEditOffer(offerId: string): void {
-    console.log('Navigate to edit offer:', offerId);
-  }
-
-  private runAction(actionObservable: () => any): void {
+  /** المورد يقبل العرض المبدئي → الباك إند يفتح محادثة التفاوض ويرجع chatId */
+  protected async onAccept(offerId: string): Promise<void> {
     this.isSubmitting.set(true);
-    actionObservable().subscribe({
-      next: (res: any) => {
-        const isSuccess = res.IsSuccess ?? res.isSuccess;
-        if (isSuccess || res.statusCode === 0) {
-          this.closeModal();
-          this.loadOffers(); // تحديث الجدول
-        } else {
-          alert(res.message || 'حدث خطأ أثناء تنفيذ العملية');
-        }
-        this.isSubmitting.set(false);
-      },
-      error: (err: any) => {
-        console.error('API Error:', err);
-        alert(err.error?.message || 'خطأ في الاتصال بالخادم');
-        this.isSubmitting.set(false);
+    try {
+      const result = await this.repository.accept(Number(offerId));
+      this.toast.success('تم قبول العرض وفتح محادثة التفاوض مع المشتري');
+      this.closeModal();
+      this.offersResource.reload();
+      if (result.chatId != null) {
+        await this.router.navigate(['/dashboard/company/messages'], {
+          queryParams: { chatId: String(result.chatId) },
+        });
       }
+    } catch {
+      this.toast.error('تعذر قبول العرض. حاول مرة أخرى.');
+    } finally {
+      this.isSubmitting.set(false);
+    }
+  }
+
+  protected async onReject(offerId: string): Promise<void> {
+    this.isSubmitting.set(true);
+    try {
+      await this.repository.reject(Number(offerId));
+      this.toast.success('تم رفض العرض وإخطار المشتري');
+      this.closeModal();
+      this.offersResource.reload();
+    } catch {
+      this.toast.error('تعذر رفض العرض. حاول مرة أخرى.');
+    } finally {
+      this.isSubmitting.set(false);
+    }
+  }
+
+  protected async onWithdraw(offerId: string): Promise<void> {
+    this.isSubmitting.set(true);
+    try {
+      await this.repository.withdraw(Number(offerId));
+      this.toast.success('تم سحب العرض بنجاح');
+      this.closeModal();
+      this.offersResource.reload();
+    } catch {
+      this.toast.error('تعذر سحب العرض. العروض المعلقة فقط يمكن سحبها.');
+    } finally {
+      this.isSubmitting.set(false);
+    }
+  }
+
+  /** فتح محادثة التفاوض لعرض مقبول */
+  protected onOpenChat(chatId: number): void {
+    this.router.navigate(['/dashboard/company/messages'], {
+      queryParams: { chatId: String(chatId) },
     });
   }
 }

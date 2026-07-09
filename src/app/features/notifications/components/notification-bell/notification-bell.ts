@@ -14,13 +14,13 @@ export class NotificationBell implements OnInit {
   private readonly notificationsService = inject(NotificationsService);
 
   protected readonly isOpen = signal(false);
-  protected readonly unreadCount = signal(0);
 
- ngOnInit(): void {
-  this.notificationsService.getUnreadCount().subscribe({
-    next: count => this.unreadCount.set(count),
-  });
-}
+  /** عدّاد مشترك يُحدَّث فورياً عند وصول إشعار SignalR وعند القراءة */
+  protected readonly unreadCount = this.notificationsService.unreadCount;
+
+  ngOnInit(): void {
+    this.notificationsService.refreshUnreadCount();
+  }
 
   protected toggle(): void {
     this.isOpen.update((v) => !v);

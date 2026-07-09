@@ -180,16 +180,27 @@ export const routes: Routes = [
           ).then(c => c.NotificationCenterPage),
         title: 'الإشعارات - فايض',
       },
-      //    {
-      //         path: 'payment', 
-      //         loadComponent: () => import('./features/payment/payment')
-      //           .then(m => m.PaymentComponent),
-      //       },
       {
         path: 'payment/:contractId',
         loadComponent: () => import('./features/payment/payment')
           .then(m => m.PaymentComponent),
         title: 'إتمام الدفع - فايض'
+      },
+      // نموذج العقد — يملؤه المشتري بعد "إنشاء عقد" من المحادثة
+      {
+        path: 'contracts/:orderId/form',
+        loadComponent: () =>
+          import('./features/dashboards/company/pages/contracts/contract-form-page')
+            .then(m => m.ContractFormPage),
+        title: 'نموذج العقد - فايض',
+      },
+      // عرض/مراجعة العقد — المورد يقبل أو يرفض بسبب، والمشتري يتابع ويدفع العربون
+      {
+        path: 'contracts/:orderId',
+        loadComponent: () =>
+          import('./features/dashboards/company/pages/contracts/contract-view-page')
+            .then(m => m.ContractViewPage),
+        title: 'العقد - فايض',
       },
     ],
   },

@@ -1,0 +1,140 @@
+<div class="contract-page" dir="rtl">
+
+  @if (formResource.isLoading()) {
+    <app-loading-skeleton variant="feed" [rows]="6" />
+  } @else if (formResource.error()) {
+    <app-error-state (retry)="formResource.reload()" />
+  } @else if (formResource.value(); as form) {
+
+    <header class="contract-page-header">
+      <div>
+        <h1 class="contract-page-title">نموذج عقد توريد — {{ form.orderCode }}</h1>
+        <p class="contract-page-subtitle">
+          راجع بيانات الطرفين والبنود الثابتة، وعدّل تفاصيل الصفقة ثم قدّم العقد لمراجعة المورد.
+        </p>
+      </div>
+      <button type="button" class="btn-fayed btn-white" (click)="goBack()">العودة للمحادثة</button>
+    </header>
+
+    <!-- بيانات الطرفين (ثابتة من الباك إند) -->
+    <section class="contract-card">
+      <h2 class="contract-card-title">أطراف التعاقد</h2>
+      <div class="contract-parties">
+        <div class="contract-party">
+          <h3 class="contract-party-role">الطرف الأول (المشتري)</h3>
+          <dl class="contract-dl">
+            <div><dt>الاسم</dt><dd>{{ form.buyer.name }}</dd></div>
+            <div><dt>المصنع</dt><dd>{{ form.buyer.factoryName }}</dd></div>
+            <div><dt>الكود</dt><dd>{{ form.buyer.factoryCode }}</dd></div>
+            <div><dt>سجل تجاري</dt><dd>{{ form.buyer.commercialRegistryNo }}</dd></div>
+            <div><dt>بطاقة ضريبية</dt><dd>{{ form.buyer.taxCardNo }}</dd></div>
+          </dl>
+        </div>
+        <div class="contract-party">
+          <h3 class="contract-party-role">الطرف الثاني (المورد)</h3>
+          <dl class="contract-dl">
+            <div><dt>الاسم</dt><dd>{{ form.seller.name }}</dd></div>
+            <div><dt>المصنع</dt><dd>{{ form.seller.factoryName }}</dd></div>
+            <div><dt>الكود</dt><dd>{{ form.seller.factoryCode }}</dd></div>
+            <div><dt>سجل تجاري</dt><dd>{{ form.seller.commercialRegistryNo }}</dd></div>
+            <div><dt>بطاقة ضريبية</dt><dd>{{ form.seller.taxCardNo }}</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- تفاصيل الصفقة (قابلة للتعديل) -->
+    <section class="contract-card">
+      <h2 class="contract-card-title">تفاصيل الصفقة — {{ form.listingTitle }}</h2>
+      <div class="contract-form-grid">
+        <label class="contract-field">
+          <span class="contract-field-label">الكمية (طن)</span>
+          <input
+            type="number"
+            class="contract-field-input"
+            min="0.01"
+            step="0.01"
+            [value]="quantity()"
+            (input)="quantity.set(+$any($event.target).value)"
+          />
+        </label>
+
+        <label class="contract-field">
+          <span class="contract-field-label">سعر الوحدة (ج.م / طن)</span>
+          <input
+            type="number"
+            class="contract-field-input"
+            min="0.01"
+            step="0.01"
+            [value]="pricePerUnit()"
+            (input)="pricePerUnit.set(+$any($event.target).value)"
+          />
+        </label>
+
+        <label class="contract-field">
+          <span class="contract-field-label">تاريخ التسليم</span>
+          <input
+            type="date"
+            class="contract-field-input"
+            [value]="deliveryDate()"
+            (input)="deliveryDate.set($any($event.target).value)"
+          />
+        </label>
+
+        <label class="contract-field contract-field--wide">
+          <span class="contract-field-label">عنوان التسليم</span>
+          <input
+            type="text"
+            class="contract-field-input"
+            maxlength="500"
+            placeholder="مثال: المنطقة الصناعية، العاشر من رمضان"
+            [value]="deliveryAddress()"
+            (input)="deliveryAddress.set($any($event.target).value)"
+          />
+        </label>
+      </div>
+    </section>
+
+    <!-- الشروط المالية (تُحسب تلقائياً) -->
+    <section class="contract-card">
+      <h2 class="contract-card-title">الشروط المالية</h2>
+      <dl class="contract-dl contract-dl--financial">
+        <div><dt>إجمالي قيمة الصفقة</dt><dd>{{ totalPrice() | number: '1.0-2' }} ج.م</dd></div>
+        <div>
+          <dt>العربون ({{ form.downPaymentPercentage | percent }})</dt>
+          <dd class="contract-highlight">{{ downPayment() | number: '1.0-2' }} ج.م</dd>
+        </div>
+        <div>
+          <dt>عمولة المنصة ({{ form.commissionRate | percent }})</dt>
+          <dd>{{ platformCommission() | number: '1.0-2' }} ج.م</dd>
+        </div>
+        <div><dt>صافي مستحقات المورد من العربون</dt><dd>{{ sellerPayout() | number: '1.0-2' }} ج.م</dd></div>
+      </dl>
+    </section>
+
+    <!-- البنود الجزائية (ثابتة) -->
+    <section class="contract-card">
+      <h2 class="contract-card-title">البنود والجزاءات</h2>
+      <ol class="contract-clauses">
+        @for (clause of form.penaltyClauses; track clause.title) {
+          <li class="contract-clause">{{ clause.arabicText }}</li>
+        }
+      </ol>
+    </section>
+
+    <footer class="contract-actions">
+      <button
+        type="button"
+        class="btn-fayed btn-blue contract-submit-btn"
+        [disabled]="!isFormValid() || isSubmitting()"
+        (click)="onSubmit()"
+      >
+        {{ isSubmitting() ? 'جارٍ التقديم...' : 'توقيع وتقديم العقد للمورد' }}
+      </button>
+      <p class="contract-actions-hint">
+        بتقديم العقد فأنت توقّعه إلكترونياً وسيصل إشعار للمورد لمراجعته وقبوله أو طلب تعديله.
+      </p>
+    </footer>
+
+  }
+</div>

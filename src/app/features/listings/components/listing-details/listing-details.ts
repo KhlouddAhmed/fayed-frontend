@@ -85,16 +85,18 @@ export class ListingDetailsComponent implements OnInit {
     try {
       await firstValueFrom(
         this.marketplaceService.submitOffer({
-          ListingId: Number(currentListing.id),
-          OfferedQuantity: offerData.quantity,
-          OfferedPricePerUnit: offerData.price,
-          Notes: offerData.message,
+          listingId: Number(currentListing.id),
+          requestedQuantity: offerData.quantity,
+          offeredPricePerTon: offerData.price,
+          buyerMessage: offerData.message || null,
         })
       );
       this.submitSuccess.set(true);
       this.isPopupOpen.set(false);
-    } catch {
-      this.submitError.set('حدث خطأ أثناء إرسال العرض. حاول مرة أخرى.');
+    } catch (err: unknown) {
+      // الباك إند يرجع رسالة عربية واضحة (مثلاً: لديك عرض معلق بالفعل على هذه الخامة)
+      const backendMessage = (err as { error?: { message?: string } })?.error?.message;
+      this.submitError.set(backendMessage || 'حدث خطأ أثناء إرسال العرض. حاول مرة أخرى.');
     } finally {
       this.isSubmitting.set(false);
     }

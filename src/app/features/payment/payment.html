@@ -12,47 +12,51 @@
 
       <div class="col-md-10 col-lg-6">
         <div class="card custom-card border-0 h-100 p-4 p-md-5">
-          <h5 class="text-center fw-bold text-navy mb-5 pb-3">ملخص الطلب</h5>
-          
-          <div class="d-flex justify-content-between align-items-center mb-4 pb-1">
-            <span class="text-navy fw-medium fs-sm">بولي إيثيلين معاد تدويره (PE)</span>
-            <span class="text-muted fs-sm">40 طن</span>
-          </div>
-          
-          <div class="d-flex justify-content-between align-items-center mb-4 pb-1">
-            <span class="text-muted fs-sm">المورد</span>
-            <span class="text-navy fw-medium fs-sm">مصنع النور للبلاستيك</span>
-          </div>
-          
-          <div class="d-flex justify-content-between align-items-center mb-4 pb-1">
-            <span class="text-muted fs-sm">تاريخ التسليم المتوقع</span>
-            <span class="text-navy fw-medium fs-sm">15 يونيو 2025</span>
-          </div>
-          
-          <div class="d-flex justify-content-between align-items-center mb-5 pb-2">
-            <span class="text-muted fs-sm">رقم العقد</span>
-            <span class="text-navy fw-medium fs-sm" dir="ltr">FAID-2025-0784</span>
-          </div>
-          
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <span class="text-muted fs-sm">قيمة الصفقة</span>
-            <span class="text-navy fw-medium fs-sm">245,000 ج.م</span>
-          </div>
-          
-          <div class="d-flex justify-content-between align-items-start mb-4">
-            <div>
-              <div class="text-muted fs-sm mb-1">رسوم المنصة (3%)</div>
-              <small class="text-muted opacity-75" style="font-size: 11px;">مقسمة على الطرفين</small>
+          <h5 class="text-center fw-bold text-navy mb-5 pb-3">ملخص الدفع</h5>
+
+          @if (summaryResource.isLoading()) {
+            <p class="text-muted text-center fs-sm">جارٍ تحميل ملخص الدفع...</p>
+          } @else if (summaryResource.error()) {
+            <p class="text-danger text-center fs-sm">
+              تعذر تحميل ملخص الدفع — تأكد أن العقد مقبول من المورد وبانتظار دفع العربون.
+            </p>
+          } @else if (summaryResource.value(); as summary) {
+
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-1">
+              <span class="text-navy fw-medium fs-sm">{{ summary.listingTitle }}</span>
+              <span class="text-muted fs-sm">{{ summary.agreedQuantity | number: '1.0-2' }} طن</span>
             </div>
-            <span class="text-navy fw-medium fs-sm">7,350 ج.م</span>
-          </div>
-          
-          <hr class="border-secondary opacity-10 my-4">
-          
-          <div class="d-flex justify-content-between align-items-center mt-2">
-            <span class="text-muted fw-bold fs-sm">المبلغ الإجمالي</span>
-            <span class="text-navy fw-bold fs-5">252,500 ج.م</span>
-          </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-1">
+              <span class="text-muted fs-sm">سعر الوحدة</span>
+              <span class="text-navy fw-medium fs-sm">{{ summary.agreedPricePerUnit | number: '1.0-2' }} ج.م / طن</span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-5 pb-2">
+              <span class="text-muted fs-sm">رقم العقد</span>
+              <span class="text-navy fw-medium fs-sm" dir="ltr">{{ summary.orderCode }}</span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <span class="text-muted fs-sm">إجمالي قيمة الصفقة</span>
+              <span class="text-navy fw-medium fs-sm">{{ summary.agreedTotalPrice | number: '1.0-2' }} ج.م</span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-start mb-4">
+              <div>
+                <div class="text-muted fs-sm mb-1">عمولة المنصة ({{ summary.commissionRate | percent }})</div>
+                <small class="text-muted opacity-75" style="font-size: 11px;">تُخصم من مستحقات المورد</small>
+              </div>
+              <span class="text-navy fw-medium fs-sm">{{ summary.agreedTotalPrice * summary.commissionRate | number: '1.0-2' }} ج.م</span>
+            </div>
+
+            <hr class="border-secondary opacity-10 my-4">
+
+            <div class="d-flex justify-content-between align-items-center mt-2">
+              <span class="text-muted fw-bold fs-sm">العربون المطلوب دفعه الآن ({{ summary.downPaymentPercentage | percent }})</span>
+              <span class="text-navy fw-bold fs-5">{{ summary.downPaymentAmount | number: '1.0-2' }} ج.م</span>
+            </div>
+          }
         </div>
       </div>
 
@@ -176,8 +180,8 @@
             <h5 class="fw-bold text-navy text-end mb-4">تأكيد الدفع</h5>
             
             <div class="text-center mt-2 mb-4">
-              <p class="text-muted fs-sm mb-2">سيتم إيداع مبلغ</p>
-              <h2 class="fw-bold text-navy mb-2">252,500 ج.م</h2>
+              <p class="text-muted fs-sm mb-2">سيتم إيداع مبلغ العربون</p>
+              <h2 class="fw-bold text-navy mb-2">{{ (summaryResource.value()?.downPaymentAmount ?? 0) | number: '1.0-2' }} ج.م</h2>
               <p class="text-muted fs-sm">في حساب الضمان الخاص بفايض</p>
             </div>
 
@@ -190,7 +194,7 @@
 
             <div class="text-end mb-4 pb-2">
               <span class="text-muted fs-sm pe-1">رقم العقد</span>
-              <span class="text-navy fw-medium fs-sm" dir="ltr">CTR-2026-00124</span>
+              <span class="text-navy fw-medium fs-sm" dir="ltr">{{ summaryResource.value()?.orderCode }}</span>
             </div>
 
             <div class="mt-auto">
@@ -250,15 +254,29 @@
         </svg>
       </div>
 
-      <h3 class="fw-bold text-navy mb-3">تم الإيداع بنجاح</h3>
-      <p class="text-muted fs-sm mb-1">تم حجز مبلغ الصفقة في حساب الضمان الخاص بفايض</p>
+      <h3 class="fw-bold text-navy mb-3">تم دفع العربون بنجاح</h3>
+      <p class="text-muted fs-sm mb-1">تم حجز العربون في حساب الضمان الخاص بفايض — الطلب الآن "قيد التجهيز"</p>
+
+      @if (paymentResult(); as result) {
+        <div class="text-muted fs-sm mb-2">
+          <div>رقم المعاملة: <span dir="ltr" class="fw-medium text-navy">{{ result.transactionId }}</span></div>
+          <div>المبلغ المدفوع: <span class="fw-medium text-navy">{{ result.amountPaid | number: '1.2-2' }} ج.م</span></div>
+        </div>
+      }
+
       <p class="text-muted fs-sm border-bottom pb-4 mb-4 d-inline-block border-opacity-25" style="border-color: #CBD5E1 !important;">
-        يمكن للمورد الآن بدء تجهيز الشحنة
+        وصل إشعار للمورد ويمكنه الآن بدء تجهيز الشحنة
       </p>
+
+      @if (paymentResult()?.contractPdfUrl) {
+        <button class="btn btn-outline-custom w-100 py-2 rounded-3 fw-bold mb-3" (click)="openContractPdf()">
+          📄 تحميل نسخة العقد PDF
+        </button>
+      }
 
       <div class="d-flex gap-3 mt-2">
         <button class="btn btn-primary flex-grow-1 py-3 rounded-3 fw-bold transition-all" (click)="goToOrderDetails()">
-          عرض تفاصيل الطلب
+          متابعة الطلب النشط
         </button>
         <button class="btn btn-outline-custom flex-grow-1 py-3 rounded-3 fw-bold transition-all text-secondary" (click)="returnToChat()">
           العودة للمحادثة

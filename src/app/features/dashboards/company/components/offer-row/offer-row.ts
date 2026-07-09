@@ -8,11 +8,10 @@ interface OfferStatusConfig {
 }
 
 const OFFER_STATUS_DISPLAY_MAP: Readonly<Record<string, OfferStatusConfig>> = {
-  negotiating: { labelKey: 'قيد التفاوض', variant: 'warning' },
-  awaitingResponse: { labelKey: 'بانتظار الرد', variant: 'warning' },
-  accepted: { labelKey: 'مقبول', variant: 'info' },
+  pending: { labelKey: 'بانتظار الرد', variant: 'warning' },
+  accepted: { labelKey: 'مقبول', variant: 'success' },
   rejected: { labelKey: 'مرفوض', variant: 'danger' },
-  completed: { labelKey: 'مكتمل', variant: 'success' },
+  withdrawn: { labelKey: 'مسحوب', variant: 'info' },
 };
 
 @Component({

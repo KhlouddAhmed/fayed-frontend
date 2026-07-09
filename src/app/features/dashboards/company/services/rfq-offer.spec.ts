@@ -1,13 +1,17 @@
 import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
-import { RfqOffer } from './rfq-offer';
+import { PurchaseOfferService } from './rfq-offer';
 
-describe('RfqOffer', () => {
-  let service: RfqOffer;
+describe('PurchaseOfferService', () => {
+  let service: PurchaseOfferService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(RfqOffer);
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
+    service = TestBed.inject(PurchaseOfferService);
   });
 
   it('should be created', () => {

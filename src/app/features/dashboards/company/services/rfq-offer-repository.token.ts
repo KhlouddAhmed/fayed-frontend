@@ -1,11 +1,16 @@
 import { InjectionToken } from '@angular/core';
-import { OfferDto } from '../models/rfq-offer.model';
+import {
+  PurchaseOfferWithDirection,
+  RespondToPurchaseOfferResponse,
+} from '../models/rfq-offer.model';
 
 export interface RfqOfferRepository {
-  getAll(): Promise<readonly OfferDto[]>;
-  accept(id: string): Promise<OfferDto>;
-  reject(id: string): Promise<OfferDto>;
-  withdraw(id: string): Promise<OfferDto>;
+  getAll(): Promise<readonly PurchaseOfferWithDirection[]>;
+  /** Seller accepts → the backend opens a negotiation chat and returns its id. */
+  accept(id: number): Promise<RespondToPurchaseOfferResponse>;
+  reject(id: number): Promise<RespondToPurchaseOfferResponse>;
+  /** Buyer withdraws a pending offer. */
+  withdraw(id: number): Promise<void>;
 }
 
 export const RFQ_OFFER_REPOSITORY = new InjectionToken<RfqOfferRepository>(
