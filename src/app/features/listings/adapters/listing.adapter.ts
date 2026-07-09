@@ -10,7 +10,7 @@ export function adaptListing(dto: ListingDto): Listing {
     minPrice: dto.minPrice,
     quantity: dto.quantity,
     unit: dto.measureUnit,
-    governorate: extractGovernorate(dto.factoryAddress),
+    address: dto.factoryAddress,
     postedAgo: formatPostedAgo(dto.createdAt),
     materialTag: dto.materialType,
   };
@@ -29,7 +29,7 @@ export function adaptListingDetails(dto: ListingDetailsDto): any {
     price: dto.maxPrice,
     quantity: dto.quantity,
     unit: dto.measureUnit,
-    governorate: extractGovernorate(dto.factoryAddress),
+    address: dto.factoryAddress,
     publishedAgo: formatPostedAgo(dto.createdAt),
     description: dto.description,
     minOrder: dto.minOrderQuantity,

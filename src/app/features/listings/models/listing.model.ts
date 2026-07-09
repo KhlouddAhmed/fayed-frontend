@@ -7,7 +7,7 @@ export interface Listing {
   readonly minPrice?: number;
   readonly quantity: number;
   readonly unit: string;
-  readonly governorate: string;
+  readonly address: string;
   readonly postedAgo: string;
   readonly materialTag: string;
 }
