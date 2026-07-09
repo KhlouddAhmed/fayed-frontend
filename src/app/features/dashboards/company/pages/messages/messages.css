@@ -1,42 +1,51 @@
 .messages-page {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
   height: 100%;
 }
 
 .messages-page-title {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 800;
   color: var(--text-main);
   margin: 0 0 4px;
 }
 
 .messages-page-subtitle {
-  font-size: 0.9375rem;
-  color: #1D242D;
+  font-size: 0.875rem;
+  color: var(--text-muted);
   margin: 4px 0 0;
 }
 
 .messages-page-date {
   font-size: 0.8125rem;
-  color: #1D242D;
-  margin: 8px 0 0;
+  color: var(--text-muted);
+  margin: 6px 0 0;
 }
 
 .messages-page-body {
   display: grid;
-  grid-template-columns: 340px 1fr;
-  gap: 16px;
+  grid-template-columns: 320px 1fr;
+  gap: 0;
   flex: 1;
   min-block-size: 0;
-  block-size: calc(100vh - 220px);
+  block-size: calc(100vh - 200px);
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.messages-page-conv-list {
+  border-inline-end: 1px solid var(--border-light);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
 }
 
 .messages-page-thread-panel {
-  background-color: var(--white);
-  border-radius: 12px;
-  box-shadow: var(--shadow-card);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -49,14 +58,6 @@
   height: 100%;
   color: var(--text-muted);
   font-size: 0.9375rem;
-}
-
-.messages-page-conv-list {
-  background-color: var(--white);
-  border-radius: 12px;
-  box-shadow: var(--shadow-card);
-  padding: 12px;
-  overflow: hidden;
 }
 
 .messages-page-overlay {
@@ -80,14 +81,20 @@
   .messages-page-body {
     grid-template-columns: 1fr;
     block-size: auto;
+    border-radius: 12px;
   }
 
   .messages-page-thread-panel {
     display: none;
+    border-block-start: 1px solid var(--border-light);
   }
 
   .messages-page-thread-panel--open {
     display: flex;
     block-size: 60vh;
+  }
+
+  .messages-page-conv-list {
+    border-inline-end: none;
   }
 }
