@@ -47,16 +47,17 @@ export class RealMaterialsRepository implements MaterialsRepository {
     const formData = new FormData();
     formData.append('title', value.title);
     formData.append('description', value.description);
-    formData.append('price', value.price.toString());
+    formData.append('minPrice', value.minPrice.toString());
+formData.append('maxPrice', value.maxPrice.toString());
     formData.append('quantity', value.quantity.toString());
     formData.append('categoryId', value.categoryId.toString());
     formData.append('materialCondition', value.materialCondition);
     
-    if (value.mediaFiles && value.mediaFiles.length > 0) {
-      for (const file of value.mediaFiles) {
-        formData.append('mediaFiles', file);
-      }
-    }
+    if (value.imageFiles && value.imageFiles.length > 0) {
+  for (const file of value.imageFiles) {
+    formData.append('images', file);
+  }
+}
     
     return formData;
   }

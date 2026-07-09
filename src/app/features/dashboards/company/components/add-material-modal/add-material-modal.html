@@ -1,45 +1,59 @@
-<div class="add-material-modal" role="dialog" aria-modal="true" aria-labelledby="add-material-modal-title">
+<div class="add-material-modal" role="dialog" aria-modal="true"
+     aria-labelledby="add-material-modal-title">
 
   <header class="add-material-modal-header">
     <h2 id="add-material-modal-title" class="add-material-modal-title">
       {{ isEditMode() ? 'تعديل إعلان' : 'إضافة إعلان جديد' }}
     </h2>
-    <button type="button" class="add-material-modal-close-btn" (click)="cancel.emit()" aria-label="إغلاق">
+    <button type="button" class="add-material-modal-close-btn"
+            (click)="cancel.emit()" aria-label="إغلاق">
       <img src="assets/icons/dashboard/close.svg" alt="" width="42" height="42" />
     </button>
   </header>
 
   <div class="add-material-modal-body">
-    <form class="add-material-modal-form" (submit)="onSubmit(); $event.preventDefault()">
 
+    <form class="add-material-modal-form"
+          (submit)="onSubmit(); $event.preventDefault()">
+
+      <!-- القسم الأول: المعلومات الأساسية -->
       <section class="form-section">
         <h3 class="form-section-title">معلومات الخامة الأساسية</h3>
 
         <div class="form-row-2" style="margin-block-end: 16px;">
           <label class="add-material-modal-field">
-            <span>عنوان الإعلان (اسم الخامة)</span>
-            <input type="text" [value]="formValue().title"
-              (input)="updateField('title', $any($event.target).value)"
-              placeholder="مثال: PET معاد تدويره شفاف" />
+            <span>عنوان الإعلان</span>
+            <input type="text"
+                   [value]="formValue().title"
+                   (input)="updateField('title', $any($event.target).value)"
+                   placeholder="مثال: PET معاد تدويره شفاف" />
           </label>
 
           <label class="add-material-modal-field">
+            <span>نوع الخامة</span>
+            <input type="text"
+                   [value]="formValue().materialType"
+                   (input)="updateField('materialType', $any($event.target).value)"
+                   placeholder="مثال: بولي إيثيلين، نحاس، إلخ" />
+          </label>
+        </div>
+
+        <div class="form-row-2" style="margin-block-end: 16px;">
+          <label class="add-material-modal-field">
             <span>تصنيف الخامة</span>
             <select [value]="formValue().categoryId"
-              (change)="updateField('categoryId', $any($event.target).value)">
+                    (change)="updateField('categoryId', $any($event.target).value)">
               <option value="0" disabled>اختر التصنيف</option>
               @for (cat of categories(); track cat.id) {
                 <option [value]="cat.id">{{ cat.name }}</option>
               }
             </select>
           </label>
-        </div>
 
-        <div class="form-row-2" style="margin-block-end: 16px;">
           <label class="add-material-modal-field">
             <span>حالة الخامة</span>
             <select [value]="formValue().materialCondition"
-              (change)="updateField('materialCondition', $any($event.target).value)">
+                    (change)="updateField('materialCondition', $any($event.target).value)">
               <option value="New">جديد (New)</option>
               <option value="Used">مستعمل (Used)</option>
               <option value="Scrap">سكراب (Scrap)</option>
@@ -51,60 +65,189 @@
         <label class="add-material-modal-field">
           <span>وصف الإعلان</span>
           <div class="textarea-wrapper">
-            <textarea rows="4" [value]="formValue().description"
-              (input)="updateField('description', $any($event.target).value)"
-              placeholder="مثال: حبيبات PET معاد تدويرها عالية الجودة..."
-              maxlength="500"></textarea>
+            <textarea rows="4"
+                      [value]="formValue().description"
+                      (input)="updateField('description', $any($event.target).value)"
+                      placeholder="مثال: حبيبات PET معاد تدويرها عالية الجودة..."
+                      maxlength="500"></textarea>
             <span class="char-count">{{ formValue().description.length }}/500</span>
           </div>
         </label>
       </section>
 
+      <!-- القسم الثاني: الكمية والسعر -->
       <section class="form-section">
         <h3 class="form-section-title">الكمية والسعر</h3>
 
-        <div class="form-row-2" style="margin-block-end: 16px; align-items: end;">
+        <div class="form-row-2" style="margin-block-end: 16px;">
           <label class="add-material-modal-field">
             <span>الكمية المتاحة</span>
-            <div class="form-row-3" style="gap: 8px;">
-              <input type="number" min="0" [value]="formValue().quantity"
-                (input)="updateField('quantity', $any($event.target).value)"
-                placeholder="مثال: 30" style="grid-column: 1 / 3;" />
+            <div style="display: flex; gap: 8px;">
+              <input type="number" min="0"
+                     [value]="formValue().quantity"
+                     (input)="updateField('quantity', $any($event.target).value)"
+                     placeholder="مثال: 30"
+                     style="flex: 1;" />
+              <select [value]="formValue().measureUnit"
+                      (change)="updateField('measureUnit', $any($event.target).value)"
+                      style="width: 80px;">
+                <option value="طن">طن</option>
+                <option value="كجم">كجم</option>
+                <option value="متر">متر</option>
+                <option value="قطعة">قطعة</option>
+              </select>
             </div>
           </label>
 
           <label class="add-material-modal-field">
-            <span>السعر (ج.م)</span>
-            <input type="number" min="0" [value]="formValue().price"
-              (input)="updateField('price', $any($event.target).value)" placeholder="أدخل السعر للوحدة" />
+            <span>أقل كمية للطلب</span>
+            <input type="number" min="1"
+                   [value]="formValue().minOrderQuantity"
+                   (input)="updateField('minOrderQuantity', $any($event.target).value)"
+                   placeholder="مثال: 5" />
           </label>
         </div>
+
+        <div class="form-row-2" style="margin-block-end: 16px;">
+          <label class="add-material-modal-field">
+            <span>السعر الأدنى (ج.م)</span>
+            <input type="number" min="0"
+                   [value]="formValue().minPrice"
+                   (input)="updateField('minPrice', $any($event.target).value)"
+                   placeholder="مثال: 20000" />
+          </label>
+
+          <label class="add-material-modal-field">
+            <span>السعر الأقصى (ج.م)</span>
+            <input type="number" min="0"
+                   [value]="formValue().maxPrice"
+                   (input)="updateField('maxPrice', $any($event.target).value)"
+                   placeholder="مثال: 25000" />
+          </label>
+        </div>
+
+        <div class="form-row-2" style="margin-block-end: 16px;">
+          <label class="add-material-modal-field">
+            <span>طريقة التسليم</span>
+            <select [value]="formValue().deliveryType"
+                    (change)="updateField('deliveryType', $any($event.target).value)">
+              <option value="Pickup">استلام ذاتي (Pickup)</option>
+              <option value="Delivery">توصيل (Delivery)</option>
+              <option value="Both">الاثنان (Both)</option>
+            </select>
+          </label>
+
+          <label class="add-material-modal-field">
+            <span>طريقة الدفع المفضلة</span>
+            <select [value]="formValue().preferPayMethod"
+                    (change)="updateField('preferPayMethod', $any($event.target).value)">
+              <option value="Cash">كاش (Cash)</option>
+              <option value="BankTransfer">تحويل بنكي</option>
+              <option value="Escrow">Escrow</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="form-row-2" style="margin-block-end: 16px;">
+          <label class="add-material-modal-field">
+            <span>تاريخ انتهاء الإعلان</span>
+            <input type="date"
+                   [value]="formValue().expiryDate"
+                   (input)="updateField('expiryDate', $any($event.target).value)" />
+          </label>
+
+          <div class="add-material-modal-field">
+            <span>خيارات إضافية</span>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
+              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox"
+                       [checked]="formValue().isNegotiable"
+                       (change)="updateField('isNegotiable', $any($event.target).checked)" />
+                <span style="font-size: 0.875rem; color: var(--text-main);">السعر قابل للتفاوض</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox"
+                       [checked]="formValue().isDivisible"
+                       (change)="updateField('isDivisible', $any($event.target).checked)" />
+                <span style="font-size: 0.875rem; color: var(--text-main);">الكمية قابلة للتجزئة</span>
+              </label>
+            </div>
+          </div>
+        </div>
       </section>
+
     </form>
 
+    <!-- الشريط الجانبي -->
     <aside class="add-material-modal-sidebar">
       <div>
-        <h3 class="sidebar-section-title">صور الخامة</h3>
-        <p style="font-size: 0.8125rem; color: var(--text-soft); margin: 0 0 10px 0; text-align: right;">ارفع صور واضحة للخامة المتاحة</p>
-        <div class="upload-zone" role="button" tabindex="0" aria-label="رفع صور المادة"
-          (click)="imageInput.click()" (keydown.enter)="imageInput.click()">
-          <input #imageInput type="file" accept="image/png,image/jpeg" multiple style="display:none"
-            (change)="onImagesSelected($any($event.target).files)" />
-          <span class="upload-zone-icon"><i class="lucide-image"></i></span>
+        <h3 class="sidebar-section-title">الصور والمستندات</h3>
+
+        <p class="upload-label">صور الخامة</p>
+        <div class="upload-zone" role="button" tabindex="0"
+             aria-label="رفع صور المادة"
+             (click)="imageInput.click()"
+             (keydown.enter)="imageInput.click()">
+          <input #imageInput type="file" accept="image/png,image/jpeg"
+                 multiple style="display:none"
+                 (change)="onImagesSelected($any($event.target).files)" />
+          <span class="upload-zone-icon">🖼️</span>
           <span class="upload-zone-label">اضغط لرفع الصور</span>
-          <span class="upload-zone-hint">PNG, JPG</span>
+          <span class="upload-zone-hint">PNG, JPG حتى 5MB</span>
+          @if (formValue().imageFiles && formValue().imageFiles!.length > 0) {
+            <span class="upload-zone-count">
+              {{ formValue().imageFiles!.length }} صورة مختارة
+            </span>
+          }
+        </div>
+
+        <p class="upload-label">فيديو الخامة</p>
+        <div class="upload-zone" role="button" tabindex="0"
+             aria-label="رفع فيديو المادة"
+             (click)="videoInput.click()"
+             (keydown.enter)="videoInput.click()">
+          <input #videoInput type="file" accept="video/*"
+                 style="display:none"
+                 (change)="onVideoSelected($any($event.target).files)" />
+          <span class="upload-zone-icon">🎥</span>
+          <span class="upload-zone-label">اضغط لرفع الفيديو</span>
+          <span class="upload-zone-hint">MP4, MOV حتى 50MB</span>
+          @if (formValue().videoFile) {
+            <span class="upload-zone-count">تم اختيار الفيديو</span>
+          }
+        </div>
+
+        <p class="upload-label">شهادة التحليل</p>
+        <div class="upload-zone" role="button" tabindex="0"
+             aria-label="رفع شهادة التحليل"
+             (click)="docInput.click()"
+             (keydown.enter)="docInput.click()">
+          <input #docInput type="file"
+                 accept=".pdf,.doc,.docx,image/png,image/jpeg"
+                 style="display:none"
+                 (change)="onCertificateSelected($any($event.target).files)" />
+          <span class="upload-zone-icon">📄</span>
+          <span class="upload-zone-label">اضغط لرفع المستند</span>
+          <span class="upload-zone-hint">PDF, PNG, JPG حتى 5MB</span>
+          @if (formValue().certificateFile) {
+            <span class="upload-zone-count">تم اختيار المستند</span>
+          }
         </div>
       </div>
 
-      <footer class="add-material-modal-footer" style="padding: 0; border: none; margin-block-start: auto; padding-top: 20px;">
-        <button type="submit" class="btn-fayed btn-blue" [disabled]="isSubmitting() || !isFormValid()"
-          (click)="onSubmit()">
+      <footer class="add-material-modal-footer"
+              style="padding: 0; border: none; margin-block-start: auto; padding-top: 20px;">
+        <button type="submit" class="btn-fayed btn-blue"
+                [disabled]="isSubmitting() || !isFormValid()"
+                (click)="onSubmit()">
           {{ isSubmitting() ? 'جاري الحفظ...' : 'حفظ كمسودة' }}
         </button>
-        <button type="button" class="btn-fayed btn-white" (click)="cancel.emit()">
+        <button type="button" class="btn-fayed btn-white"
+                (click)="cancel.emit()">
           إلغاء
         </button>
       </footer>
     </aside>
+
   </div>
 </div>
