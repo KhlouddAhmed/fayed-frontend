@@ -41,13 +41,13 @@
     <div class="material-modal-stat">
       <span class="material-modal-stat-label">الكمية المتاحة</span>
       <span class="material-modal-stat-value">
-        {{ material().availableQuantity }} {{ material().unit }}
+        {{ material().availableQuantity }} {{ material().measureUnit }}
       </span>
     </div>
     <div class="material-modal-stat">
       <span class="material-modal-stat-label">السعر</span>
       <span class="material-modal-stat-value">
-        {{ material().pricePerUnit }} ج.م / {{ material().unit }}
+        {{ material().pricePerUnit }} ج.م / {{ material().measureUnit }}
       </span>
     </div>
     <div class="material-modal-stat">
@@ -71,7 +71,7 @@
   </div>
 
   <footer class="material-modal-footer">
-    @if (material().status === 'Draft') {
+    @if (material().status === 'draft') {
     <button type="button" class="btn-fayed btn-blue" (click)="onPublishClick()">
       نشر الإعلان
     </button>

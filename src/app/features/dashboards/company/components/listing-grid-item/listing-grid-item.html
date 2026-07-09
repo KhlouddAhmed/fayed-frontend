@@ -1,35 +1,21 @@
 <article class="listing-card">
   <div class="listing-card-image-wrapper">
-    <img
-      [ngSrc]="material().imageUrls[0] ?? '/assets/images/market/plastic-pvc-raw-material.jpg'"
-      [alt]="material().name"
-      fill
-      class="listing-card-image"
-    />
+    <img [ngSrc]="material().imageUrls[0] ?? '/assets/images/market/plastic-pvc-raw-material.jpg'"
+      [alt]="material().name" fill class="listing-card-image" />
   </div>
 
-  <app-status-badge
-    class="listing-card-status"
-    [statusMap]="statusMap"
-    [status]="material().status"
-  />
+  <app-status-badge class="listing-card-status" [statusMap]="statusMap" [status]="material().status" />
 
   <h3 class="listing-card-name">{{ material().name }}</h3>
 
-<div class="listing-card-meta">
-  <span class="listing-card-price">
-    {{ material().pricePerUnit }} ج.م / <span class="unit">{{ material().unit }}</span>
-  </span>
-  <span class="listing-card-quantity">
-    {{ material().availableQuantity }} <span class="unit">{{ material().unit }}</span>
-  </span>
-</div>
+  <div class="listing-card-meta">
+    <span class="listing-card-price">
+      {{ material().pricePerUnit }} ج.م / <span class="unit">{{ material().measureUnit }}</span> </span>
+    <span class="listing-card-quantity">
+      {{ material().availableQuantity }} <span class="unit">{{ material().measureUnit }}</span> </span>
+  </div>
 
-  <button
-    type="button"
-    class="btn-fayed btn-white listing-card-details-btn"
-    (click)="onViewDetailsClick()"
-  >
+  <button type="button" class="btn-fayed btn-white listing-card-details-btn" (click)="onViewDetailsClick()">
     عرض تفاصيل الخامة
   </button>
 </article>
