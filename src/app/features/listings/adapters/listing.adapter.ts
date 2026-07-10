@@ -10,7 +10,7 @@ export function adaptListing(dto: ListingDto): Listing {
     minPrice: dto.minPrice,
     quantity: dto.quantity,
     unit: dto.measureUnit,
-    address: dto.factoryAddress,
+    address: dto.factoryAddress?.trim() || 'غير محدد',
     postedAgo: formatPostedAgo(dto.createdAt),
     materialTag: dto.materialType,
   };
@@ -29,7 +29,7 @@ export function adaptListingDetails(dto: ListingDetailsDto): any {
     price: dto.maxPrice,
     quantity: dto.quantity,
     unit: dto.measureUnit,
-    address: dto.factoryAddress,
+    address: dto.factoryAddress?.trim() || 'غير محدد',
     publishedAgo: formatPostedAgo(dto.createdAt),
     description: dto.description,
     minOrder: dto.minOrderQuantity,
@@ -57,9 +57,9 @@ export function adaptListingDetails(dto: ListingDetailsDto): any {
   };
 }
 
-function extractGovernorate(address: string): string {
-  return address?.split('،')[0]?.trim() ?? address ?? 'غير محدد';
-}
+// function extractGovernorate(address: string): string {
+//   return address?.split('،')[0]?.trim() ?? address ?? 'غير محدد';
+// }
 
 function formatPostedAgo(createdAt: string): string {
   const now = new Date();

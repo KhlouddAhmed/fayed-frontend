@@ -16,6 +16,7 @@ export const routes: Routes = [
   },
   {
     path: 'marketplace',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./features/listings/pages/marketplace-page/marketplace-page').then(
         m => m.MarketplacePageComponent
@@ -24,6 +25,7 @@ export const routes: Routes = [
   },
   {
     path: 'marketplace/:id',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./features/listings/components/listing-details/listing-details').then(
         m => m.ListingDetailsComponent
