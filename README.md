@@ -1,5 +1,5 @@
 <div align="center">
-<img src="public/assets/logo/blue-logo.svg" alt="FAYED Logo" width="200" />
+<img src="public/assets/logo/blue-logo.svg" alt="FAYED Logo" width="220" />
 
   # فايض | FAYED
  
@@ -34,7 +34,6 @@
  
 The platform provides a fully supervised environment for negotiation, contract agreement, escrow-secured payments, and dispute resolution — ensuring trust and safety for every transaction.
  
-**Latest SRS**: Version 1.2 (May 2026)
  
 ---
  
