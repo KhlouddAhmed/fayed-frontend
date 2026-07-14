@@ -42,7 +42,7 @@ FAYED is a specialized **B2B online marketplace** in Egypt that connects verifie
 | Styling | Bootstrap 5 RTL + CSS Custom Properties |
 | State Management | NgRx SignalStore |
 | Real-time | SignalR (@microsoft/signalr) |
-| Backend | ASP.NET Core Web API (.NET 8) |
+| Backend | ASP.NET Core Web API (.NET 9) |
 | Database | SQL Server + Vector DB (RAG) |
 | AI Services | LLM + OCR + MCP External Lookups |
 | Queue | Redis / RabbitMQ |
