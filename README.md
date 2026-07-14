@@ -1,9 +1,20 @@
-# Fayed-Frontend
+<div align="center">
 
-**فايض | FAYED**  
-**B2B Marketplace for Industrial Surplus & Production By-Products**  
+<img src="public/assets/logo/white-logo.svg" alt="FAYED Logo" width="220" />
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.1.
+# فايض | FAYED
+
+### B2B Marketplace for Industrial Surplus & Production By-Products
+### سوق إلكتروني لفائض المواد الخام وهدر الإنتاج بين المصانع
+
+![Angular](https://img.shields.io/badge/Angular-22-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-5_RTL-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
+![.NET](https://img.shields.io/badge/.NET-9-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
+![SignalR](https://img.shields.io/badge/SignalR-Realtime-0078D4?style=for-the-badge&logo=microsoftsignalr&logoColor=white)
+![NgRx](https://img.shields.io/badge/NgRx-SignalStore-BA2BD2?style=for-the-badge&logo=reactivex&logoColor=white)
+
+</div>
 
 ---
 
@@ -24,104 +35,131 @@ FAYED is a specialized **B2B online marketplace** in Egypt that connects verifie
 
 ## Tech Stack
 
-- **Frontend**: Angular 22 (Standalone, Zoneless, Signals, Signal Forms)
-- **Language**: TypeScript 6 (strict mode)
-- **Styling**: Bootstrap 5 (RTL-first)
-- **State Management**: NgRx SignalStore
-- **Real-time**: SignalR
-- **Backend**: .NET 8 (API)
-- **AI Services**: LLM + OCR + MCP external lookups
+| Layer | Technology |
+|---|---|
+| Frontend Framework | Angular 22 — Standalone, Zoneless, Signal-first |
+| Language | TypeScript 6 (strict mode) |
+| Styling | Bootstrap 5 RTL + CSS Custom Properties |
+| State Management | NgRx SignalStore |
+| Real-time | SignalR (@microsoft/signalr) |
+| Backend | ASP.NET Core Web API (.NET 8) |
+| Database | SQL Server + Vector DB (RAG) |
+| AI Services | LLM + OCR + MCP External Lookups |
+| Queue | Redis / RabbitMQ |
 
 ---
 
-## Development server
+## Architecture Highlights
 
-```bash
-ng serve
-```
-
-Navigate to `http://localhost:4200/`. The application will automatically reload on file changes.
-
-## Code Scaffolding
-
-```bash
-ng generate component component-name
-```
-
-For a full list of schematics:
-
-```bash
-ng generate --help
-```
+- **Selectorless Components** — Angular 22 default, zero selector strings
+- **Zoneless Change Detection** — no Zone.js overhead
+- **Signal Forms** — replaces ReactiveFormsModule entirely
+- **DTO → Adapter → UI Model** — API responses never bound directly to templates
+- **InjectionToken pattern** — mock and real services swapped via DI, zero component changes
+- **Feature-based folder structure** — no type-based grouping
 
 ---
 
 ## Project Structure
 
-```bash
+```
 src/app/
-├── core/                  # Core services, interceptors, config
-├── shared/                # Reusable components, pipes, directives
+├── core/
+│   ├── interceptors/       # auth, error, loading
+│   ├── guards/             # auth, kyb-status
+│   ├── services/           # error, logger, toast
+│   ├── tokens/             # InjectionTokens
+│   └── constants/          # routes, app-wide constants
+├── shared/
+│   ├── components/         # button, skeleton, empty-state, badge
+│   ├── pipes/              # currency-egp, relative-time
+│   ├── directives/         # rtl-aware, lazy-image
+│   └── validators/         # Signal Forms validators
 ├── features/
-│   ├── auth/
-│   ├── listings/
-│   ├── search/            # AI Prompt Search + results
-│   ├── chat/
-│   ├── orders/
-│   ├── profile/
-│   └── admin/             # KYB queue, moderation, etc.
-├── store/                 # NgRx SignalStore slices
-└── models/                # Shared interfaces & types
+│   ├── auth/               # registration, login, OTP, KYB upload
+│   ├── listings/           # create, edit, detail, my-listings
+│   ├── search/             # AI prompt search, filters, chips
+│   ├── chat/               # thread list, messages, quote-offer
+│   ├── orders/             # summary, checkout, status tracker
+│   ├── profile/            # company page, dashboard, billing
+│   ├── disputes/           # open dispute, evidence, timeline
+│   ├── notifications/      # bell, preferences
+│   └── admin/              # KYB queue, moderation, escrow console
+├── layout/
+│   ├── header/
+│   └── footer/
+└── environments/
+    ├── environment.ts
+    └── environment.production.ts
 ```
 
 ---
 
 ## Sprint Plan Summary
 
-- **Sprint 1**: Foundation, Auth & KYB, Listings, Traditional Search, Profiles
-- **Sprint 2**: Chat, Orders, Escrow Payments, Logistics, Disputes
-- **Sprint 3**: Full AI Layer (Prompt Search + KYB), Reporting, Hardening
+| Sprint | Theme | Story Points |
+|---|---|---|
+| Sprint 1 | Foundation, Auth & KYB, Listings, Search, Profiles | 86 |
+| Sprint 2 | Chat, Orders, Escrow Payments, Logistics, Disputes | 88 |
+| Sprint 3 | Full AI Layer, Reporting, Hardening | 87 |
+| **Total** | | **261** |
 
 ---
 
 ## Key Features (MVP)
 
-- Company Registration & Document Verification
-- AI Prompt Search with explainability
-- Listing creation with media & lab reports
-- Real-time chat with quote support
-- Escrow-based secure payments + E-Invoice
-- Seller & Buyer dashboards
-- Ratings, Reviews & Dispute management
+- **Company Registration & KYB** — 3-step onboarding with document upload and AI-assisted verification
+- **AI Prompt Search** — natural language search with slot extraction, multi-criteria ranking, and explainability chips
+- **Listings** — create with media, lab reports, draft/publish flow, auto-expiry
+- **Real-time Chat** — SignalR-powered with quote/offer messages and PII guard
+- **Escrow Payments** — secure hold/release flow via Paymob/Fawry integration
+- **Dashboards** — seller and buyer analytics, order tracking, payout history
+- **Ratings & Disputes** — post-order reviews and evidence-based dispute resolution
+- **Notifications** — in-app bell + email with per-event preferences
 
 ---
 
-## Running the Project
+## AI Trinity
 
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start development server:
-   ```bash
-   ng serve
-   ```
+| Pillar | Implementation |
+|---|---|
+| LLM | AI Prompt Search + Chatbot Assistant |
+| RAG | Vector DB + MCP servers connecting to Egyptian government sources |
+| Agents | KYB Verification Agent, Matching Agent, Fraud Detection Agent |
+
+> All AI decisions are advisory only — human approval is mandatory (BR-09 / BR-10)
 
 ---
 
-## Build
+## Getting Started
 
 ```bash
-ng build
+# Install dependencies
+npm install
+
+# Start development server
+ng serve
 ```
 
-The build artifacts will be stored in the `dist/` directory.
+Navigate to `http://localhost:4200/`
+
+```bash
+# Production build
+ng build
+
+# Run tests (Vitest)
+ng test
+```
 
 ---
 
 ## Further Reading
 
-- [Software Requirements Specification (SRS)](docs/Fayed_SRS_v1.2.docx)
+- [Software Requirements Specification v1.2](docs/Fayed_SRS_v1.2.docx)
 - [Sprint Plan](docs/Fayed_Sprint_Plan.docx)
 
+---
+
+<div align="center">
+  <sub>Built with ❤️ by The Optimizers Frontend Team — ITI Graduation Capstone 2026</sub>
+</div>
