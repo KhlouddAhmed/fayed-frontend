@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/assets/logo/white-logo.svg" alt="FAYED Logo" width="220" />
+<img src="public/assets/logo/blue-logo.svg" alt="FAYED Logo" width="220" />
 
 # فايض | FAYED
 
